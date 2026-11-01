@@ -13,6 +13,8 @@
 
 Client-only generation: no upload, account, gallery, analytics or server. Bundle Korean font assets locally. A shared canvas rendering path must own preview and GIF frames. Support text, font, foreground, opaque or transparent background, motion, pause and download. GIF transparency is binary, not partial alpha. Test decoded output, dimensions, multiple frames and transparent pixels rather than only checking a file extension.
 
-## GitHub prerequisite
+## Decisions
 
-Directory is empty and not a repository. `git init -b main` completed locally. No repository at `hakilee/slackmoji` or `happy-haki/slackmoji` was visible via the current `happy-haki` authentication. Account and visibility selection is pending before remote creation. No product implementation or remote writes performed yet.
+- Use modern-gif 2.1.0 for its typed encode/decode API, transparent frames and standard ArrayBuffer output. Source: https://github.com/qq15725/modern-gif. No custom GIF codec.
+- TypeScript 7.0.2 is the latest registry stable, but typescript-eslint 8.72.1 supports below 6.1; use TypeScript 6.0.3 without peer-range overrides.
+- Repo initialization and settings were completed before feature delivery. Initial main seed predates protection; subsequent changes go through PRs.
