@@ -1,0 +1,1 @@
+node .yarn/releases/yarn-4.18.1.cjs format:check && node .yarn/releases/yarn-4.18.1.cjs lint && node .yarn/releases/yarn-4.18.1.cjs typecheck

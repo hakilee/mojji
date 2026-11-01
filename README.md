@@ -1,7 +1,49 @@
-# Slackmoji
+# slackmoji ✳
 
-브라우저에서 텍스트를 Slack용 GIF 이모지로 만드는 사이트.
+작은 글자, 큰 리액션. 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
-## Development status
+## 시작하기
 
-Initial development is tracked in GitHub issues. Specifications and local verification evidence accompany each implementation PR. GitHub Actions are not used.
+Node 24.18 이상과 Yarn 4.18.1을 사용합니다. Corepack을 사용하는 경우 `corepack enable` 후 실행하세요. Corepack이 없다면 아래의 `yarn`을 `node .yarn/releases/yarn-4.18.1.cjs`로 대체할 수 있습니다.
+
+```sh
+yarn install --immutable
+yarn prepare
+yarn dev
+```
+
+http://127.0.0.1:5173 에서 편집기를 엽니다.
+
+## 기능
+
+- 한글 포함 텍스트, 3줄·40자까지 자동 크기 조절
+- Black Han Sans, Jua, Noto Sans KR 로컬 글꼴
+- 글자색·배경색·투명 배경
+- 없음·두근두근·통통·슬라이드·흔들흔들·빙글빙글
+- 실시간 미리보기, 일시정지, 슬랙 메시지 미리보기
+- 128×128 GIF 다운로드, 128KiB 상한, 무한 반복
+
+모든 렌더링은 브라우저 안에서 이루어집니다. GIF 투명도는 반투명이 아닌 완전 투명/불투명을 지원합니다. 슬랙의 이모지 추가 메뉴에서 다운로드한 파일을 업로드하세요. 실제 Slack 업로드는 별도 계정 권한이 필요하며 자동 검증 범위에 포함하지 않습니다.
+
+## 개발과 검증
+
+React 19.3.1 · TanStack Router 1.170.46 · Tailwind CSS 4.3.3 · Vite 8.3.5. 설치 시점의 stable 버전을 사용하고 `yarn.lock`으로 재현합니다. TypeScript 6.0.3은 typescript-eslint의 지원 범위에 맞춥니다.
+
+```sh
+yarn verify       # format → lint → types (including tests) → tests → build
+yarn test:watch
+yarn preview     # production build first
+```
+
+Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실행합니다. GitHub Actions는 사용하지 않습니다. 브라우저 테스트는 Aside CLI만 사용합니다. 로컬 훅은 서버 검증을 대신하지 않습니다.
+
+## 저장소 안내
+
+- [AGENTS.md](AGENTS.md): 작업 진입점
+- [documentation](documentation/README.md): 워크플로와 품질 지침
+- [specs/editor.md](specs/editor.md): 제품 계약과 검증 연결
+- [research/initialization.md](research/initialization.md): 참고 자료와 선택 근거
+- `src/`: 제품 코드와 colocated TypeScript 테스트
+- `public/licenses/`: 번들 글꼴의 OFL 라이선스
+
+[GitHub 이슈](https://github.com/hakilee/slackmoji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.
