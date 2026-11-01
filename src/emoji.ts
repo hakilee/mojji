@@ -32,17 +32,12 @@ export const initialSettings: Settings = {
 
 export function validateText(text: string): string | null {
   if (!text.trim()) return "이모지에 넣을 텍스트를 입력해 주세요.";
-  if (Array.from(text).length > 40)
-    return "텍스트는 40자까지 입력할 수 있어요.";
+  if (Array.from(text).length > 40) return "텍스트는 40자까지 입력할 수 있어요.";
   if (text.split("\n").length > 3) return "줄은 3개까지 사용할 수 있어요.";
   return null;
 }
 
-export function drawEmoji(
-  ctx: CanvasRenderingContext2D,
-  settings: Settings,
-  progress: number,
-) {
+export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, progress: number) {
   ctx.clearRect(0, 0, 128, 128);
   if (!settings.transparent) {
     ctx.fillStyle = settings.background;
@@ -86,10 +81,7 @@ export function drawEmoji(
   ctx.restore();
 }
 
-export async function exportGif(
-  ctx: CanvasRenderingContext2D,
-  settings: Settings,
-): Promise<Blob> {
+export async function exportGif(ctx: CanvasRenderingContext2D, settings: Settings): Promise<Blob> {
   const error = validateText(settings.text);
   if (error) throw new Error(error);
   const frames = [];
@@ -111,8 +103,6 @@ export async function exportGif(
     format: "blob",
   });
   if (blob.size > 128 * 1024)
-    throw new Error(
-      "파일이 128KB를 넘었어요. 텍스트를 줄이거나 모션을 바꿔 주세요.",
-    );
+    throw new Error("파일이 128KB를 넘었어요. 텍스트를 줄이거나 모션을 바꿔 주세요.");
   return blob;
 }

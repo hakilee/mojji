@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "node .yarn/releases/yarn-4.18.1.cjs build",
+  "installCommand": "node .yarn/releases/yarn-4.18.1.cjs install --immutable",
+  "outputDirectory": "dist",
+  "git": { "deploymentEnabled": false }
+}

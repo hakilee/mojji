@@ -2,6 +2,8 @@
 
 작은 글자, 큰 리액션. 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
+배포: https://slackmoji.haklee.me
+
 ## 시작하기
 
 Node 24.18 이상과 Yarn 4.18.1을 사용합니다. Corepack을 사용하는 경우 `corepack enable` 후 실행하세요. Corepack이 없다면 아래의 `yarn`을 `node .yarn/releases/yarn-4.18.1.cjs`로 대체할 수 있습니다.
@@ -27,7 +29,7 @@ http://127.0.0.1:5173 에서 편집기를 엽니다.
 
 ## 개발과 검증
 
-React 19.3.1 · TanStack Router 1.170.46 · Tailwind CSS 4.3.3 · Vite 8.3.5. 설치 시점의 stable 버전을 사용하고 `yarn.lock`으로 재현합니다. TypeScript 6.0.3은 typescript-eslint의 지원 범위에 맞춥니다.
+React 19.3.1 · TanStack Router 1.170.46 · Tailwind CSS 4.3.3 · Vite 8.3.5. 설치 시점의 stable 버전을 사용하고 `yarn.lock`으로 재현합니다. TypeScript 7.0.2 · oxlint 1.90.0 · oxfmt 0.75.0을 사용합니다.
 
 ```sh
 yarn verify       # format → lint → types (including tests) → tests → build
@@ -47,3 +49,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 - `public/licenses/`: 번들 글꼴의 OFL 라이선스
 
 [GitHub 이슈](https://github.com/hakilee/slackmoji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.
+
+## 배포
+
+Vercel CLI로 로컬에서 빌드한 결과만 배포합니다. [배포 가이드](documentation/deployment.md)를 참고하세요. Git 연결 자동 배포와 GitHub Actions는 사용하지 않습니다.

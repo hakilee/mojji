@@ -4,6 +4,7 @@
 | ----------------------------------------- | -------------------------------------------------------------- |
 | [Workflow](workflow.md)                   | Issue → spec → implementation → local verification → PR        |
 | [Quality](quality.md)                     | Commands, hooks, TypeScript test lifecycle and honest evidence |
+| [Deployment](deployment.md)               | Local prebuilt release, target verification and DNS boundaries |
 | [Editor spec](../specs/editor.md)         | Observable product contracts E1–E6                             |
 | [Research](../research/initialization.md) | Source-backed decisions and reference boundaries               |
 

@@ -16,5 +16,5 @@ Client-only generation: no upload, account, gallery, analytics or server. Bundle
 ## Decisions
 
 - Use modern-gif 2.1.0 for its typed encode/decode API, transparent frames and standard ArrayBuffer output. Source: https://github.com/qq15725/modern-gif. No custom GIF codec.
-- TypeScript 7.0.2 is the latest registry stable, but typescript-eslint 8.72.1 supports below 6.1; use TypeScript 6.0.3 without peer-range overrides.
+- Issue #3 replaces ESLint/Prettier with oxlint 1.90.0/oxfmt 0.75.0 and upgrades TypeScript to 7.0.2. The compatibility-only TypeScript pin and superseded toolchain are removed. Oxc references: https://oxc.rs/docs/guide/usage/linter/config and https://oxc.rs/docs/guide/usage/formatter.
 - Repo initialization and settings were completed before feature delivery. Initial main seed predates protection; subsequent changes go through PRs.
