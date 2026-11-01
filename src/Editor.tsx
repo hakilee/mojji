@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  drawEmoji,
-  exportGif,
-  fonts,
-  initialSettings,
-  motions,
-  validateText,
-} from "./emoji";
+import { drawEmoji, exportGif, fonts, initialSettings, motions, validateText } from "./emoji";
 import type { Settings } from "./emoji";
 
 export function Editor() {
@@ -43,8 +36,7 @@ export function Editor() {
       frame = requestAnimationFrame(render);
     }
     void start().catch(() => {
-      if (active)
-        setStatus("폰트를 불러오지 못했어요. 페이지를 새로고침해 주세요.");
+      if (active) setStatus("폰트를 불러오지 못했어요. 페이지를 새로고침해 주세요.");
     });
     return () => {
       active = false;
@@ -72,9 +64,7 @@ export function Editor() {
       setStatus(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`);
     } catch (error) {
       setStatus(
-        error instanceof Error
-          ? error.message
-          : "GIF 생성에 실패했어요. 다시 시도해 주세요.",
+        error instanceof Error ? error.message : "GIF 생성에 실패했어요. 다시 시도해 주세요.",
       );
     } finally {
       setBusy(false);
@@ -154,9 +144,7 @@ export function Editor() {
                     type="color"
                     value={settings.background}
                     disabled={settings.transparent}
-                    onChange={(event) =>
-                      update({ background: event.target.value })
-                    }
+                    onChange={(event) => update({ background: event.target.value })}
                   />
                   배경색
                 </label>
@@ -165,9 +153,7 @@ export function Editor() {
                 <input
                   type="checkbox"
                   checked={settings.transparent}
-                  onChange={(event) =>
-                    update({ transparent: event.target.checked })
-                  }
+                  onChange={(event) => update({ transparent: event.target.checked })}
                 />
                 투명 배경으로 만들기<span>어디에나 자연스럽게</span>
               </label>
@@ -182,9 +168,7 @@ export function Editor() {
                     key={motion}
                     type="button"
                     aria-pressed={settings.motion === motion}
-                    onClick={() =>
-                      update({ motion: motion as Settings["motion"] })
-                    }
+                    onClick={() => update({ motion: motion as Settings["motion"] })}
                   >
                     <span>{["—", "↗", "↕", "↔", "〰", "↻"][index]}</span>
                     {label}
@@ -200,12 +184,7 @@ export function Editor() {
             </div>
             <div className="checker">
               <span className="canvas-note">마음을 담는 128 × 128</span>
-              <canvas
-                ref={canvas}
-                width={128}
-                height={128}
-                aria-label="이모지 미리보기"
-              />
+              <canvas ref={canvas} width={128} height={128} aria-label="이모지 미리보기" />
               <button className="pause" onClick={() => setPaused(!paused)}>
                 {paused ? "▶ 재생" : "Ⅱ 일시정지"}
               </button>
@@ -245,10 +224,7 @@ export function Editor() {
           <span>✦</span>
           <div>
             <strong>슬랙에 내 이모지를 추가하는 방법</strong>
-            <p>
-              다운로드한 GIF를 슬랙의 이모지 메뉴 → 이모지 추가에서
-              업로드하세요.
-            </p>
+            <p>다운로드한 GIF를 슬랙의 이모지 메뉴 → 이모지 추가에서 업로드하세요.</p>
           </div>
           <span className="tip-end">이제 내 마음을 보내요 ↗</span>
         </aside>

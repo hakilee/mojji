@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".yarn/**",
+    "yarn.lock",
+    "node_modules/**",
+    "dist/**",
+    ".codegraph/**",
+    "artifacts/**",
+    ".vercel/**"
+  ]
+}

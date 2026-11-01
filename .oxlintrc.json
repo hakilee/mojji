@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error",
+    "react/only-export-components": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/ban-ts-comment": "error"
+  },
+  "ignorePatterns": [
+    ".yarn/**",
+    "node_modules/**",
+    "dist/**",
+    ".codegraph/**",
+    "artifacts/**",
+    ".vercel/**"
+  ]
+}
