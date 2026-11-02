@@ -1,7 +1,6 @@
 import { Spinner } from "../ui/Spinner";
 import { startTransition, useDeferredValue, useState, ViewTransition } from "react";
 import { fonts } from "../../lib/emoji";
-import { SettingGroup } from "../ui/SettingGroup";
 
 export function FontPicker({
   font,
@@ -68,7 +67,7 @@ export function FontPicker({
   }
 
   return (
-    <SettingGroup title="글꼴">
+    <>
       <div className="grid grid-cols-3 gap-2">
         {fonts.map((family) => (
           <button
@@ -190,6 +189,6 @@ export function FontPicker({
           {error}
         </p>
       )}
-    </SettingGroup>
+    </>
   );
 }
