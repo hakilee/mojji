@@ -9,9 +9,13 @@ import {
   validateText,
 } from "./emoji";
 import type { Settings } from "./emoji";
+import { SettingGroup } from "./SettingGroup";
 import { FontPicker } from "./FontPicker";
 
 export function Editor() {
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const [settings, setSettings] = useState(initialSettings);
   const [fontLoading, setFontLoading] = useState(false);
   const [draft, setDraft] = useState(initialSettings.text);
@@ -28,7 +32,14 @@ export function Editor() {
   }
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReducedMotion(preference.matches);
+    preference.addEventListener("change", onChange);
+    onChange();
+    return () => preference.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
     let active = true;
     let frame = 0;
     async function start() {
@@ -42,7 +53,7 @@ export function Editor() {
           small.clearRect(0, 0, 128, 128);
           small.drawImage(ctx.canvas, 0, 0);
         }
-        if (!reducedMotion) frame = requestAnimationFrame(render);
+        if (!reducedMotion && settings.motion !== "none") frame = requestAnimationFrame(render);
       }
       frame = requestAnimationFrame(render);
     }
@@ -53,7 +64,7 @@ export function Editor() {
       active = false;
       cancelAnimationFrame(frame);
     };
-  }, [settings]);
+  }, [settings, reducedMotion]);
 
   async function download() {
     setBusy(true);
@@ -84,12 +95,15 @@ export function Editor() {
 
   return (
     <div className="shell">
+      <a className="skip-link" href="#editor-main">
+        편집기로 건너뛰기
+      </a>
       <header className="flex items-center">
         <a className="brand" href="/">
           <img src="/logo.svg" width="64" height="56" alt="슬랙모찌 홈" />
         </a>
       </header>
-      <main>
+      <main id="editor-main" tabIndex={-1}>
         <div className="workspace">
           <section className="panel controls" aria-label="이모지 편집">
             <div className="section-title">
@@ -98,6 +112,8 @@ export function Editor() {
             <div className="text-editor">
               <textarea
                 id="text"
+                name="emoji-text"
+                autoComplete="off"
                 aria-label="이모지 텍스트"
                 aria-describedby={invalid ? "text-error text-count" : "text-count"}
                 aria-invalid={!!invalid}
@@ -144,8 +160,7 @@ export function Editor() {
               onChange={(font) => update({ font })}
               onLoading={setFontLoading}
             />
-            <fieldset>
-              <legend>색상</legend>
+            <SettingGroup title="색상">
               <div className="segmented" aria-label="색상 방식">
                 <button
                   type="button"
@@ -253,9 +268,8 @@ export function Editor() {
                 />
                 투명 배경으로 만들기
               </label>
-            </fieldset>
-            <fieldset>
-              <legend>모션 효과</legend>
+            </SettingGroup>
+            <SettingGroup title="모션 효과">
               <div className="motion-options">
                 {Object.entries(motions).map(([motion, label], index) => (
                   <button
@@ -264,12 +278,14 @@ export function Editor() {
                     aria-pressed={settings.motion === motion}
                     onClick={() => update({ motion: motion as Settings["motion"] })}
                   >
-                    <span>{["—", "↗", "↕", "↔", "〰", "↻", "◌", "⌁", "≈"][index]}</span>
+                    <span aria-hidden="true">
+                      {["—", "↗", "↕", "↔", "〰", "↻", "◌", "⌁", "≈"][index]}
+                    </span>
                     {label}
                   </button>
                 ))}
               </div>
-            </fieldset>
+            </SettingGroup>
           </section>
           <section className="panel preview" aria-label="미리보기">
             <div className="section-title">
@@ -295,7 +311,7 @@ export function Editor() {
                       type="button"
                       aria-label={`내 이모지 반응 ${reacted ? 4 : 3}개`}
                       aria-pressed={reacted}
-                      onClick={() => setReacted(!reacted)}
+                      onClick={() => setReacted((value) => !value)}
                     >
                       <canvas
                         ref={smallCanvas}

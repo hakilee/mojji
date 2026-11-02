@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { startTransition, useDeferredValue, useState, ViewTransition } from "react";
 import { fonts } from "./emoji";
-import catalog from "./google-fonts.json";
+import { SettingGroup } from "./SettingGroup";
 
 export function FontPicker({
   font,
@@ -11,15 +11,16 @@ export function FontPicker({
   onChange: (font: string) => void;
   onLoading: (loading: boolean) => void;
 }) {
+  const [catalog, setCatalog] = useState<{ family: string; korean: boolean }[] | null>(null);
+  const [catalogLoading, setCatalogLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [koreanOnly, setKoreanOnly] = useState(true);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const results = catalog.filter(
-    (item) =>
-      (!koreanOnly || item.korean) &&
-      item.family.toLowerCase().includes(query.trim().toLowerCase()),
+  const search = useDeferredValue(query.trim().toLowerCase());
+  const results = (catalog ?? []).filter(
+    (item) => (!koreanOnly || item.korean) && item.family.toLowerCase().includes(search),
   );
 
   async function selectFont(family: string) {
@@ -66,8 +67,7 @@ export function FontPicker({
   }
 
   return (
-    <fieldset className="font-picker">
-      <legend>글꼴</legend>
+    <SettingGroup title="글꼴">
       <div className="font-options">
         {Object.entries(fonts).map(([family, label]) => (
           <button
@@ -93,54 +93,79 @@ export function FontPicker({
         type="button"
         className="button button-subtle font-disclosure"
         aria-expanded={expanded}
-        onClick={() => setExpanded(!expanded)}
+        aria-controls="font-search-panel"
+        onClick={async () => {
+          startTransition(() => setExpanded((value) => !value));
+          if (catalog || catalogLoading || expanded) return;
+          setCatalogLoading(true);
+          setError("");
+          try {
+            const { default: families } = await import("./google-fonts.json");
+            startTransition(() => setCatalog(families));
+          } catch {
+            setError("글꼴 목록을 불러오지 못했어요. Google Fonts를 닫았다가 다시 열어 주세요.");
+          } finally {
+            setCatalogLoading(false);
+          }
+        }}
       >
-        Google Fonts <span>{expanded ? "−" : "+"}</span>
+        Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
       </button>
       {expanded && (
-        <div className="font-search">
-          <label className="sr-only" htmlFor="font-search">
-            Google Fonts 검색
-          </label>
-          <input
-            id="font-search"
-            type="search"
-            placeholder="글꼴 이름 검색"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <label className="check-inline">
+        <ViewTransition default="none" enter="font-reveal" exit="font-hide">
+          <div className="font-search" id="font-search-panel" aria-busy={catalogLoading}>
+            <label className="sr-only" htmlFor="font-search">
+              Google Fonts 검색
+            </label>
             <input
-              type="checkbox"
-              checked={koreanOnly}
-              onChange={(event) => setKoreanOnly(event.target.checked)}
+              id="font-search"
+              type="search"
+              name="font-search"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="예: Gaegu…"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
-            한글 지원
-          </label>
-          <p className="field-hint">선택한 글꼴만 Google에서 불러옵니다.</p>
-          <div className="font-results" aria-label="검색 결과">
-            {results.slice(0, 40).map(({ family }) => (
-              <button
-                type="button"
-                key={family}
-                disabled={!!loading}
-                aria-pressed={font === family}
-                onClick={() => void selectFont(family)}
-              >
-                {family}
-                <span>
-                  {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
-                </span>
-              </button>
-            ))}
-            {!results.length && <p className="field-hint">일치하는 글꼴이 없어요.</p>}
+            <label className="check-inline">
+              <input
+                type="checkbox"
+                checked={koreanOnly}
+                onChange={(event) => startTransition(() => setKoreanOnly(event.target.checked))}
+              />
+              한글 지원
+            </label>
+            <p className="field-hint">선택한 글꼴만 Google에서 불러옵니다.</p>
+            <div className="font-results" aria-label="검색 결과">
+              {results.slice(0, 40).map(({ family }) => (
+                <button
+                  key={family}
+                  type="button"
+                  disabled={!!loading}
+                  aria-pressed={font === family}
+                  onClick={() => void selectFont(family)}
+                >
+                  <ViewTransition default="none" update="auto">
+                    <span>{family}</span>
+                  </ViewTransition>
+                  <span>
+                    {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
+                  </span>
+                </button>
+              ))}
+              {catalog && !results.length && <p className="field-hint">일치하는 글꼴이 없어요.</p>}
+            </div>
+            <p className="field-hint" role="status">
+              {catalogLoading
+                ? "글꼴 목록 불러오는 중…"
+                : !catalog
+                  ? ""
+                  : results.length > 40
+                    ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
+                    : `${results.length}개 글꼴`}
+            </p>
           </div>
-          <p className="field-hint" role="status">
-            {results.length > 40
-              ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
-              : `${results.length}개 글꼴`}
-          </p>
-        </div>
+        </ViewTransition>
       )}
       {!(font in fonts) && <p className="field-hint">선택한 글꼴 · {font}</p>}
       {error && (
@@ -148,6 +173,6 @@ export function FontPicker({
           {error}
         </p>
       )}
-    </fieldset>
+    </SettingGroup>
   );
 }
