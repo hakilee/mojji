@@ -66,17 +66,47 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
       break;
   }
   const lines = settings.text.split("\n");
-  let size = Math.min(54, 88 / lines.length);
-  ctx.font = `${size}px "${settings.font}"`;
-  while (size > 3 && lines.some((line) => ctx.measureText(line).width > 88)) {
-    size -= 1;
-    ctx.font = `${size}px "${settings.font}"`;
+  ctx.font = `100px "${settings.font}"`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  const metrics = lines.map((line) => ctx.measureText(line));
+  const width = Math.max(
+    1,
+    ...metrics.map((metric) => metric.actualBoundingBoxLeft + metric.actualBoundingBoxRight),
+  );
+  const top = Math.min(
+    ...metrics.map((metric, index) => index * 105 - metric.actualBoundingBoxAscent),
+  );
+  const bottom = Math.max(
+    ...metrics.map((metric, index) => index * 105 + metric.actualBoundingBoxDescent),
+  );
+  const height = Math.max(1, bottom - top);
+  let scale = Math.min(126 / width, 126 / height);
+  switch (settings.motion) {
+    case "bounce":
+      scale = Math.min(126 / width, 114 / height);
+      break;
+    case "slide":
+      scale = Math.min(98 / width, 126 / height);
+      break;
+    case "shake":
+      scale = Math.min(
+        126 / (width + height * Math.sin(0.12)),
+        126 / (height + width * Math.sin(0.12)),
+      );
+      break;
+    case "roll":
+      scale = 126 / Math.hypot(width, height);
+      break;
   }
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.scale(scale, scale);
   ctx.fillStyle = settings.color;
   lines.forEach((line, index) =>
-    ctx.fillText(line, 0, (index - (lines.length - 1) / 2) * size * 1.15),
+    ctx.fillText(
+      line,
+      (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2,
+      index * 105 - (top + bottom) / 2,
+    ),
   );
   ctx.restore();
 }
