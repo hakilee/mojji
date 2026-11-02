@@ -345,13 +345,16 @@ export function EditorPage() {
                   <p>오늘도 잘 부탁드려요!</p>
                   <div className="flex flex-wrap items-center gap-2">
                     <span
-                      className="inline-flex min-h-8 items-center justify-center gap-1.5 rounded-full border border-stroke-neutral bg-bg-neutral-weak px-[9px] py-[3px] text-[13px] tabular-nums"
-                      aria-label="박수 반응"
+                      className="inline-flex h-8 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-1 text-sm leading-none tabular-nums"
+                      aria-label="엄지 반응"
                     >
-                      👏 <span>2</span>
+                      <span className="inline-flex size-[22px] items-center justify-center text-[22px]">
+                        👍🏻
+                      </span>{" "}
+                      <span>1</span>
                     </span>
                     <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed inline-flex min-h-8 items-center justify-center gap-1.5 rounded-full border border-stroke-neutral bg-bg-neutral-weak px-[9px] py-[3px] text-[13px] tabular-nums hover:border-stroke-brand [&>canvas]:size-[22px]"
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed inline-flex h-8 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-1 text-sm leading-none tabular-nums hover:border-stroke-brand [&>canvas]:size-[22px]"
                       type="button"
                       aria-label={`내 이모지 반응 ${reacted ? 4 : 3}개`}
                       aria-pressed={reacted}
@@ -365,8 +368,24 @@ export function EditorPage() {
                       />
                       <span>{reacted ? 4 : 3}</span>
                     </button>
-                    <span className="text-base text-fg-neutral-muted" aria-hidden="true">
-                      ☺ +
+                    <span
+                      className="inline-flex h-8 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        className="size-6"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 12a8 8 0 1 1-8-8h1M19 2v6m-3-3h6" />
+                        <path d="M8.5 14a3.8 3.8 0 0 0 7 0" />
+                        <circle cx="9" cy="10" r=".7" fill="currentColor" stroke="none" />
+                        <circle cx="15" cy="10" r=".7" fill="currentColor" stroke="none" />
+                      </svg>
                     </span>
                   </div>
                 </div>
