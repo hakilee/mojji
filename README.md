@@ -56,4 +56,4 @@ Vercel CLI로 로컬에서 빌드한 결과만 배포합니다. [배포 가이�
 
 ## 브랜드 자산
 
-텍스트 없는 모찌 로고의 원본은 `public/logo.svg`입니다. 헤더·푸터와 SVG 파비콘에서 이 파일을 직접 사용합니다. 원본 수정 후 `yarn icons`를 실행하면 PNG 파비콘, Apple touch 아이콘, Android 일반·maskable 아이콘이 재생성됩니다. Android 아이콘은 `public/site.webmanifest`에 선언하며, 오프라인 캐싱은 추가하지 않습니다.
+선택된 C 수다모찌의 텍스트 없는 로고 원본은 `public/logo.svg`입니다. 헤더·푸터와 SVG 파비콘에서 이 파일을 직접 사용합니다. 원본 수정 후 `yarn icons`를 실행하면 PNG 파비콘, Apple touch 아이콘, Android 일반·maskable 아이콘이 재생성됩니다. Android 아이콘은 `public/site.webmanifest`에 선언하며, 오프라인 캐싱은 추가하지 않습니다.

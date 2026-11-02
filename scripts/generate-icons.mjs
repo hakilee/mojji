@@ -8,7 +8,7 @@ for (const [filename, size, inset, opaque] of [
   ["apple-touch-icon.png", 180, 0.07, true],
   ["android-chrome-192x192.png", 192, 0.07, true],
   ["android-chrome-512x512.png", 512, 0.07, true],
-  ["android-chrome-maskable-512x512.png", 512, 0.14, true],
+  ["android-chrome-maskable-512x512.png", 512, 0.17, true],
 ]) {
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
