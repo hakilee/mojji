@@ -81,7 +81,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
   );
 
   test.each(Object.keys(motions) as (keyof typeof motions)[])(
-    "keeps 아기고래 inside the canvas throughout %s motion",
+    "keeps 반가워요 inside the canvas throughout %s motion",
     (motion) => {
       const canvas = createCanvas(256, 256);
       const ctx = canvas.getContext("2d");
@@ -93,7 +93,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           ctx as unknown as CanvasRenderingContext2D,
           {
             ...initialSettings,
-            text: "아기고래",
+            text: "반가워요",
             motion,
             characterColors: { 0: "#ff0000", 2: "#00ff00" },
           },

@@ -1,30 +1,30 @@
 @import "tailwindcss";
 
-/* SEED palette attribution: documentation/colors.md. App-owned semantic roles. */
+/* App theme roles: documentation/colors.md. */
 @theme {
-  --color-bg-layer-basement: #f3f4f5;
+  --color-bg-layer-basement: #f2f2f4;
   --color-bg-layer-default: #ffffff;
-  --color-bg-neutral-weak: #f7f8f9;
-  --color-bg-neutral-weak-pressed: #eeeff1;
-  --color-bg-brand-solid: #6d50cb;
-  --color-bg-brand-solid-pressed: #50379b;
-  --color-bg-brand-weak: #f5f3fe;
-  --color-bg-brand-weak-pressed: #efeafe;
-  --color-bg-positive-weak: #edfaf6;
-  --color-bg-disabled: #f3f4f5;
-  --color-fg-neutral: #1a1c20;
-  --color-fg-neutral-muted: #555d6d;
-  --color-fg-brand: #6d50cb;
+  --color-bg-neutral-weak: #f8f8fa;
+  --color-bg-neutral-weak-pressed: #ebebf0;
+  --color-bg-brand-solid: #6945c4;
+  --color-bg-brand-solid-pressed: #4e3098;
+  --color-bg-brand-weak: #f4f0fc;
+  --color-bg-brand-weak-pressed: #eae2fa;
+  --color-bg-positive-weak: #eaf7f1;
+  --color-bg-disabled: #f2f2f4;
+  --color-fg-neutral: #22212a;
+  --color-fg-neutral-muted: #605d6c;
+  --color-fg-brand: #6945c4;
   --color-fg-on-brand-solid: #ffffff;
-  --color-fg-positive: #00745f;
-  --color-fg-critical: #ca1d13;
-  --color-fg-disabled: #555d6d;
-  --color-stroke-neutral: #dcdee3;
-  --color-stroke-neutral-strong: #d1d3d8;
-  --color-stroke-brand: #6d50cb;
-  --color-stroke-focus: #6d50cb;
-  --color-bg-checker-base: #f7f8f9;
-  --color-bg-checker-tile: #eeeff1;
+  --color-fg-positive: #216b51;
+  --color-fg-critical: #bb3041;
+  --color-fg-disabled: #605d6c;
+  --color-stroke-neutral: #dedce5;
+  --color-stroke-neutral-strong: #cbc7d6;
+  --color-stroke-brand: #6945c4;
+  --color-stroke-focus: #6945c4;
+  --color-bg-checker-base: #f8f8fa;
+  --color-bg-checker-tile: #ebebf0;
   --font-sans: "Geist Variable", "Pretendard Variable", sans-serif;
   --radius-control: 10px;
   --radius-panel: 20px;
