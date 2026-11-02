@@ -6,6 +6,8 @@ Use this reference to maintain the editor’s visual tokens, controls and font-l
 
 Use [color roles](colors.md) as the color layer. `src/style.css` defines the app's own 4/8/12/16/24/32 spacing scale, caption/body/heading typography, control/panel/pill radii and control height. Components consume these tokens, not independent copies of a third-party recipe.
 
+UI text uses self-hosted Geist Variable for Latin glyphs and Pretendard Variable for Korean fallback. Both use `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
+
 ## Components and states
 
 Compose the following controls using semantic HTML:
