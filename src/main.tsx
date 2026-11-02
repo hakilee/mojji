@@ -6,14 +6,14 @@ import "@fontsource-variable/geist";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "@fontsource/black-han-sans";
 import "@fontsource/jua";
-import "./style.css";
-import { Editor } from "./Editor";
+import "./styles/tailwind.css";
+import { EditorPage } from "./pages/EditorPage";
 
 const rootRoute = createRootRoute();
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: Editor,
+  component: EditorPage,
 });
 const router = createRouter({ routeTree: rootRoute.addChildren([indexRoute]) });
 

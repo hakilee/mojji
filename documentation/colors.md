@@ -11,7 +11,7 @@ Issue #19. No SEED package/runtime dependency is installed.
 
 ## Ownership and use
 
-`src/colors.css` is the UI source of truth: `--palette-*` holds upstream values; app-owned `--color-{fg|bg|stroke}-*` aliases define meaning. Component CSS consumes semantic aliases only. Change a semantic mapping to adjust a role globally; do not add one-off hex colors to component rules.
+`src/styles/tailwind.css` is the UI source of truth: app-owned `--color-{fg|bg|stroke}-*` theme tokens map the upstream values to meaning. Tailwind utilities consume semantic roles only. Change a semantic mapping to adjust a role globally; do not add one-off hex colors to component rules.
 
 | Role                              | Palette                 | Consumers                              |
 | --------------------------------- | ----------------------- | -------------------------------------- |

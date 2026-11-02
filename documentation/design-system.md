@@ -4,7 +4,7 @@ Use this reference to maintain the editor’s visual tokens, controls and font-l
 
 ## Foundations
 
-Use [color roles](colors.md) as the color layer. `src/style.css` defines the app's own 4/8/12/16/24/32 spacing scale, caption/body/heading typography, control/panel/pill radii and control height. Components consume these tokens, not independent copies of a third-party recipe.
+Use [color roles](colors.md) as the color layer. `src/styles/tailwind.css` contains only the Tailwind import and theme configuration (semantic colors, typography, radii and transition keyframes). Components use Tailwind utilities for layout and states, with the standard 4 px spacing scale. No handwritten component selectors or CSS modules remain.
 
 UI text uses self-hosted Geist Variable for Latin glyphs and Pretendard Variable for Korean fallback. Both use `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
 
@@ -22,7 +22,7 @@ Desktop uses an asymmetric editor/sticky-preview grid. Mobile stacks the panels;
 
 ## Google Fonts source
 
-`src/google-fonts.json` contains family names and Korean support flags from the [official public catalog](https://fonts.google.com/metadata/fonts), retrieved 2026-11-03. Opening Google Fonts loads this snapshot as a separate application chunk; search does not call Google. Refresh from `familyMetadataList` when updating the catalog. Font binary files are not redistributed or installed.
+`src/data/google-fonts.json` contains family names and Korean support flags from the [official public catalog](https://fonts.google.com/metadata/fonts), retrieved 2026-11-03. Opening Google Fonts loads this snapshot as a separate application chunk; search does not call Google. Refresh from `familyMetadataList` when updating the catalog. Font binary files are not redistributed or installed.
 
 After explicit selection, a stylesheet is requested through the [Google Fonts CSS2 API](https://developers.google.com/fonts/docs/css2); no `text` parameter or editor contents are sent. Browser font loading uses the stylesheet's unicode ranges. No API key, backend or undocumented live search endpoint is required. Search lists at most 40 matches and prompts further filtering. The catalog's names are used as returned by Google (usually English family names). Fonts without Korean coverage may fall back for Korean glyphs; the default Korean filter avoids this.
 
@@ -30,8 +30,12 @@ After explicit selection, a stylesheet is requested through the [Google Fonts CS
 
 Available motions: static, scale, bounce, slide, shake, roll, orbit, swing, jelly. Orbit reserves 8 px translation clearance; swing reserves its 0.25 rad envelope; jelly scales both axes below 1. Horizontal/vertical gradients span measured glyph bounds and survive GIF palette quantization. Single-color and per-character rendering remain available. GIF dimensions, timings and size limit are unchanged.
 
-Verification: `src/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export/clipping behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
+Verification: `src/lib/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export/clipping behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
 
 ## Font-panel transitions
 
 React ViewTransition fades the font panel in and out and preserves result identity during deferred searches. The app has one route, no detail navigation and no Suspense boundary, so route, shared-element and Suspense transitions do not apply. The page root stays live to keep text editing and canvas previews interactive. Unsupported browsers skip these effects; reduced-motion styles disable them.
+
+## Loading indicator (#31)
+
+`src/components/ui/Spinner.tsx` is an original SVG radial indicator, inspired by the [COCSO spinner](https://github.com/cocso/cocso-ui/tree/main/packages/react/src/components/spinner) (radial blades, current-color inheritance, compact sizes and accessible loading labels). No upstream code or package is included. It uses Tailwind rotation and stops for reduced motion. A label exposes a standalone status; omit it beside existing loading text to keep the graphic decorative. GIF export, font catalog loading and selected-font loading use it.
