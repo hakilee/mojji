@@ -2,11 +2,7 @@ import { encode } from "modern-gif";
 
 export const maxTextCharacters = 9;
 
-export const fonts = {
-  "Black Han Sans": "두껍게",
-  Jua: "동글동글",
-  "Noto Sans KR": "깔끔하게",
-};
+export const fonts: readonly string[] = ["Black Han Sans", "Jua", "Noto Sans KR"];
 export const motions = {
   none: "없음",
   scale: "두근두근",

@@ -1,3 +1,5 @@
+import { SegmentedControl } from "../components/ui/SegmentedControl";
+import { MotionIcon } from "../components/ui/MotionIcon";
 import { useEffect, useRef, useState } from "react";
 import {
   drawEmoji,
@@ -113,306 +115,294 @@ export function EditorPage() {
       </header>
       <main id="editor-main" tabIndex={-1}>
         <div className="grid grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] items-start gap-6 max-[760px]:grid-cols-1 max-[760px]:gap-4">
-          <section
-            className="min-w-0 rounded-panel border border-stroke-neutral bg-bg-layer-default p-6 max-[760px]:p-4"
-            aria-label="이모지 편집"
-          >
-            <div className="mb-6">
-              <h1 className="text-lg font-bold tracking-[-0.5px] text-balance scroll-mt-6">
+          <section className="min-w-0" aria-label="이모지 편집">
+            <div className="mb-3 px-1">
+              <h1 className="text-lg font-semibold tracking-[-0.5px] text-balance scroll-mt-6">
                 이모지 에디터
               </h1>
             </div>
-            <div className="overflow-hidden rounded-control border border-stroke-neutral-strong bg-bg-neutral-weak focus-within:border-stroke-brand">
-              <textarea
-                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-[-3px] [-webkit-tap-highlight-color:transparent] block min-h-36 w-full resize-y border-0 bg-transparent p-4 text-[30px] leading-normal"
-                id="text"
-                name="emoji-text"
-                autoComplete="off"
-                aria-label="이모지 텍스트"
-                aria-describedby={invalid ? "text-error text-count" : "text-count"}
-                aria-invalid={!!invalid}
-                value={draft}
-                style={{ fontFamily: settings.font }}
-                onCompositionStart={() => {
-                  composing.current = true;
-                }}
-                onCompositionEnd={(event) => {
-                  composing.current = false;
-                  const text = constrainText(event.currentTarget.value);
-                  setDraft(text);
-                  update({ text, characterColors: undefined });
-                  if (text !== event.currentTarget.value)
-                    setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                }}
-                onChange={(event) => {
-                  if (composing.current) {
-                    setDraft(event.target.value);
-                    return;
-                  }
-                  const text = constrainText(event.target.value);
-                  setDraft(text);
-                  update({ text, characterColors: undefined });
-                  if (text !== event.target.value)
-                    setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                }}
-                rows={3}
-                spellCheck={false}
-              />
-              <div
-                className="flex justify-between gap-2 px-4 py-3 text-xs text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
-                id="text-count"
-              >
-                <span>{settings.font}</span>
-                <span>
-                  {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
-                  {settings.text.split("\n").length}/3줄
-                </span>
-              </div>
-            </div>
-            {invalid && (
-              <p id="text-error" className="mt-2 text-xs text-fg-critical">
-                {invalid}
-              </p>
-            )}
-            <FontPicker
-              font={settings.font}
-              onChange={(font) => update({ font })}
-              onLoading={setFontLoading}
-            />
-            <SettingGroup title="색상">
-              <div
-                className="mb-4 flex gap-1 rounded-control bg-bg-neutral-weak p-1 [&>button]:min-h-9 [&>button]:flex-1 [&>button]:rounded-[7px] [&>button]:border [&>button]:border-transparent [&>button]:bg-transparent [&>button]:text-xs [&>button]:aria-pressed:border-stroke-neutral [&>button]:aria-pressed:bg-bg-layer-default [&>button]:aria-pressed:font-bold"
-                aria-label="색상 방식"
-              >
-                <button
-                  className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
-                  type="button"
-                  aria-pressed={!settings.gradient}
-                  onClick={() => update({ gradient: undefined })}
-                >
-                  단색 · 글자별
-                </button>
-                <button
-                  className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
-                  type="button"
-                  aria-pressed={!!settings.gradient}
-                  onClick={() =>
-                    update({
-                      gradient: { end: "#fc6a66", direction: "horizontal" },
-                      characterColors: undefined,
-                    })
-                  }
-                >
-                  그라데이션
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-4 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:text-xs">
-                <label>
-                  <input
-                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                    type="color"
-                    value={settings.color}
-                    onChange={(event) =>
-                      update({ color: event.target.value, characterColors: undefined })
+            <div className="min-w-0 rounded-panel border border-stroke-neutral bg-bg-layer-default p-6 max-[760px]:p-4">
+              <div className="overflow-hidden rounded-control border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
+                <textarea
+                  className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] block min-h-36 w-full resize-y border-0 bg-transparent p-4 text-[30px] leading-normal"
+                  id="text"
+                  name="emoji-text"
+                  autoComplete="off"
+                  aria-label="이모지 텍스트"
+                  aria-describedby={invalid ? "text-error text-count" : "text-count"}
+                  aria-invalid={!!invalid}
+                  value={draft}
+                  style={{ fontFamily: settings.font }}
+                  onCompositionStart={() => {
+                    composing.current = true;
+                  }}
+                  onCompositionEnd={(event) => {
+                    composing.current = false;
+                    const text = constrainText(event.currentTarget.value);
+                    setDraft(text);
+                    update({ text, characterColors: undefined });
+                    if (text !== event.currentTarget.value)
+                      setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
+                  }}
+                  onChange={(event) => {
+                    if (composing.current) {
+                      setDraft(event.target.value);
+                      return;
                     }
-                  />
-                  {settings.gradient ? "시작색" : "글자색"}
-                </label>
-                {settings.gradient && (
+                    const text = constrainText(event.target.value);
+                    setDraft(text);
+                    update({ text, characterColors: undefined });
+                    if (text !== event.target.value)
+                      setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
+                  }}
+                  rows={3}
+                  spellCheck={false}
+                />
+                <div
+                  className="flex justify-between gap-2 px-4 py-3 text-xs text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
+                  id="text-count"
+                >
+                  <span>{settings.font}</span>
+                  <span>
+                    {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
+                    {settings.text.split("\n").length}/3줄
+                  </span>
+                </div>
+              </div>
+              {invalid && (
+                <p id="text-error" className="mt-2 text-xs text-fg-critical">
+                  {invalid}
+                </p>
+              )}
+              <FontPicker
+                font={settings.font}
+                onChange={(font) => update({ font })}
+                onLoading={setFontLoading}
+              />
+              <SettingGroup title="색상">
+                <SegmentedControl
+                  label="색상 방식"
+                  value={settings.gradient ? "gradient" : "solid"}
+                  options={[
+                    { value: "solid", label: "단색 · 글자별" },
+                    { value: "gradient", label: "그라데이션" },
+                  ]}
+                  onChange={(value) =>
+                    update(
+                      value === "gradient"
+                        ? {
+                            gradient: { end: "#fc6a66", direction: "horizontal" },
+                            characterColors: undefined,
+                          }
+                        : { gradient: undefined },
+                    )
+                  }
+                />
+                <div className="flex flex-wrap gap-4 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:text-xs">
                   <label>
                     <input
                       className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
                       type="color"
-                      aria-label="그라데이션 끝색"
-                      value={settings.gradient.end}
+                      value={settings.color}
                       onChange={(event) =>
-                        update({ gradient: { ...settings.gradient!, end: event.target.value } })
+                        update({ color: event.target.value, characterColors: undefined })
                       }
                     />
-                    끝색
+                    {settings.gradient ? "시작색" : "글자색"}
+                  </label>
+                  {settings.gradient && (
+                    <label>
+                      <input
+                        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
+                        type="color"
+                        aria-label="그라데이션 끝색"
+                        value={settings.gradient.end}
+                        onChange={(event) =>
+                          update({ gradient: { ...settings.gradient!, end: event.target.value } })
+                        }
+                      />
+                      끝색
+                    </label>
+                  )}
+                  <label>
+                    <input
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
+                      type="color"
+                      value={settings.background}
+                      disabled={settings.transparent}
+                      onChange={(event) => update({ background: event.target.value })}
+                    />
+                    배경색
+                  </label>
+                </div>
+                {settings.gradient && (
+                  <label className="mt-4 flex items-center gap-3 text-xs [&>select]:w-auto [&>select]:flex-1">
+                    방향
+                    <select
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
+                      value={settings.gradient.direction}
+                      onChange={(event) =>
+                        update({
+                          gradient: {
+                            ...settings.gradient!,
+                            direction: event.target.value as "horizontal" | "vertical",
+                          },
+                        })
+                      }
+                    >
+                      <option value="horizontal">가로 →</option>
+                      <option value="vertical">세로 ↓</option>
+                    </select>
                   </label>
                 )}
-                <label>
+                {!settings.gradient && (
+                  <div
+                    className="mt-4 flex flex-wrap gap-2 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:rounded-control [&>label]:border [&>label]:border-stroke-neutral [&>label]:px-2 [&>label]:py-1 [&_input]:size-6"
+                    aria-label="글자별 색상"
+                  >
+                    {textCharacters(settings.text).map(
+                      (character, index) =>
+                        character.trim() && (
+                          <label key={index}>
+                            <span>{character}</span>
+                            <input
+                              className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
+                              type="color"
+                              aria-label={`${index + 1}번째 글자 ${character} 색상`}
+                              value={settings.characterColors?.[index] ?? settings.color}
+                              onChange={(event) =>
+                                update({
+                                  characterColors: {
+                                    ...settings.characterColors,
+                                    [index]: event.target.value,
+                                  },
+                                })
+                              }
+                            />
+                          </label>
+                        ),
+                    )}
+                  </div>
+                )}
+                <label className="mt-4 flex items-center gap-2 rounded-control bg-bg-neutral-weak p-3 text-xs">
                   <input
-                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                    type="color"
-                    value={settings.background}
-                    disabled={settings.transparent}
-                    onChange={(event) => update({ background: event.target.value })}
+                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-4 accent-fg-brand"
+                    type="checkbox"
+                    checked={settings.transparent}
+                    onChange={(event) => update({ transparent: event.target.checked })}
                   />
-                  배경색
+                  투명 배경으로 만들기
                 </label>
-              </div>
-              {settings.gradient && (
-                <label className="mt-4 flex items-center gap-3 text-xs [&>select]:w-auto [&>select]:flex-1">
-                  방향
-                  <select
-                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
-                    value={settings.gradient.direction}
-                    onChange={(event) =>
-                      update({
-                        gradient: {
-                          ...settings.gradient!,
-                          direction: event.target.value as "horizontal" | "vertical",
-                        },
-                      })
-                    }
-                  >
-                    <option value="horizontal">가로 →</option>
-                    <option value="vertical">세로 ↓</option>
-                  </select>
-                </label>
-              )}
-              {!settings.gradient && (
-                <div
-                  className="mt-4 flex flex-wrap gap-2 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:rounded-control [&>label]:border [&>label]:border-stroke-neutral [&>label]:px-2 [&>label]:py-1 [&_input]:size-6"
-                  aria-label="글자별 색상"
-                >
-                  {textCharacters(settings.text).map(
-                    (character, index) =>
-                      character.trim() && (
-                        <label key={index}>
-                          <span>{character}</span>
-                          <input
-                            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                            type="color"
-                            aria-label={`${index + 1}번째 글자 ${character} 색상`}
-                            value={settings.characterColors?.[index] ?? settings.color}
-                            onChange={(event) =>
-                              update({
-                                characterColors: {
-                                  ...settings.characterColors,
-                                  [index]: event.target.value,
-                                },
-                              })
-                            }
-                          />
-                        </label>
-                      ),
-                  )}
+              </SettingGroup>
+              <SettingGroup title="모션 효과">
+                <div className="grid grid-cols-3 gap-2 [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-2 [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-1 [&>button]:py-3 [&>button]:text-xs [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
+                  {Object.entries(motions).map(([motion, label]) => (
+                    <button
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
+                      key={motion}
+                      type="button"
+                      aria-pressed={settings.motion === motion}
+                      onClick={() => update({ motion: motion as Settings["motion"] })}
+                    >
+                      <MotionIcon motion={motion as Settings["motion"]} />
+                      {label}
+                    </button>
+                  ))}
                 </div>
-              )}
-              <label className="mt-4 flex items-center gap-2 rounded-control bg-bg-neutral-weak p-3 text-xs">
-                <input
-                  className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-4 accent-fg-brand"
-                  type="checkbox"
-                  checked={settings.transparent}
-                  onChange={(event) => update({ transparent: event.target.checked })}
-                />
-                투명 배경으로 만들기
-              </label>
-            </SettingGroup>
-            <SettingGroup title="모션 효과">
-              <div className="grid grid-cols-3 gap-2 [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-1 [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-1 [&>button]:py-3 [&>button]:text-xs [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak [&>button>span]:text-[22px] [&>button>span]:leading-[1.2]">
-                {Object.entries(motions).map(([motion, label], index) => (
-                  <button
-                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
-                    key={motion}
-                    type="button"
-                    aria-pressed={settings.motion === motion}
-                    onClick={() => update({ motion: motion as Settings["motion"] })}
-                  >
-                    <span aria-hidden="true">
-                      {["—", "↗", "↕", "↔", "〰", "↻", "◌", "⌁", "≈"][index]}
-                    </span>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </SettingGroup>
+              </SettingGroup>
+            </div>
           </section>
-          <section
-            className="min-w-0 rounded-panel border border-stroke-neutral bg-bg-layer-default p-6 max-[760px]:p-4 sticky top-6 max-[760px]:static"
-            aria-label="미리보기"
-          >
-            <div className="mb-6">
-              <h2 className="text-lg font-bold tracking-[-0.5px] text-balance scroll-mt-6">
+          <section className="min-w-0 sticky top-6 max-[760px]:static" aria-label="미리보기">
+            <div className="mb-3 px-1">
+              <h2 className="text-lg font-semibold tracking-[-0.5px] text-balance scroll-mt-6">
                 미리보기
               </h2>
             </div>
-            <div className="py-2">
-              <div className="flex items-start gap-2 text-[15px]">
-                <img
-                  src="/profile-flower.svg"
-                  alt=""
-                  width="36"
-                  height="36"
-                  className="size-9 shrink-0 rounded-lg bg-bg-neutral-weak"
-                />
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-baseline gap-x-2 leading-5">
-                    <strong className="font-bold">Haki (하키)</strong>
-                    <time className="text-xs text-fg-neutral-muted" dateTime="00:54">
-                      오전 12:54
-                    </time>
-                  </div>
-                  <p className="mb-px text-base leading-[22px] wrap-anywhere">안녕하세요.</p>
-                  <div className="flex flex-wrap items-center gap-0.5">
-                    <span
-                      className="inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-xs font-semibold leading-none text-fg-reaction tabular-nums"
-                      aria-label="엄지 반응"
-                    >
-                      <span className="inline-flex size-4 items-center justify-center text-base">
-                        👍🏻
-                      </span>{" "}
-                      <span>1</span>
-                    </span>
-                    <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-xs font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
-                      type="button"
-                      aria-label={`내 이모지 반응 ${reacted ? 1 : 0}개`}
-                      aria-pressed={reacted}
-                      onClick={() => setReacted((value) => !value)}
-                    >
-                      <canvas
-                        ref={smallCanvas}
-                        width={128}
-                        height={128}
-                        aria-label="슬랙 반응 크기 미리보기"
-                      />
-                      <span>{reacted ? 1 : 0}</span>
-                    </button>
-                    <span
-                      className="inline-flex h-6 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        className="size-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+            <div className="min-w-0 rounded-panel border border-stroke-neutral bg-bg-layer-default p-6 max-[760px]:p-4">
+              <div className="py-2">
+                <div className="flex items-start gap-2 text-[15px]">
+                  <img
+                    src="/profile-flower.svg"
+                    alt=""
+                    width="36"
+                    height="36"
+                    className="size-9 shrink-0 rounded-lg bg-bg-neutral-weak"
+                  />
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-baseline gap-x-2 leading-5">
+                      <strong className="font-semibold">Haki (하키)</strong>
+                      <time className="text-xs text-fg-neutral-muted" dateTime="00:54">
+                        오전 12:54
+                      </time>
+                    </div>
+                    <p className="mb-px text-base leading-[22px] wrap-anywhere">안녕하세요.</p>
+                    <div className="flex flex-wrap items-center gap-0.5">
+                      <span
+                        className="inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-xs font-semibold leading-none text-fg-reaction tabular-nums"
+                        aria-label="엄지 반응"
                       >
-                        <path d="M20 12a8 8 0 1 1-8-8h1M19 2v6m-3-3h6" />
-                        <path d="M8.5 14a3.8 3.8 0 0 0 7 0" />
-                        <circle cx="9" cy="10" r=".7" fill="currentColor" stroke="none" />
-                        <circle cx="15" cy="10" r=".7" fill="currentColor" stroke="none" />
-                      </svg>
-                    </span>
+                        <span className="inline-flex size-4 items-center justify-center text-base">
+                          👍🏻
+                        </span>{" "}
+                        <span>1</span>
+                      </span>
+                      <button
+                        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-xs font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
+                        type="button"
+                        aria-label={`내 이모지 반응 ${reacted ? 1 : 0}개`}
+                        aria-pressed={reacted}
+                        onClick={() => setReacted((value) => !value)}
+                      >
+                        <canvas
+                          ref={smallCanvas}
+                          width={128}
+                          height={128}
+                          aria-label="슬랙 반응 크기 미리보기"
+                        />
+                        <span>{reacted ? 1 : 0}</span>
+                      </button>
+                      <span
+                        className="inline-flex h-6 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
+                        aria-hidden="true"
+                      >
+                        <svg
+                          className="size-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 12a8 8 0 1 1-8-8h1M19 2v6m-3-3h6" />
+                          <path d="M8.5 14a3.8 3.8 0 0 0 7 0" />
+                          <circle cx="9" cy="10" r=".7" fill="currentColor" stroke="none" />
+                          <circle cx="15" cy="10" r=".7" fill="currentColor" stroke="none" />
+                        </svg>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-col items-center gap-2 py-6">
-              <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
-                <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
+              <div className="flex flex-col items-center gap-2 py-6">
+                <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
+                  <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
+                </div>
+                <span className="mt-2 text-xs text-fg-neutral-muted">크게 보기</span>
               </div>
-              <span className="mt-2 text-xs text-fg-neutral-muted">크게 보기</span>
+              <button
+                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-12 w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-4 py-2 font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
+                aria-busy={busy}
+                disabled={!!invalid || busy || fontLoading}
+                onClick={() => void download()}
+              >
+                {busy && <Spinner />}
+                {busy ? "만드는 중…" : "GIF 다운로드"}
+              </button>
+              <p role="status" className="text-center text-xs text-fg-neutral-muted not-empty:mt-3">
+                {status}
+              </p>
             </div>
-            <button
-              className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-12 w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-4 py-2 font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
-              aria-busy={busy}
-              disabled={!!invalid || busy || fontLoading}
-              onClick={() => void download()}
-            >
-              {busy && <Spinner />}
-              {busy ? "만드는 중…" : "GIF 다운로드"}
-            </button>
-            <p role="status" className="text-center text-xs text-fg-neutral-muted not-empty:mt-3">
-              {status}
-            </p>
           </section>
         </div>
       </main>

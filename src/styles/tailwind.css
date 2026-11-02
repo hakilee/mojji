@@ -28,7 +28,7 @@
   --color-stroke-focus: #6945c4;
   --color-bg-checker-base: #f8f8fa;
   --color-bg-checker-tile: #ebebf0;
-  --font-sans: "Geist Variable", "Pretendard Variable", sans-serif;
+  --font-sans: "Pretendard Variable", sans-serif;
   --radius-control: 10px;
   --radius-panel: 20px;
   --animate-font-reveal: font-reveal 160ms ease-out;
