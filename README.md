@@ -53,7 +53,12 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 - [documentation](documentation/README.md): 워크플로와 품질 지침
 - [specs/editor.md](specs/editor.md): 제품 계약과 검증 연결
 - [research/initialization.md](research/initialization.md): 참고 자료와 선택 근거
-- `src/`: 제품 코드와 colocated TypeScript 테스트
+- `src/pages/`: 라우트 화면
+- `src/components/editor/`: 편집기 전용 UI
+- `src/components/ui/`: 공용 설정 그룹·스피너
+- `src/lib/`: GIF 렌더러와 colocated 테스트
+- `src/data/`: 지연 로딩 글꼴 목록
+- `src/styles/tailwind.css`: Tailwind 진입점과 테마 설정 (화면 스타일은 유틸리티 클래스)
 - `public/licenses/`: 번들 글꼴의 OFL 라이선스
 
 [GitHub 이슈](https://github.com/hakilee/slackmoji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.

@@ -1,6 +1,7 @@
+import { Spinner } from "../ui/Spinner";
 import { startTransition, useDeferredValue, useState, ViewTransition } from "react";
-import { fonts } from "./emoji";
-import { SettingGroup } from "./SettingGroup";
+import { fonts } from "../../lib/emoji";
+import { SettingGroup } from "../ui/SettingGroup";
 
 export function FontPicker({
   font,
@@ -68,10 +69,10 @@ export function FontPicker({
 
   return (
     <SettingGroup title="글꼴">
-      <div className="font-options">
+      <div className="grid grid-cols-3 gap-2">
         {Object.entries(fonts).map(([family, label]) => (
           <button
-            className="font-card"
+            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed flex flex-col items-start gap-1 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default p-3 text-left enabled:hover:border-stroke-brand max-[760px]:p-2 [&_small]:text-[10px] [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
             key={family}
             type="button"
             disabled={!!loading}
@@ -81,7 +82,10 @@ export function FontPicker({
               onChange(family);
             }}
           >
-            <span className="font-specimen" style={{ fontFamily: family }}>
+            <span
+              className="mb-2 text-[22px] whitespace-nowrap max-[760px]:text-lg"
+              style={{ fontFamily: family }}
+            >
               가나다 Aa
             </span>
             <span>{label}</span>
@@ -91,7 +95,7 @@ export function FontPicker({
       </div>
       <button
         type="button"
-        className="button button-subtle font-disclosure"
+        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed mt-3 flex min-h-[42px] w-full items-center justify-between rounded-control border border-stroke-neutral bg-bg-neutral-weak px-4 py-2 font-semibold hover:border-stroke-brand"
         aria-expanded={expanded}
         aria-controls="font-search-panel"
         onClick={async () => {
@@ -100,7 +104,7 @@ export function FontPicker({
           setCatalogLoading(true);
           setError("");
           try {
-            const { default: families } = await import("./google-fonts.json");
+            const { default: families } = await import("../../data/google-fonts.json");
             startTransition(() => setCatalog(families));
           } catch {
             setError("글꼴 목록을 불러오지 못했어요. Google Fonts를 닫았다가 다시 열어 주세요.");
@@ -113,11 +117,12 @@ export function FontPicker({
       </button>
       {expanded && (
         <ViewTransition default="none" enter="font-reveal" exit="font-hide">
-          <div className="font-search" id="font-search-panel" aria-busy={catalogLoading}>
+          <div className="mt-3" id="font-search-panel" aria-busy={catalogLoading}>
             <label className="sr-only" htmlFor="font-search">
               Google Fonts 검색
             </label>
             <input
+              className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
               id="font-search"
               type="search"
               name="font-search"
@@ -127,18 +132,25 @@ export function FontPicker({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <label className="check-inline">
+            <label className="mt-3 flex items-center gap-2 text-xs">
               <input
+                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-4 accent-fg-brand"
                 type="checkbox"
                 checked={koreanOnly}
                 onChange={(event) => startTransition(() => setKoreanOnly(event.target.checked))}
               />
               한글 지원
             </label>
-            <p className="field-hint">선택한 글꼴만 Google에서 불러옵니다.</p>
-            <div className="font-results" aria-label="검색 결과">
+            <p className="mt-2 text-xs text-fg-neutral-muted">
+              선택한 글꼴만 Google에서 불러옵니다.
+            </p>
+            <div
+              className="mt-3 max-h-60 overflow-y-auto overscroll-contain rounded-control border border-stroke-neutral [&>button]:flex [&>button]:min-h-[42px] [&>button]:w-full [&>button]:items-center [&>button]:justify-between [&>button]:gap-3 [&>button]:border [&>button]:border-transparent [&>button]:bg-bg-layer-default [&>button]:p-3 [&>button]:text-left [&>button]:wrap-anywhere [&>button]:enabled:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak [&>button>span]:text-xs"
+              aria-label="검색 결과"
+            >
               {results.slice(0, 40).map(({ family }) => (
                 <button
+                  className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
                   key={family}
                   type="button"
                   disabled={!!loading}
@@ -148,14 +160,18 @@ export function FontPicker({
                   <ViewTransition default="none" update="auto">
                     <span>{family}</span>
                   </ViewTransition>
-                  <span>
+                  <span className="inline-flex shrink-0 items-center gap-2">
+                    {loading === family && <Spinner />}
                     {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
                   </span>
                 </button>
               ))}
-              {catalog && !results.length && <p className="field-hint">일치하는 글꼴이 없어요.</p>}
+              {catalog && !results.length && (
+                <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
+              )}
             </div>
-            <p className="field-hint" role="status">
+            <p className="mt-2 flex items-center gap-2 text-xs text-fg-neutral-muted" role="status">
+              {catalogLoading && <Spinner />}
               {catalogLoading
                 ? "글꼴 목록 불러오는 중…"
                 : !catalog
@@ -167,9 +183,11 @@ export function FontPicker({
           </div>
         </ViewTransition>
       )}
-      {!(font in fonts) && <p className="field-hint">선택한 글꼴 · {font}</p>}
+      {!(font in fonts) && (
+        <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {font}</p>
+      )}
       {error && (
-        <p role="alert" className="error">
+        <p role="alert" className="mt-2 text-xs text-fg-critical">
           {error}
         </p>
       )}
