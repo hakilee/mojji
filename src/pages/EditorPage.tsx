@@ -21,7 +21,7 @@ export function EditorPage() {
   const [settings, setSettings] = useState(initialSettings);
   const [fontLoading, setFontLoading] = useState(false);
   const [draft, setDraft] = useState(initialSettings.text);
-  const [reacted, setReacted] = useState(false);
+  const [reacted, setReacted] = useState(true);
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -330,22 +330,26 @@ export function EditorPage() {
                 미리보기
               </h2>
             </div>
-            <div className="overflow-hidden rounded-control border border-stroke-neutral">
-              <div className="flex items-center gap-2 border-b border-stroke-neutral px-4 py-3 font-bold [&>span]:text-fg-neutral-muted">
-                <span>#</span> 우리-팀
-              </div>
-              <div className="flex gap-3 px-4 py-6 text-[13px] [&_strong]:font-bold [&_strong_span]:ml-1 [&_strong_span]:text-[10px] [&_strong_span]:font-normal [&_strong_span]:text-fg-neutral-muted [&_p]:mt-1 [&_p]:mb-3 [&_p]:wrap-anywhere">
-                <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-bg-positive-weak font-bold text-fg-positive">
-                  나
-                </div>
+            <div className="py-2">
+              <div className="flex items-start gap-2 text-[15px]">
+                <img
+                  src="/profile-flower.svg"
+                  alt=""
+                  width="36"
+                  height="36"
+                  className="size-9 shrink-0 rounded-lg bg-bg-neutral-weak"
+                />
                 <div className="min-w-0">
-                  <strong>
-                    나 <span>오전 10:24</span>
-                  </strong>
-                  <p>오늘도 잘 부탁드려요!</p>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-baseline gap-x-2">
+                    <strong className="font-bold">Haki (하키)</strong>
+                    <time className="text-xs text-fg-neutral-muted" dateTime="12:54">
+                      오전 12:54
+                    </time>
+                  </div>
+                  <p className="mt-0.5 mb-1 wrap-anywhere">안녕하세요.</p>
+                  <div className="flex flex-wrap items-center gap-1">
                     <span
-                      className="inline-flex h-8 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-1 text-sm leading-none tabular-nums"
+                      className="inline-flex h-7 items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-sm font-semibold leading-none text-fg-reaction tabular-nums"
                       aria-label="엄지 반응"
                     >
                       <span className="inline-flex size-[22px] items-center justify-center text-[22px]">
@@ -354,9 +358,9 @@ export function EditorPage() {
                       <span>1</span>
                     </span>
                     <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed inline-flex h-8 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-1 text-sm leading-none tabular-nums hover:border-stroke-brand [&>canvas]:size-[22px]"
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-7 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-sm font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-[22px]"
                       type="button"
-                      aria-label={`내 이모지 반응 ${reacted ? 4 : 3}개`}
+                      aria-label={`내 이모지 반응 ${reacted ? 1 : 0}개`}
                       aria-pressed={reacted}
                       onClick={() => setReacted((value) => !value)}
                     >
@@ -366,10 +370,10 @@ export function EditorPage() {
                         height={128}
                         aria-label="슬랙 반응 크기 미리보기"
                       />
-                      <span>{reacted ? 4 : 3}</span>
+                      <span>{reacted ? 1 : 0}</span>
                     </button>
                     <span
-                      className="inline-flex h-8 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
+                      className="inline-flex h-7 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
                       aria-hidden="true"
                     >
                       <svg
