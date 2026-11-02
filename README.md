@@ -1,4 +1,4 @@
-# slackmoji ✳
+# 슬랙모찌
 
 작은 글자, 큰 리액션. 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
@@ -53,3 +53,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 ## 배포
 
 Vercel CLI로 로컬에서 빌드한 결과만 배포합니다. [배포 가이드](documentation/deployment.md)를 참고하세요. Git 연결 자동 배포와 GitHub Actions는 사용하지 않습니다.
+
+## 브랜드 자산
+
+텍스트 없는 모찌 로고의 원본은 `public/logo.svg`입니다. 헤더·푸터와 SVG 파비콘에서 이 파일을 직접 사용합니다. 원본 수정 후 `yarn icons`를 실행하면 PNG 파비콘, Apple touch 아이콘, Android 일반·maskable 아이콘이 재생성됩니다. Android 아이콘은 `public/site.webmanifest`에 선언하며, 오프라인 캐싱은 추가하지 않습니다.
