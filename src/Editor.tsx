@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
-  fonts,
+  constrainText,
   initialSettings,
   motions,
   textCharacters,
   validateText,
 } from "./emoji";
 import type { Settings } from "./emoji";
+import { FontPicker } from "./FontPicker";
 
 export function Editor() {
   const [settings, setSettings] = useState(initialSettings);
+  const [fontLoading, setFontLoading] = useState(false);
+  const [draft, setDraft] = useState(initialSettings.text);
+  const [reacted, setReacted] = useState(false);
+  const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -88,44 +93,80 @@ export function Editor() {
         <div className="workspace">
           <section className="panel controls" aria-label="이모지 편집">
             <div className="section-title">
-              <h2>내 이모지 만들기</h2>
-              <span>01 — EDIT</span>
+              <h1>이모지 에디터</h1>
             </div>
-            <label className="field-label" htmlFor="text">
-              어떤 말을 전할까요?
-              <span>{Array.from(settings.text).length}/40</span>
-            </label>
-            <textarea
-              id="text"
-              value={settings.text}
-              onChange={(event) => update({ text: event.target.value, characterColors: undefined })}
-              rows={3}
-              aria-describedby={invalid ? "text-error" : undefined}
-            />
+            <div className="text-editor">
+              <textarea
+                id="text"
+                aria-label="이모지 텍스트"
+                aria-describedby={invalid ? "text-error text-count" : "text-count"}
+                aria-invalid={!!invalid}
+                value={draft}
+                style={{ fontFamily: settings.font }}
+                onCompositionStart={() => {
+                  composing.current = true;
+                }}
+                onCompositionEnd={(event) => {
+                  composing.current = false;
+                  const text = constrainText(event.currentTarget.value);
+                  setDraft(text);
+                  update({ text, characterColors: undefined });
+                  if (text !== event.currentTarget.value)
+                    setStatus("40자, 3줄까지만 입력할 수 있어요.");
+                }}
+                onChange={(event) => {
+                  if (composing.current) {
+                    setDraft(event.target.value);
+                    return;
+                  }
+                  const text = constrainText(event.target.value);
+                  setDraft(text);
+                  update({ text, characterColors: undefined });
+                  if (text !== event.target.value) setStatus("40자, 3줄까지만 입력할 수 있어요.");
+                }}
+                rows={3}
+                spellCheck={false}
+              />
+              <div className="editor-meta" id="text-count">
+                <span>{settings.font}</span>
+                <span>
+                  {textCharacters(settings.text).length}/40 · {settings.text.split("\n").length}/3줄
+                </span>
+              </div>
+            </div>
             {invalid && (
               <p id="text-error" className="error">
                 {invalid}
               </p>
             )}
+            <FontPicker
+              font={settings.font}
+              onChange={(font) => update({ font })}
+              onLoading={setFontLoading}
+            />
             <fieldset>
-              <legend>글꼴</legend>
-              <div className="font-options">
-                {Object.entries(fonts).map(([font, label]) => (
-                  <button
-                    key={font}
-                    type="button"
-                    aria-pressed={settings.font === font}
-                    style={{ fontFamily: font }}
-                    onClick={() => update({ font: font as Settings["font"] })}
-                  >
-                    {label}
-                    <small>{font}</small>
-                  </button>
-                ))}
+              <legend>색상</legend>
+              <div className="segmented" aria-label="색상 방식">
+                <button
+                  type="button"
+                  aria-pressed={!settings.gradient}
+                  onClick={() => update({ gradient: undefined })}
+                >
+                  단색 · 글자별
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={!!settings.gradient}
+                  onClick={() =>
+                    update({
+                      gradient: { end: "#fc6a66", direction: "horizontal" },
+                      characterColors: undefined,
+                    })
+                  }
+                >
+                  그라데이션
+                </button>
               </div>
-            </fieldset>
-            <fieldset>
-              <legend>컬러</legend>
               <div className="colors">
                 <label>
                   <input
@@ -135,8 +176,21 @@ export function Editor() {
                       update({ color: event.target.value, characterColors: undefined })
                     }
                   />
-                  글자색 <span>{settings.color}</span>
+                  {settings.gradient ? "시작색" : "글자색"}
                 </label>
+                {settings.gradient && (
+                  <label>
+                    <input
+                      type="color"
+                      aria-label="그라데이션 끝색"
+                      value={settings.gradient.end}
+                      onChange={(event) =>
+                        update({ gradient: { ...settings.gradient!, end: event.target.value } })
+                      }
+                    />
+                    끝색
+                  </label>
+                )}
                 <label>
                   <input
                     type="color"
@@ -147,29 +201,50 @@ export function Editor() {
                   배경색
                 </label>
               </div>
-              <div className="character-colors" aria-label="글자별 색상">
-                {textCharacters(settings.text).map(
-                  (character, index) =>
-                    character.trim() && (
-                      <label key={index}>
-                        <span>{character}</span>
-                        <input
-                          type="color"
-                          aria-label={`${index + 1}번째 글자 ${character} 색상`}
-                          value={settings.characterColors?.[index] ?? settings.color}
-                          onChange={(event) =>
-                            update({
-                              characterColors: {
-                                ...settings.characterColors,
-                                [index]: event.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </label>
-                    ),
-                )}
-              </div>
+              {settings.gradient && (
+                <label className="select-field">
+                  방향
+                  <select
+                    value={settings.gradient.direction}
+                    onChange={(event) =>
+                      update({
+                        gradient: {
+                          ...settings.gradient!,
+                          direction: event.target.value as "horizontal" | "vertical",
+                        },
+                      })
+                    }
+                  >
+                    <option value="horizontal">가로 →</option>
+                    <option value="vertical">세로 ↓</option>
+                  </select>
+                </label>
+              )}
+              {!settings.gradient && (
+                <div className="character-colors" aria-label="글자별 색상">
+                  {textCharacters(settings.text).map(
+                    (character, index) =>
+                      character.trim() && (
+                        <label key={index}>
+                          <span>{character}</span>
+                          <input
+                            type="color"
+                            aria-label={`${index + 1}번째 글자 ${character} 색상`}
+                            value={settings.characterColors?.[index] ?? settings.color}
+                            onChange={(event) =>
+                              update({
+                                characterColors: {
+                                  ...settings.characterColors,
+                                  [index]: event.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </label>
+                      ),
+                  )}
+                </div>
+              )}
               <label className="check">
                 <input
                   type="checkbox"
@@ -189,7 +264,7 @@ export function Editor() {
                     aria-pressed={settings.motion === motion}
                     onClick={() => update({ motion: motion as Settings["motion"] })}
                   >
-                    <span>{["—", "↗", "↕", "↔", "〰", "↻"][index]}</span>
+                    <span>{["—", "↗", "↕", "↔", "〰", "↻", "◌", "⌁", "≈"][index]}</span>
                     {label}
                   </button>
                 ))}
@@ -200,36 +275,55 @@ export function Editor() {
             <div className="section-title">
               <h2>미리보기</h2>
             </div>
-            <div className="checker">
-              <canvas ref={canvas} width={128} height={128} aria-label="이모지 미리보기" />
-            </div>
-            <div className="preview-toolbar">
-              <span className="canvas-note">128 × 128</span>
-            </div>
             <div className="slack-preview">
+              <div className="channel-name">
+                <span>#</span> 우리-팀
+              </div>
               <div className="message">
-                <div className="avatar">S</div>
-                <div>
+                <div className="avatar">나</div>
+                <div className="message-body">
                   <strong>
-                    나 <span>지금</span>
+                    나 <span>오전 10:24</span>
                   </strong>
-                  <p>오늘도 함께해 줘서 고마워요!</p>
-                  <canvas
-                    ref={smallCanvas}
-                    width={128}
-                    height={128}
-                    aria-label="슬랙 실제 크기 미리보기"
-                  />
+                  <p>오늘도 잘 부탁드려요!</p>
+                  <div className="reactions">
+                    <span className="reaction" aria-label="박수 반응">
+                      👏 <span>2</span>
+                    </span>
+                    <button
+                      className="reaction custom-reaction"
+                      type="button"
+                      aria-label={`내 이모지 반응 ${reacted ? 4 : 3}개`}
+                      aria-pressed={reacted}
+                      onClick={() => setReacted(!reacted)}
+                    >
+                      <canvas
+                        ref={smallCanvas}
+                        width={128}
+                        height={128}
+                        aria-label="슬랙 반응 크기 미리보기"
+                      />
+                      <span>{reacted ? 4 : 3}</span>
+                    </button>
+                    <span className="add-reaction" aria-hidden="true">
+                      ☺ +
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+            <div className="detail-preview">
+              <div className="checker">
+                <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
+              </div>
+              <span className="field-hint">크게 보기</span>
+            </div>
             <button
-              className="download"
-              disabled={!!invalid || busy}
+              className="button download"
+              disabled={!!invalid || busy || fontLoading}
               onClick={() => void download()}
             >
-              {busy ? "만드는 중…" : "↓ GIF 다운로드"}
-              <span>128 × 128 · Slack에 바로 사용</span>
+              {busy ? "만드는 중…" : "GIF 다운로드"}
             </button>
             <p role="status" className="status">
               {status}

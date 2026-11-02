@@ -12,11 +12,15 @@ export const motions = {
   slide: "슬라이드",
   shake: "흔들흔들",
   roll: "빙글빙글",
+  orbit: "둥실둥실",
+  swing: "갸우뚱",
+  jelly: "말랑말랑",
 };
 export type Settings = {
   text: string;
-  font: keyof typeof fonts;
+  font: string;
   color: string;
+  gradient?: { end: string; direction: "horizontal" | "vertical" };
   characterColors?: Record<number, string>;
   background: string;
   transparent: boolean;
@@ -38,9 +42,15 @@ export function textCharacters(text: string): string[] {
   );
 }
 
+export function constrainText(text: string): string {
+  return textCharacters(text.replace(/\r\n?/g, "\n").split("\n").slice(0, 3).join("\n"))
+    .slice(0, 40)
+    .join("");
+}
+
 export function validateText(text: string): string | null {
   if (!text.trim()) return "이모지에 넣을 텍스트를 입력해 주세요.";
-  if (Array.from(text).length > 40) return "텍스트는 40자까지 입력할 수 있어요.";
+  if (textCharacters(text).length > 40) return "텍스트는 40자까지 입력할 수 있어요.";
   if (text.split("\n").length > 3) return "줄은 3개까지 사용할 수 있어요.";
   return null;
 }
@@ -72,6 +82,15 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     case "roll":
       ctx.rotate(phase);
       break;
+    case "orbit":
+      ctx.translate(Math.cos(phase) * 8, Math.sin(phase) * 8);
+      break;
+    case "swing":
+      ctx.rotate(Math.sin(phase) * 0.25);
+      break;
+    case "jelly":
+      ctx.scale(0.88 + Math.sin(phase) * 0.1, 0.88 - Math.sin(phase) * 0.1);
+      break;
   }
   const lines = settings.text.split("\n");
   ctx.font = `100px "${settings.font}"`;
@@ -96,7 +115,7 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     return characters;
   });
   const metrics = lines.map((line, index) =>
-    settings.characterColors && runs[index].length
+    settings.characterColors && !settings.gradient && runs[index].length
       ? {
           actualBoundingBoxLeft: -Math.min(
             ...runs[index].map((run) => run.x - run.metric.actualBoundingBoxLeft),
@@ -138,16 +157,37 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
         126 / (height + width * Math.sin(0.12)),
       );
       break;
+    case "orbit":
+      scale = Math.min(110 / width, 110 / height);
+      break;
+    case "swing":
+      scale = Math.min(
+        126 / (width + height * Math.sin(0.25)),
+        126 / (height + width * Math.sin(0.25)),
+      );
+      break;
     case "roll":
       scale = 126 / Math.hypot(width, height);
       break;
   }
   ctx.scale(scale, scale);
-  ctx.fillStyle = settings.color;
+  if (settings.gradient) {
+    const gradient = ctx.createLinearGradient(
+      settings.gradient.direction === "horizontal" ? -width / 2 : 0,
+      settings.gradient.direction === "vertical" ? -height / 2 : 0,
+      settings.gradient.direction === "horizontal" ? width / 2 : 0,
+      settings.gradient.direction === "vertical" ? height / 2 : 0,
+    );
+    gradient.addColorStop(0, settings.color);
+    gradient.addColorStop(1, settings.gradient.end);
+    ctx.fillStyle = gradient;
+  } else {
+    ctx.fillStyle = settings.color;
+  }
   lines.forEach((line, index) => {
     const x = (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
     const y = index * 105 - (top + bottom) / 2;
-    if (settings.characterColors) {
+    if (settings.characterColors && !settings.gradient) {
       runs[index].forEach((run) => {
         ctx.fillStyle = run.color;
         ctx.fillText(run.character, x + run.x, y);

@@ -2,6 +2,7 @@ import { createCanvas } from "@napi-rs/canvas";
 import { decode, decodeFrames } from "modern-gif";
 import { describe, expect, test } from "vitest";
 import {
+  constrainText,
   drawEmoji,
   exportGif,
   initialSettings,
@@ -112,6 +113,41 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
         expect(outside, `${motion} frame ${frame}`).toBe(0);
         expect(inside).toBeGreaterThan(0);
       }
+    },
+  );
+
+  test("constrains pasted text by grapheme and line count without splitting emoji", () => {
+    expect(constrainText("👨‍👩‍👧‍👦".repeat(41))).toBe("👨‍👩‍👧‍👦".repeat(40));
+    expect(validateText("👨‍👩‍👧‍👦".repeat(40))).toBeNull();
+    expect(constrainText("가\r\n나\r다\n라")).toBe("가\n나\n다");
+  });
+
+  test.each(["horizontal", "vertical"] as const)(
+    "exports %s gradient with multiple colors and transparency",
+    async (direction) => {
+      const canvas = createCanvas(128, 128);
+      const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
+        ...initialSettings,
+        text: "HH",
+        motion: "none",
+        color: "#ff0000",
+        gradient: { end: "#0000ff", direction },
+      });
+      const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
+      let red = 0;
+      let blue = 0;
+      const colors = new Set<string>();
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] === 255) {
+          colors.add(`${pixels[i]},${pixels[i + 1]},${pixels[i + 2]}`);
+          if (pixels[i] > pixels[i + 2] + 50) red += 1;
+          if (pixels[i + 2] > pixels[i] + 50) blue += 1;
+        }
+      }
+      expect(colors.size).toBeGreaterThan(10);
+      expect(red).toBeGreaterThan(0);
+      expect(blue).toBeGreaterThan(0);
+      expect(pixels[3]).toBe(0);
     },
   );
 
