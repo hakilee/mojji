@@ -173,11 +173,6 @@ button[aria-pressed="true"] {
 .check input {
   accent-color: #7656e9;
 }
-.check span {
-  margin-left: auto;
-  color: #999;
-  font-size: 9px;
-}
 .motion-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -242,11 +237,6 @@ button[aria-pressed="true"] {
 }
 .slack-preview {
   margin: 23px 0;
-}
-.slack-preview > p {
-  font-size: 10px;
-  color: #999;
-  margin-bottom: 14px;
 }
 .message {
   display: flex;
@@ -330,9 +320,6 @@ footer {
   }
   .panel {
     padding: 22px;
-  }
-  .check span {
-    font-size: 8px;
   }
 }
 

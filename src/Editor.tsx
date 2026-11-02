@@ -178,7 +178,7 @@ export function Editor() {
                   checked={settings.transparent}
                   onChange={(event) => update({ transparent: event.target.checked })}
                 />
-                투명 배경으로 만들기<span>어디에나 자연스럽게</span>
+                투명 배경으로 만들기
               </label>
             </fieldset>
             <fieldset>
@@ -213,7 +213,6 @@ export function Editor() {
               </button>
             </div>
             <div className="slack-preview">
-              <p>슬랙에서는 이렇게 보여요</p>
               <div className="message">
                 <div className="avatar">S</div>
                 <div>
