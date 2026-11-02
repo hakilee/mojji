@@ -17,6 +17,7 @@ export type Settings = {
   text: string;
   font: keyof typeof fonts;
   color: string;
+  characterColors?: Record<number, string>;
   background: string;
   transparent: boolean;
   motion: keyof typeof motions;
@@ -29,6 +30,13 @@ export const initialSettings: Settings = {
   transparent: true,
   motion: "bounce",
 };
+
+export function textCharacters(text: string): string[] {
+  return Array.from(
+    new Intl.Segmenter("ko", { granularity: "grapheme" }).segment(text),
+    (part) => part.segment,
+  );
+}
 
 export function validateText(text: string): string | null {
   if (!text.trim()) return "이모지에 넣을 텍스트를 입력해 주세요.";
@@ -69,7 +77,42 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
   ctx.font = `100px "${settings.font}"`;
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
-  const metrics = lines.map((line) => ctx.measureText(line));
+  let characterIndex = 0;
+  const runs = lines.map((line) => {
+    let advance = 0;
+    const characters = textCharacters(line).map((character) => {
+      const metric = ctx.measureText(character);
+      const run = {
+        character,
+        metric,
+        x: advance,
+        color: settings.characterColors?.[characterIndex] ?? settings.color,
+      };
+      advance += metric.width;
+      characterIndex += 1;
+      return run;
+    });
+    characterIndex += 1;
+    return characters;
+  });
+  const metrics = lines.map((line, index) =>
+    settings.characterColors && runs[index].length
+      ? {
+          actualBoundingBoxLeft: -Math.min(
+            ...runs[index].map((run) => run.x - run.metric.actualBoundingBoxLeft),
+          ),
+          actualBoundingBoxRight: Math.max(
+            ...runs[index].map((run) => run.x + run.metric.actualBoundingBoxRight),
+          ),
+          actualBoundingBoxAscent: Math.max(
+            ...runs[index].map((run) => run.metric.actualBoundingBoxAscent),
+          ),
+          actualBoundingBoxDescent: Math.max(
+            ...runs[index].map((run) => run.metric.actualBoundingBoxDescent),
+          ),
+        }
+      : ctx.measureText(line),
+  );
   const width = Math.max(
     1,
     ...metrics.map((metric) => metric.actualBoundingBoxLeft + metric.actualBoundingBoxRight),
@@ -101,13 +144,18 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
   }
   ctx.scale(scale, scale);
   ctx.fillStyle = settings.color;
-  lines.forEach((line, index) =>
-    ctx.fillText(
-      line,
-      (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2,
-      index * 105 - (top + bottom) / 2,
-    ),
-  );
+  lines.forEach((line, index) => {
+    const x = (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
+    const y = index * 105 - (top + bottom) / 2;
+    if (settings.characterColors) {
+      runs[index].forEach((run) => {
+        ctx.fillStyle = run.color;
+        ctx.fillText(run.character, x + run.x, y);
+      });
+    } else {
+      ctx.fillText(line, x, y);
+    }
+  });
   ctx.restore();
 }
 

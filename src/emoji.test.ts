@@ -1,7 +1,14 @@
 import { createCanvas } from "@napi-rs/canvas";
 import { decode, decodeFrames } from "modern-gif";
 import { describe, expect, test } from "vitest";
-import { drawEmoji, exportGif, initialSettings, motions, validateText } from "./emoji";
+import {
+  drawEmoji,
+  exportGif,
+  initialSettings,
+  motions,
+  textCharacters,
+  validateText,
+} from "./emoji";
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
   test.each(["", "   ", "a".repeat(41), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
@@ -87,6 +94,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
             ...initialSettings,
             text: "아기고래",
             motion,
+            characterColors: { 0: "#ff0000", 2: "#00ff00" },
           },
           frame / 120,
         );
@@ -106,6 +114,37 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       }
     },
   );
+
+  test("keeps combined characters together for color selection", () => {
+    expect(textCharacters("가👨‍👩‍👧‍👦e\u0301\n나")).toEqual(["가", "👨‍👩‍👧‍👦", "e\u0301", "\n", "나"]);
+  });
+
+  test("exports individual colors across lines with foreground fallback", async () => {
+    const canvas = createCanvas(128, 128);
+    const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
+      ...initialSettings,
+      text: "AA\nA",
+      motion: "none",
+      color: "#0000ff",
+      characterColors: { 0: "#ff0000", 3: "#00ff00" },
+    });
+    const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
+    for (const color of [
+      [255, 0, 0],
+      [0, 255, 0],
+      [0, 0, 255],
+    ]) {
+      expect(
+        Array.from({ length: pixels.length / 4 }, (_, index) => index * 4).some(
+          (offset) =>
+            pixels[offset] === color[0] &&
+            pixels[offset + 1] === color[1] &&
+            pixels[offset + 2] === color[2] &&
+            pixels[offset + 3] === 255,
+        ),
+      ).toBe(true);
+    }
+  });
 
   test("uses selected opaque background and replaces earlier canvas contents", async () => {
     const canvas = createCanvas(128, 128);
