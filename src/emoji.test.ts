@@ -12,7 +12,7 @@ import {
 } from "./emoji";
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
-  test.each(["", "   ", "a".repeat(41), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
+  test.each(["", "   ", "a".repeat(10), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
     const canvas = createCanvas(128, 128);
     const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
     expect(validateText(text)).not.toBeNull();
@@ -21,7 +21,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
 
   test("accepts Unicode characters and three lines", () => {
     expect(validateText("안녕\n반가워\n🎉".repeat(1))).toBeNull();
-    expect(validateText("🎉".repeat(40))).toBeNull();
+    expect(validateText("🎉".repeat(9))).toBeNull();
   });
 
   test.each(Object.keys(motions) as (keyof typeof motions)[])(
@@ -117,8 +117,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
   );
 
   test("constrains pasted text by grapheme and line count without splitting emoji", () => {
-    expect(constrainText("👨‍👩‍👧‍👦".repeat(41))).toBe("👨‍👩‍👧‍👦".repeat(40));
-    expect(validateText("👨‍👩‍👧‍👦".repeat(40))).toBeNull();
+    expect(constrainText("👨‍👩‍👧‍👦".repeat(10))).toBe("👨‍👩‍👧‍👦".repeat(9));
+    expect(validateText("👨‍👩‍👧‍👦".repeat(9))).toBeNull();
     expect(constrainText("가\r\n나\r다\n라")).toBe("가\n나\n다");
   });
 

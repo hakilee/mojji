@@ -1,5 +1,7 @@
 import { encode } from "modern-gif";
 
+export const maxTextCharacters = 9;
+
 export const fonts = {
   "Black Han Sans": "두껍게",
   Jua: "동글동글",
@@ -44,13 +46,14 @@ export function textCharacters(text: string): string[] {
 
 export function constrainText(text: string): string {
   return textCharacters(text.replace(/\r\n?/g, "\n").split("\n").slice(0, 3).join("\n"))
-    .slice(0, 40)
+    .slice(0, maxTextCharacters)
     .join("");
 }
 
 export function validateText(text: string): string | null {
   if (!text.trim()) return "이모지에 넣을 텍스트를 입력해 주세요.";
-  if (textCharacters(text).length > 40) return "텍스트는 40자까지 입력할 수 있어요.";
+  if (textCharacters(text).length > maxTextCharacters)
+    return `텍스트는 ${maxTextCharacters}자까지 입력할 수 있어요.`;
   if (text.split("\n").length > 3) return "줄은 3개까지 사용할 수 있어요.";
   return null;
 }
