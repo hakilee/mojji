@@ -1,6 +1,6 @@
 # 슬랙모찌
 
-작은 글자, 큰 리액션. 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
+텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
 배포: https://slackmoji.haklee.me
 

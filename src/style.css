@@ -48,12 +48,6 @@ header {
 .footer-logo {
   display: block;
 }
-.badge {
-  font-size: 12px;
-  border: 1px solid #d8d8cf;
-  border-radius: 30px;
-  padding: 8px 15px;
-}
 .workspace {
   margin-top: 24px;
   display: grid;
@@ -119,12 +113,6 @@ legend {
   font-weight: 700;
   margin-bottom: 12px;
   width: 100%;
-}
-legend span {
-  float: right;
-  font-size: 10px;
-  font-weight: 400;
-  color: #999;
 }
 .font-options {
   display: grid;
@@ -312,47 +300,19 @@ button[aria-pressed="true"] {
   text-align: center;
   font-size: 10px;
   color: #999;
-  min-height: 16px;
-  margin: 12px 0 0;
+  margin: 0;
+}
+.status:not(:empty) {
+  margin-top: 12px;
 }
 .error {
   color: #b83b47;
   font-size: 12px;
 }
-.tip {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 28px 0 65px;
-  padding: 23px;
-  border: 1px solid #dfdfd5;
-  border-radius: 12px;
-}
-.tip > span:first-child {
-  font-size: 26px;
-  color: #8a936c;
-}
-.tip strong {
-  font-size: 12px;
-}
-.tip p {
-  font-size: 10px;
-  color: #898b84;
-  margin-top: 7px;
-}
-.tip-end {
-  margin-left: auto;
-  font-size: 11px;
-  color: #8a8b82;
-}
 footer {
-  align-items: center;
+  margin-top: 24px;
   border-top: 1px solid #deded5;
   padding: 24px 0 36px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #999;
 }
 @media (max-width: 760px) {
   .shell {
@@ -365,25 +325,11 @@ footer {
     width: 48px;
     height: 42px;
   }
-  .badge {
-    font-size: 9px;
-    padding: 6px 10px;
-  }
   .workspace {
     grid-template-columns: 1fr;
   }
   .panel {
     padding: 22px;
-  }
-  .tip-end {
-    display: none;
-  }
-  .tip {
-    margin-bottom: 40px;
-  }
-  footer {
-    gap: 15px;
-    flex-wrap: wrap;
   }
   .check span {
     font-size: 8px;

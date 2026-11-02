@@ -73,11 +73,10 @@ export function Editor() {
 
   return (
     <div className="shell">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center">
         <a className="brand" href="/">
           <img src="/logo.svg" width="64" height="56" alt="슬랙모찌 홈" />
         </a>
-        <span className="badge">작은 글자, 큰 리액션</span>
       </header>
       <main>
         <div className="workspace">
@@ -150,9 +149,7 @@ export function Editor() {
               </label>
             </fieldset>
             <fieldset>
-              <legend>
-                모션 효과<span>움직이면 더 재밌죠</span>
-              </legend>
+              <legend>모션 효과</legend>
               <div className="motion-options">
                 {Object.entries(motions).map(([motion, label], index) => (
                   <button
@@ -209,23 +206,13 @@ export function Editor() {
               <span>128 × 128 · Slack에 바로 사용</span>
             </button>
             <p role="status" className="status">
-              {status || "가입 없이 무료로, 내 브라우저에서 안전하게."}
+              {status}
             </p>
           </section>
         </div>
-        <aside className="tip">
-          <span>✦</span>
-          <div>
-            <strong>슬랙에 내 이모지를 추가하는 방법</strong>
-            <p>다운로드한 GIF를 슬랙의 이모지 메뉴 → 이모지 추가에서 업로드하세요.</p>
-          </div>
-          <span className="tip-end">이제 내 마음을 보내요 ↗</span>
-        </aside>
       </main>
       <footer>
         <img className="footer-logo" src="/logo.svg" width="32" height="28" alt="슬랙모찌" />
-        <span>Made for your everyday reactions.</span>
-        <span>텍스트는 서버에 저장되지 않아요.</span>
       </footer>
     </div>
   );
