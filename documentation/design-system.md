@@ -18,7 +18,7 @@ Compose the following controls using semantic HTML:
 - **Preview**: compact author/message, 16 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
 - **Action**: primary download button with busy/disabled states; functional status announcements only.
 
-Desktop uses an asymmetric editor/sticky-preview grid. Mobile stacks the panels; every grid child can shrink. Keyboard focus, labels and selection state are retained without decorative metadata.
+Desktop uses one white workspace with a 40:60 editing/preview split and a shared download footer (#43). The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
 
 ## Google Fonts source
 
@@ -44,4 +44,4 @@ React ViewTransition fades the font panel in and out and preserves result identi
 
 Motion icons use a 24×24 viewBox, 2px optical inset, 2px rounded strokes and currentColor. Keep stroked bounds inside the grid, compensate curved shapes optically, and avoid font glyphs as UI icons. [Construction grid](icons/grid.svg) shows the 1px grid, 20px safe area, center lines and circular keyline. Controls retain labels and expose icons as decorative; standalone icon buttons need at least a 40px touch target.
 
-UI text uses at most semibold (600). Section headings sit outside their cards. The textarea's containing editor draws one rounded focus border/ring instead of an inset rectangle. Color mode is a labelled native radio group: arrow keys change selection and keyboard focus remains visible.
+UI text uses at most semibold (600). Settings use native details/summary accordions with semantic fieldsets; effects start expanded. Disclosures support keyboard interaction and retain their controls and values while collapsed. The textarea's containing editor draws one rounded focus border/ring instead of an inset rectangle. Color mode is a labelled native radio group: arrow keys change selection and keyboard focus remains visible.

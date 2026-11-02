@@ -5,7 +5,7 @@
   --color-bg-reaction: #e3f5fc;
   --color-fg-reaction: #0968a8;
   --color-stroke-reaction: #0968a8;
-  --color-bg-layer-basement: #f2f2f4;
+  --color-bg-layer-basement: #fcfcfd;
   --color-bg-layer-default: #ffffff;
   --color-bg-neutral-weak: #f8f8fa;
   --color-bg-neutral-weak-pressed: #ebebf0;
@@ -29,8 +29,8 @@
   --color-bg-checker-base: #f8f8fa;
   --color-bg-checker-tile: #ebebf0;
   --font-sans: "Pretendard Variable", sans-serif;
-  --radius-control: 10px;
-  --radius-panel: 20px;
+  --radius-control: 8px;
+  --radius-panel: 12px;
   --animate-font-reveal: font-reveal 160ms ease-out;
   --animate-font-hide: font-reveal 120ms ease-in reverse;
   @keyframes font-reveal {
