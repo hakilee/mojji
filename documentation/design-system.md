@@ -15,7 +15,7 @@ Compose the following controls using semantic HTML:
 - **Text editor**: font-aware textarea, persistent family/count footer, focus outline, invalid message. Native textarea editing/selection/undo are preserved; composed input is committed at composition end. Paste/typing is constrained to 9 graphemes and three lines, with a live limit announcement.
 - **Font picker**: three bundled specimen cards, optional searchable Google Fonts panel with Korean filter, loading/disabled/error state. External fonts apply only after successful load; existing font remains on failure. Requests time out instead of leaving download disabled indefinitely.
 - **Controls**: semantic selected buttons (`aria-pressed`), two-mode color segment, color wells, native checkbox/select and motion choices. Individual colors and gradient mode are mutually exclusive.
-- **Preview**: compact author/message, 22 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
+- **Preview**: compact author/message, 16 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
 - **Action**: primary download button with busy/disabled states; functional status announcements only.
 
 Desktop uses an asymmetric editor/sticky-preview grid. Mobile stacks the panels; every grid child can shrink. Keyboard focus, labels and selection state are retained without decorative metadata.
