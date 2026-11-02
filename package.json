@@ -17,6 +17,7 @@
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@fontsource/black-han-sans": "^5.3.0",
     "@fontsource/jua": "^5.3.0",
     "@fontsource/noto-sans-kr": "^5.3.1",

@@ -9,8 +9,8 @@ Loading, composition, transitions, writing and accessibility review.
 
 ## 2. Composition patterns
 
-- src/components/design-system/Accordion.tsx - three setting sections share native disclosures and semantic fieldsets through children.
-- Existing explicit font/settings callbacks remain appropriate. No provider or compound-component framework is needed for this one-screen app.
+- src/components/design-system/Accordion.tsx - three setting sections share headless disclosures and semantic fieldsets through children.
+- Existing explicit font/settings callbacks remain appropriate. The shared accordion root owns disclosure state; editor settings remain in the page without a second app-level provider.
 
 ## 3. React view transitions
 
@@ -29,10 +29,18 @@ Loading, composition, transitions, writing and accessibility review.
 - src/pages/EditorPage.tsx:1 - skip link, main focus target, input name/autocomplete, hidden decorative symbols and functional reaction update.
 - src/components/editor/FontPicker.tsx:1 - disclosure relationship, search example/name/autocomplete/spellcheck, busy and empty/loading feedback.
 - src/styles/tailwind.css:1 - touch manipulation, contained result scrolling, tabular numbers and balanced headings.
-- Explicit user requirements take precedence: do not restore playback controls or put private editor content in URLs. Existing invalid-input download blocking remains the product contract. No speculative navigation guard, theme or third-party UI library added.
+- Explicit user requirements take precedence: do not restore playback controls or put private editor content in URLs. Existing invalid-input download blocking remains the product contract. No speculative navigation guard or theme added. Headless primitives now back the explicitly requested controls (#50).
 
 Verification evidence and remaining gaps belong to the issue-linked pull request. Existing renderer tests cover GIF behavior; browser checks cover catalog loading, transitions, search, export and responsive layout.
 
 ## Browser-driven correction
 
 Full-button ViewTransition boundaries made font-result clicks unreliable in Aside after filtering. Boundaries now animate the result labels while the buttons remain live. The corrected flow passed: catalog requests 0 before opening and 1 after opening, Gaegu selected, gradient GIF downloaded, and mobile layout retained. The renderer suite still has 34 passing tests. Unsupported-browser and actual OS preference toggling are not claimed as tested.
+
+## Headless-control review (#50)
+
+- Library dependencies use direct accordion/radio/radio-group entry points, not the package-wide barrel. The explicitly requested small application public export remains unchanged.
+- One uncontrolled accordion root owns disclosure state; no mirrored state/effect or custom key handler. The controlled color value remains derived from editor settings.
+- Closed panels retain children to preserve font-search state. Catalog loading remains user-triggered and search remains deferred; closing/reopening does not fetch again.
+- Keep native textarea/color/select behavior and decorative spinner/icons. Do not introduce unnecessary generic wrappers, context or memoization.
+- Existing effect cleanup, functional reaction updater and asynchronous font/export error handling remain intact.

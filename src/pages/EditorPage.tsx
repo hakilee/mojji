@@ -1,4 +1,10 @@
-import { Accordion, MotionIcon, SegmentedControl, Spinner } from "~/components/design-system";
+import {
+  Accordion,
+  AccordionItem,
+  MotionIcon,
+  SegmentedControl,
+  Spinner,
+} from "~/components/design-system";
 import { useEffect, useRef, useState } from "react";
 import {
   drawEmoji,
@@ -182,15 +188,15 @@ export function EditorPage() {
                   {invalid}
                 </p>
               )}
-              <div className="mt-6 space-y-2">
-                <Accordion title="글꼴">
+              <Accordion className="mt-6 space-y-2" multiple keepMounted defaultValue={["motion"]}>
+                <AccordionItem value="font" title="글꼴">
                   <FontPicker
                     font={settings.font}
                     onChange={(font) => update({ font })}
                     onLoading={setFontLoading}
                   />
-                </Accordion>
-                <Accordion title="색상">
+                </AccordionItem>
+                <AccordionItem value="color" title="색상">
                   <SegmentedControl
                     label="색상 방식"
                     value={settings.gradient ? "gradient" : "solid"}
@@ -304,8 +310,8 @@ export function EditorPage() {
                     />
                     투명 배경으로 만들기
                   </label>
-                </Accordion>
-                <Accordion title="효과" defaultOpen>
+                </AccordionItem>
+                <AccordionItem value="motion" title="효과">
                   <div className="grid grid-cols-3 gap-2 [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-2 [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-1 [&>button]:min-h-24 [&>button]:py-4 [&>button]:text-xs [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
                     {Object.entries(motions).map(([motion, label]) => (
                       <button
@@ -320,8 +326,8 @@ export function EditorPage() {
                       </button>
                     ))}
                   </div>
-                </Accordion>
-              </div>
+                </AccordionItem>
+              </Accordion>
             </div>
           </section>
           <section

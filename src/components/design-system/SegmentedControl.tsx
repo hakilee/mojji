@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { Radio } from "@base-ui/react/radio";
+import { RadioGroup } from "@base-ui/react/radio-group";
 
 export function SegmentedControl<T extends string>({
   label,
@@ -11,28 +12,24 @@ export function SegmentedControl<T extends string>({
   options: readonly { value: T; label: string }[];
   onChange: (value: T) => void;
 }) {
-  const name = useId();
   return (
-    <div
-      role="radiogroup"
+    <RadioGroup
+      value={value}
+      onValueChange={onChange}
       aria-label={label}
       className="mb-4 flex gap-1 rounded-control bg-bg-neutral-weak p-1"
     >
       {options.map((option) => (
-        <label key={option.value} className="min-w-0 flex-1 cursor-pointer">
-          <input
-            className="peer sr-only"
-            type="radio"
-            name={name}
-            value={option.value}
-            checked={value === option.value}
-            onChange={() => onChange(option.value)}
-          />
-          <span className="flex min-h-9 items-center justify-center rounded-[7px] px-3 text-xs text-fg-neutral-muted transition-colors peer-checked:bg-bg-layer-default peer-checked:font-semibold peer-checked:text-fg-brand peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-stroke-focus peer-focus-visible:outline-offset-2 motion-reduce:transition-none">
-            {option.label}
-          </span>
-        </label>
+        <Radio.Root
+          key={option.value}
+          value={option.value}
+          nativeButton
+          render={<button type="button" />}
+          className="flex min-h-9 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-[7px] px-3 text-xs text-fg-neutral-muted transition-colors data-checked:bg-bg-layer-default data-checked:font-semibold data-checked:text-fg-brand data-checked:shadow-sm focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 motion-reduce:transition-none"
+        >
+          {option.label}
+        </Radio.Root>
       ))}
-    </div>
+    </RadioGroup>
   );
 }
