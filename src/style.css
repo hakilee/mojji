@@ -54,31 +54,8 @@ header {
   border-radius: 30px;
   padding: 8px 15px;
 }
-.intro {
-  padding: 54px 0 36px;
-}
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: #706b81;
-}
-.intro h1 {
-  font-size: 44px;
-  line-height: 1.35;
-  letter-spacing: -2px;
-  font-weight: 700;
-  margin: 14px 0;
-}
-.intro h1 span {
-  color: #7656e9;
-}
-.intro > p:last-child {
-  font-size: 14px;
-  color: #777a7c;
-  margin-top: 18px;
-}
 .workspace {
+  margin-top: 24px;
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   gap: 24px;
@@ -390,15 +367,6 @@ footer {
   .badge {
     font-size: 9px;
     padding: 6px 10px;
-  }
-  .intro {
-    padding-top: 36px;
-  }
-  .intro h1 {
-    font-size: 34px;
-  }
-  .intro > p:last-child {
-    font-size: 12px;
   }
   .workspace {
     grid-template-columns: 1fr;
