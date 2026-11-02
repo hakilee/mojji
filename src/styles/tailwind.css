@@ -2,6 +2,9 @@
 
 /* App theme roles: documentation/colors.md. */
 @theme {
+  --color-bg-reaction: #e3f5fc;
+  --color-fg-reaction: #0968a8;
+  --color-stroke-reaction: #0968a8;
   --color-bg-layer-basement: #f2f2f4;
   --color-bg-layer-default: #ffffff;
   --color-bg-neutral-weak: #f8f8fa;
