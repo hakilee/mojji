@@ -6,7 +6,7 @@ Use this reference to maintain the editor’s visual tokens, controls and font-l
 
 Use [color roles](colors.md) as the color layer. `src/styles/tailwind.css` contains only the Tailwind import and theme configuration (semantic colors, typography, radii and transition keyframes). Components use Tailwind utilities for layout and states, with the standard 4 px spacing scale. No handwritten component selectors or CSS modules remain.
 
-UI text uses self-hosted Geist Variable for Latin glyphs and Pretendard Variable for Korean fallback. Both use `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
+UI text uses self-hosted Pretendard for UI glyphs. It uses `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
 
 ## Components and states
 
@@ -39,3 +39,9 @@ React ViewTransition fades the font panel in and out and preserves result identi
 ## Loading indicator (#31)
 
 `src/components/ui/Spinner.tsx` renders a radial SVG indicator with inherited color, compact sizes and accessible loading labels. It uses Tailwind rotation and stops for reduced motion. A label exposes a standalone status; omit it beside existing loading text to keep the graphic decorative. GIF export, font catalog loading and selected-font loading use it.
+
+## Icon grid
+
+Motion icons use a 24×24 viewBox, 2px optical inset, 2px rounded strokes and currentColor. Keep stroked bounds inside the grid, compensate curved shapes optically, and avoid font glyphs as UI icons. [Construction grid](icons/grid.svg) shows the 1px grid, 20px safe area, center lines and circular keyline. Controls retain labels and expose icons as decorative; standalone icon buttons need at least a 40px touch target.
+
+UI text uses at most semibold (600). Section headings sit outside their cards. The textarea's containing editor draws one rounded focus border/ring instead of an inset rectangle. Color mode is a labelled native radio group: arrow keys change selection and keyboard focus remains visible.

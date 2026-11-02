@@ -30,7 +30,7 @@ export function FontPicker({
     onLoading(true);
     const link = document.createElement("link");
     try {
-      if (!(family in fonts)) {
+      if (!fonts.includes(family)) {
         link.rel = "stylesheet";
         link.href = `https://fonts.googleapis.com/css2?${new URLSearchParams({ family, display: "swap" })}`;
         await new Promise<void>((resolve, reject) => {
@@ -70,7 +70,7 @@ export function FontPicker({
   return (
     <SettingGroup title="글꼴">
       <div className="grid grid-cols-3 gap-2">
-        {Object.entries(fonts).map(([family, label]) => (
+        {fonts.map((family) => (
           <button
             className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed flex flex-col items-start gap-1 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default p-3 text-left enabled:hover:border-stroke-brand max-[760px]:p-2 [&_small]:text-[10px] [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
             key={family}
@@ -88,7 +88,6 @@ export function FontPicker({
             >
               가나다 Aa
             </span>
-            <span>{label}</span>
             <small>{family}</small>
           </button>
         ))}
@@ -183,7 +182,7 @@ export function FontPicker({
           </div>
         </ViewTransition>
       )}
-      {!(font in fonts) && (
+      {!fonts.includes(font) && (
         <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {font}</p>
       )}
       {error && (
