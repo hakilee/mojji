@@ -174,8 +174,10 @@ export function Editor() {
               <span className="live">● LIVE</span>
             </div>
             <div className="checker">
-              <span className="canvas-note">마음을 담는 128 × 128</span>
               <canvas ref={canvas} width={128} height={128} aria-label="이모지 미리보기" />
+            </div>
+            <div className="preview-toolbar">
+              <span className="canvas-note">128 × 128</span>
               <button className="pause" onClick={() => setPaused(!paused)}>
                 {paused ? "▶ 재생" : "Ⅱ 일시정지"}
               </button>
