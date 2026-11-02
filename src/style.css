@@ -40,7 +40,6 @@ textarea:focus-visible {
 }
 header {
   height: 104px;
-  border-bottom: 1px solid var(--color-stroke-neutral);
 }
 .brand {
   display: inline-flex;
@@ -77,9 +76,6 @@ header {
   font-size: 10px;
   letter-spacing: 1px;
   color: var(--color-fg-neutral-muted);
-}
-.section-title .live {
-  color: var(--color-fg-positive);
 }
 .field-label {
   font-size: 13px;
@@ -219,23 +215,12 @@ button[aria-pressed="true"] {
   height: auto;
 }
 .preview-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   margin-top: 12px;
 }
 .canvas-note {
   font-size: 9px;
   letter-spacing: 1px;
   color: var(--color-fg-neutral-muted);
-}
-.pause {
-  background: var(--color-bg-layer-default);
-  border: 1px solid var(--color-stroke-neutral);
-  border-radius: 20px;
-  padding: 5px 13px;
-  font-size: 10px;
 }
 .slack-preview {
   margin: 23px 0;
@@ -351,8 +336,7 @@ footer {
     background: var(--color-bg-brand-solid-pressed);
   }
   .font-options button:hover:not([aria-pressed="true"]),
-  .motion-options button:hover:not([aria-pressed="true"]),
-  .pause:hover {
+  .motion-options button:hover:not([aria-pressed="true"]) {
     background: var(--color-bg-neutral-weak-pressed);
   }
 }

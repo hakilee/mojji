@@ -12,9 +12,6 @@ import type { Settings } from "./emoji";
 
 export function Editor() {
   const [settings, setSettings] = useState(initialSettings);
-  const [paused, setPaused] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -26,6 +23,7 @@ export function Editor() {
   }
 
   useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let active = true;
     let frame = 0;
     async function start() {
@@ -35,11 +33,11 @@ export function Editor() {
         const ctx = canvas.current?.getContext("2d");
         const small = smallCanvas.current?.getContext("2d");
         if (ctx && small) {
-          drawEmoji(ctx, settings, paused ? 0 : (time % 1200) / 1200);
+          drawEmoji(ctx, settings, reducedMotion ? 0 : (time % 1200) / 1200);
           small.clearRect(0, 0, 128, 128);
           small.drawImage(ctx.canvas, 0, 0);
         }
-        if (!paused) frame = requestAnimationFrame(render);
+        if (!reducedMotion) frame = requestAnimationFrame(render);
       }
       frame = requestAnimationFrame(render);
     }
@@ -50,7 +48,7 @@ export function Editor() {
       active = false;
       cancelAnimationFrame(frame);
     };
-  }, [settings, paused]);
+  }, [settings]);
 
   async function download() {
     setBusy(true);
@@ -201,16 +199,12 @@ export function Editor() {
           <section className="panel preview" aria-label="미리보기">
             <div className="section-title">
               <h2>미리보기</h2>
-              <span className="live">● LIVE</span>
             </div>
             <div className="checker">
               <canvas ref={canvas} width={128} height={128} aria-label="이모지 미리보기" />
             </div>
             <div className="preview-toolbar">
               <span className="canvas-note">128 × 128</span>
-              <button className="pause" onClick={() => setPaused(!paused)}>
-                {paused ? "▶ 재생" : "Ⅱ 일시정지"}
-              </button>
             </div>
             <div className="slack-preview">
               <div className="message">
