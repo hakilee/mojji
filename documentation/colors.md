@@ -22,7 +22,7 @@ Issue #19. No SEED package/runtime dependency is installed.
 | Brand weak / pressed              | purple-100 / purple-200 | Selected options                       |
 | Brand foreground / stroke / focus | purple-800              | Selected text, borders, keyboard focus |
 | On brand solid                    | gray-00                 | Download text                          |
-| Positive weak / foreground        | green-100 / green-800   | Avatar, LIVE status                    |
+| Positive weak / foreground        | green-100 / green-800   | Message avatar                         |
 | Critical foreground               | red-800                 | Validation errors                      |
 | Neutral / strong stroke           | gray-400 / gray-500     | Dividers, controls                     |
 | Disabled background / foreground  | gray-200 / gray-800     | Unavailable download                   |
