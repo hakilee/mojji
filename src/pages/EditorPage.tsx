@@ -340,25 +340,25 @@ export function EditorPage() {
                   className="size-9 shrink-0 rounded-lg bg-bg-neutral-weak"
                 />
                 <div className="min-w-0">
-                  <div className="flex flex-wrap items-baseline gap-x-2">
+                  <div className="flex flex-wrap items-baseline gap-x-2 leading-5">
                     <strong className="font-bold">Haki (하키)</strong>
-                    <time className="text-xs text-fg-neutral-muted" dateTime="12:54">
+                    <time className="text-xs text-fg-neutral-muted" dateTime="00:54">
                       오전 12:54
                     </time>
                   </div>
-                  <p className="mt-0.5 mb-1 wrap-anywhere">안녕하세요.</p>
-                  <div className="flex flex-wrap items-center gap-1">
+                  <p className="mb-px text-base leading-[22px] wrap-anywhere">안녕하세요.</p>
+                  <div className="flex flex-wrap items-center gap-0.5">
                     <span
-                      className="inline-flex h-7 items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-sm font-semibold leading-none text-fg-reaction tabular-nums"
+                      className="inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-xs font-semibold leading-none text-fg-reaction tabular-nums"
                       aria-label="엄지 반응"
                     >
-                      <span className="inline-flex size-[22px] items-center justify-center text-[22px]">
+                      <span className="inline-flex size-4 items-center justify-center text-base">
                         👍🏻
                       </span>{" "}
                       <span>1</span>
                     </span>
                     <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-7 items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-sm font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-[22px]"
+                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-xs font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
                       type="button"
                       aria-label={`내 이모지 반응 ${reacted ? 1 : 0}개`}
                       aria-pressed={reacted}
@@ -373,11 +373,11 @@ export function EditorPage() {
                       <span>{reacted ? 1 : 0}</span>
                     </button>
                     <span
-                      className="inline-flex h-7 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
+                      className="inline-flex h-6 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
                       aria-hidden="true"
                     >
                       <svg
-                        className="size-6"
+                        className="size-5"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
