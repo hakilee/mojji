@@ -9,7 +9,7 @@ Loading, composition, transitions, writing and accessibility review.
 
 ## 2. Composition patterns
 
-- src/components/ui/SettingGroup.tsx:1 - three real consumers share a semantic fieldset/legend wrapper through children, without boolean variant props.
+- src/components/design-system/Accordion.tsx - three setting sections share native disclosures and semantic fieldsets through children.
 - Existing explicit font/settings callbacks remain appropriate. No provider or compound-component framework is needed for this one-screen app.
 
 ## 3. React view transitions

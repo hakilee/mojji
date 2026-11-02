@@ -1,4 +1,4 @@
-import { Spinner } from "../ui/Spinner";
+import { Spinner } from "~/components/design-system";
 import { startTransition, useDeferredValue, useState, ViewTransition } from "react";
 import { fonts } from "../../lib/emoji";
 

@@ -1,5 +1,4 @@
-import { SegmentedControl } from "../components/ui/SegmentedControl";
-import { MotionIcon } from "../components/ui/MotionIcon";
+import { Accordion, MotionIcon, SegmentedControl, Spinner } from "~/components/design-system";
 import { useEffect, useRef, useState } from "react";
 import {
   drawEmoji,
@@ -12,9 +11,7 @@ import {
   validateText,
 } from "../lib/emoji";
 import type { Settings } from "../lib/emoji";
-import { Accordion } from "../components/ui/Accordion";
-import { Spinner } from "../components/ui/Spinner";
-import { FontPicker } from "../components/editor/FontPicker";
+import { FontPicker } from "~/components/editor/FontPicker";
 
 export function EditorPage() {
   const [reducedMotion, setReducedMotion] = useState(

@@ -9,7 +9,7 @@ import {
   motions,
   textCharacters,
   validateText,
-} from "./emoji";
+} from "~/lib/emoji";
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
   test.each(["", "   ", "a".repeat(10), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {

@@ -55,7 +55,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 - [research/initialization.md](research/initialization.md): 참고 자료와 선택 근거
 - `src/pages/`: 라우트 화면
 - `src/components/editor/`: 편집기 전용 UI
-- `src/components/ui/`: 공용 설정 그룹·스피너
+- `src/components/design-system/`: 공용 아코디언·스피너·세그먼트 컨트롤·모션 아이콘 (`~/components/design-system`으로 import)
 - `src/lib/`: GIF 렌더러와 colocated 테스트
 - `src/data/`: 지연 로딩 글꼴 목록
 - `src/styles/tailwind.css`: Tailwind 진입점과 테마 설정 (화면 스타일은 유틸리티 클래스)
