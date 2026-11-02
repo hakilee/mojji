@@ -30,4 +30,4 @@ Issue #19. No SEED package/runtime dependency is installed.
 
 Purple is a Slackmochi mapping, not SEED's default carrot brand mapping. Secondary small text intentionally uses gray-800 for readability. This is a light-only UI; no dark theme is introduced. Typography/layout and icon artwork remain unchanged.
 
-GIF colors (`Settings.color`, background and per-character overrides) are user-created content, not UI theme roles. Their defaults remain unchanged to avoid silently altering exports. Logo SVGs and opaque platform-icon/manifest backgrounds retain their existing brand-art colors independently of the page background.
+GIF colors (`Settings.color`, background and per-character overrides) are user-created content, not UI theme roles. Their defaults remain unchanged to avoid silently altering exports. Logo SVGs and opaque platform-icon backgrounds retain their existing brand-art colors. HTML theme metadata and manifest colors match the page basement color.

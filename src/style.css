@@ -554,3 +554,69 @@ button:active:not(:disabled) {
     font-size: 18px;
   }
 }
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  transform: translateY(-200%);
+  padding: var(--space-3);
+  background: var(--color-bg-layer-default);
+  color: var(--color-fg-brand);
+  border-radius: var(--radius-control);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+h1,
+h2 {
+  text-wrap: balance;
+  scroll-margin-top: var(--space-5);
+}
+.editor-meta,
+.reaction {
+  font-variant-numeric: tabular-nums;
+}
+.font-results {
+  overscroll-behavior: contain;
+}
+::view-transition-old(root) {
+  display: none;
+}
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition {
+  pointer-events: none;
+}
+@keyframes font-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+::view-transition-new(.font-reveal) {
+  animation: font-reveal 160ms ease-out;
+}
+::view-transition-old(.font-hide) {
+  animation: font-reveal 120ms ease-in reverse;
+}
+::view-transition-group(*) {
+  animation-duration: 160ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
