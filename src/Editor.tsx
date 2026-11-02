@@ -80,15 +80,6 @@ export function Editor() {
         <span className="badge">작은 글자, 큰 리액션</span>
       </header>
       <main>
-        <div className="intro">
-          <p className="eyebrow">YOUR WORDS, WITH A LITTLE WIGGLE</p>
-          <h1>
-            말로 다 못한 마음,
-            <br />
-            <span>이모지로 움직여요.</span>
-          </h1>
-          <p>나만의 텍스트 GIF를 만들고, 슬랙에 즐거움을 더해 보세요.</p>
-        </div>
         <div className="workspace">
           <section className="panel controls" aria-label="이모지 편집">
             <div className="section-title">
