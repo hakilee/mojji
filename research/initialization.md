@@ -18,3 +18,10 @@ Client-only generation: no upload, account, gallery, analytics or server. Bundle
 - Use modern-gif 2.1.0 for its typed encode/decode API, transparent frames and standard ArrayBuffer output. Source: https://github.com/qq15725/modern-gif. No custom GIF codec.
 - Issue #3 replaces ESLint/Prettier with oxlint 1.90.0/oxfmt 0.75.0 and upgrades TypeScript to 7.0.2. The compatibility-only TypeScript pin and superseded toolchain are removed. Oxc references: https://oxc.rs/docs/guide/usage/linter/config and https://oxc.rs/docs/guide/usage/formatter.
 - Repo initialization and settings were completed before feature delivery. Initial main seed predates protection; subsequent changes go through PRs.
+
+## Brand icon padding (#7, 2026-11-02)
+
+- Selected concept: C 수다모찌. The source SVG has a tight rectangular viewBox; generated icons preserve its aspect ratio instead of stretching it into a square. The SVG favicon has separate square bounds.
+- Apple Web Clip guidance specifies PNG and a 180px iPhone icon, not a mandatory content-padding percentage: https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html . The 2% extra inset on the regular Apple/Android exports is our optical choice, not an Apple rule. Backgrounds are opaque and corner masks are left to the platform.
+- Android uses web-manifest maskable artwork here, not a native adaptive-icon layer package. Its essential artwork must fit the central circle of radius 40%: https://www.w3.org/TR/appmanifest/#icon-masks . A separate maskable export keeps the mochi including its speech tail inside that zone; do not apply regular-icon padding to it.
+- Google Search favicon guidance requires a square asset and recommends larger than 48px; it does not prescribe internal padding: https://developers.google.com/search/docs/appearance/favicon-in-search . Supply a 96px PNG plus the square SVG and small browser PNGs.
