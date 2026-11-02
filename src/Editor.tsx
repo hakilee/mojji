@@ -5,6 +5,7 @@ import {
   constrainText,
   initialSettings,
   motions,
+  maxTextCharacters,
   textCharacters,
   validateText,
 } from "./emoji";
@@ -128,7 +129,7 @@ export function Editor() {
                   setDraft(text);
                   update({ text, characterColors: undefined });
                   if (text !== event.currentTarget.value)
-                    setStatus("40자, 3줄까지만 입력할 수 있어요.");
+                    setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
                 }}
                 onChange={(event) => {
                   if (composing.current) {
@@ -138,7 +139,8 @@ export function Editor() {
                   const text = constrainText(event.target.value);
                   setDraft(text);
                   update({ text, characterColors: undefined });
-                  if (text !== event.target.value) setStatus("40자, 3줄까지만 입력할 수 있어요.");
+                  if (text !== event.target.value)
+                    setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
                 }}
                 rows={3}
                 spellCheck={false}
@@ -146,7 +148,8 @@ export function Editor() {
               <div className="editor-meta" id="text-count">
                 <span>{settings.font}</span>
                 <span>
-                  {textCharacters(settings.text).length}/40 · {settings.text.split("\n").length}/3줄
+                  {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
+                  {settings.text.split("\n").length}/3줄
                 </span>
               </div>
             </div>
