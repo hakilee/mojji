@@ -1,22 +1,22 @@
-# Five-skill review
+# UI implementation review
 
-This review applies the five requested Vercel skills to the editor source, README and design-system reference. Goal: improve loading, composition, state transitions, writing and accessibility without restoring removed UI or sharing input text. Source revision: `vercel-labs/agent-skills@1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62`; fresh writing/web command guidelines retrieved 2026-11-03.
+Loading, composition, transitions, writing and accessibility review.
 
 ## 1. React best practices
 
-- src/FontPicker.tsx:1 - static catalog import moved to on-demand import with loading, error and retry behavior; deferred search keeps input immediate.
-- src/Editor.tsx:1 - static preview no longer schedules continuous frames; reduced-motion changes update live and listeners clean up.
+- src/components/editor/FontPicker.tsx:1 - static catalog import moved to on-demand import with loading, error and retry behavior; deferred search keeps input immediate.
+- src/pages/EditorPage.tsx:1 - static preview no longer schedules continuous frames; reduced-motion changes update live and listeners clean up.
 
 ## 2. Composition patterns
 
-- src/SettingGroup.tsx:1 - three real consumers share a semantic fieldset/legend wrapper through children, without boolean variant props.
+- src/components/ui/SettingGroup.tsx:1 - three real consumers share a semantic fieldset/legend wrapper through children, without boolean variant props.
 - Existing explicit font/settings callbacks remain appropriate. No provider or compound-component framework is needed for this one-screen app.
 
 ## 3. React view transitions
 
-- src/FontPicker.tsx:1 - disclosure enter/exit, asynchronous catalog reveal and keyed result identity use React transitions.
+- src/components/editor/FontPicker.tsx:1 - disclosure enter/exit, asynchronous catalog reveal and keyed result identity use React transitions.
 - Route audit: `/` only, logo links to `/`; no detail route, shared-element pair or Suspense boundary. Those patterns do not apply. Root snapshots are disabled so persistent chrome and canvas remain live.
-- src/style.css:1 - opacity transitions, short timing, pointer pass-through and reduced-motion override.
+- src/styles/tailwind.css:1 - opacity transitions, short timing, pointer pass-through and reduced-motion override.
 
 ## 4. Writing guidelines
 
@@ -26,9 +26,9 @@ This review applies the five requested Vercel skills to the editor source, READM
 
 ## 5. Web design guidelines
 
-- src/Editor.tsx:1 - skip link, main focus target, input name/autocomplete, hidden decorative symbols and functional reaction update.
-- src/FontPicker.tsx:1 - disclosure relationship, search example/name/autocomplete/spellcheck, busy and empty/loading feedback.
-- src/style.css:1 - touch manipulation, contained result scrolling, tabular numbers and balanced headings.
+- src/pages/EditorPage.tsx:1 - skip link, main focus target, input name/autocomplete, hidden decorative symbols and functional reaction update.
+- src/components/editor/FontPicker.tsx:1 - disclosure relationship, search example/name/autocomplete/spellcheck, busy and empty/loading feedback.
+- src/styles/tailwind.css:1 - touch manipulation, contained result scrolling, tabular numbers and balanced headings.
 - Explicit user requirements take precedence: do not restore playback controls or put private editor content in URLs. Existing invalid-input download blocking remains the product contract. No speculative navigation guard, theme or third-party UI library added.
 
 Verification evidence and remaining gaps belong to the issue-linked pull request. Existing renderer tests cover GIF behavior; browser checks cover catalog loading, transitions, search, export and responsive layout.

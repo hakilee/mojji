@@ -38,4 +38,4 @@ React ViewTransition fades the font panel in and out and preserves result identi
 
 ## Loading indicator (#31)
 
-`src/components/ui/Spinner.tsx` is an original SVG radial indicator, inspired by the [COCSO spinner](https://github.com/cocso/cocso-ui/tree/main/packages/react/src/components/spinner) (radial blades, current-color inheritance, compact sizes and accessible loading labels). No upstream code or package is included. It uses Tailwind rotation and stops for reduced motion. A label exposes a standalone status; omit it beside existing loading text to keep the graphic decorative. GIF export, font catalog loading and selected-font loading use it.
+`src/components/ui/Spinner.tsx` renders a radial SVG indicator with inherited color, compact sizes and accessible loading labels. It uses Tailwind rotation and stops for reduced motion. A label exposes a standalone status; omit it beside existing loading text to keep the graphic decorative. GIF export, font catalog loading and selected-font loading use it.
