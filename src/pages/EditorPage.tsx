@@ -108,11 +108,11 @@ export function EditorPage() {
       <main
         id="editor-main"
         tabIndex={-1}
-        className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-layer-default"
+        className="rounded-panel border border-stroke-neutral bg-bg-layer-default"
       >
-        <div className="grid min-h-[calc(100svh-116px)] grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] max-[760px]:min-h-0 max-[760px]:grid-cols-1">
+        <div className="grid min-h-[calc(100svh-48px)] grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] max-[760px]:min-h-0 max-[760px]:grid-cols-1">
           <section
-            className="min-w-0 bg-bg-neutral-weak/50 p-7 max-[760px]:p-4"
+            className="min-w-0 rounded-l-panel bg-bg-neutral-weak/50 p-7 max-[760px]:rounded-t-panel max-[760px]:rounded-bl-none max-[760px]:p-4"
             aria-label="이모지 편집"
           >
             <header className="mb-8 flex items-center gap-4">
@@ -128,41 +128,47 @@ export function EditorPage() {
             <h2 className="mb-4 text-sm font-semibold">텍스트 편집</h2>
             <div className="min-w-0">
               <div className="overflow-hidden rounded-control border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
-                <textarea
-                  className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] block min-h-36 w-full resize-y border-0 bg-transparent p-4 text-[30px] leading-normal"
-                  id="text"
-                  name="emoji-text"
-                  autoComplete="off"
-                  aria-label="이모지 텍스트"
-                  aria-describedby={invalid ? "text-error text-count" : "text-count"}
-                  aria-invalid={!!invalid}
-                  value={draft}
-                  style={{ fontFamily: settings.font }}
-                  onCompositionStart={() => {
-                    composing.current = true;
-                  }}
-                  onCompositionEnd={(event) => {
-                    composing.current = false;
-                    const text = constrainText(event.currentTarget.value);
-                    setDraft(text);
-                    update({ text, characterColors: undefined });
-                    if (text !== event.currentTarget.value)
-                      setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                  }}
-                  onChange={(event) => {
-                    if (composing.current) {
-                      setDraft(event.target.value);
-                      return;
-                    }
-                    const text = constrainText(event.target.value);
-                    setDraft(text);
-                    update({ text, characterColors: undefined });
-                    if (text !== event.target.value)
-                      setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                  }}
-                  rows={3}
-                  spellCheck={false}
-                />
+                <div className="@container relative aspect-square">
+                  <textarea
+                    className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] absolute inset-0 size-full resize-none overflow-hidden border-0 bg-transparent px-4 text-center text-[min(30px,8cqw)] leading-[1.5]"
+                    id="text"
+                    name="emoji-text"
+                    autoComplete="off"
+                    aria-label="이모지 텍스트"
+                    aria-describedby={invalid ? "text-error text-count" : "text-count"}
+                    aria-invalid={!!invalid}
+                    value={draft}
+                    style={{
+                      fontFamily: settings.font,
+                      paddingBlock: `max(1rem, calc((100cqw - ${draft.split("\n").length} * 1.5em) / 2))`,
+                    }}
+                    onCompositionStart={() => {
+                      composing.current = true;
+                    }}
+                    onCompositionEnd={(event) => {
+                      composing.current = false;
+                      const text = constrainText(event.currentTarget.value);
+                      setDraft(text);
+                      update({ text, characterColors: undefined });
+                      if (text !== event.currentTarget.value)
+                        setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
+                    }}
+                    onChange={(event) => {
+                      if (composing.current) {
+                        setDraft(event.target.value);
+                        return;
+                      }
+                      const text = constrainText(event.target.value);
+                      setDraft(text);
+                      update({ text, characterColors: undefined });
+                      if (text !== event.target.value)
+                        setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
+                    }}
+                    rows={Math.max(1, draft.split("\n").length)}
+                    wrap="off"
+                    spellCheck={false}
+                  />
+                </div>
                 <div
                   className="flex justify-between gap-2 px-4 py-3 text-xs text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
                   id="text-count"
@@ -322,12 +328,15 @@ export function EditorPage() {
             </div>
           </section>
           <section
-            className="flex min-w-0 items-center justify-center px-8 pt-8 pb-28 max-[760px]:px-4 max-[760px]:py-10"
+            className="sticky top-6 flex h-[calc(100svh-48px)] min-h-[560px] min-w-0 flex-col self-start px-8 py-7 max-[760px]:static max-[760px]:h-auto max-[760px]:min-h-0 max-[760px]:px-4 max-[760px]:py-4"
             aria-label="미리보기"
           >
             <h2 className="sr-only">미리보기</h2>
-            <div className="flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-8">
-              <div className="py-2">
+            <div className="grid flex-1 grid-rows-2 divide-y divide-stroke-neutral">
+              <section
+                aria-label="슬랙 메시지 미리보기"
+                className="flex min-h-56 items-center justify-center py-8"
+              >
                 <div className="flex items-start gap-2 text-[15px]">
                   <img
                     src="/profile-flower.svg"
@@ -391,29 +400,32 @@ export function EditorPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="shrink-0">
+              </section>
+              <section
+                aria-label="확대 미리보기"
+                className="flex min-h-56 items-center justify-center py-8"
+              >
                 <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
                   <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
                 </div>
-              </div>
+              </section>
             </div>
+            <footer className="flex flex-col items-center gap-3 border-t border-stroke-neutral pt-4">
+              <p role="status" className="text-xs text-fg-neutral-muted empty:hidden">
+                {status}
+              </p>
+              <button
+                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-4 py-2 font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
+                aria-busy={busy}
+                disabled={!!invalid || busy || fontLoading}
+                onClick={() => void download()}
+              >
+                {busy && <Spinner />}
+                {busy ? "만드는 중…" : "GIF 다운로드"}
+              </button>
+            </footer>
           </section>
         </div>
-        <footer className="flex flex-wrap items-center justify-end gap-x-6 gap-y-3 border-t border-stroke-neutral px-7 py-3 max-[760px]:px-4">
-          <p role="status" className="text-xs text-fg-neutral-muted empty:hidden">
-            {status}
-          </p>
-          <button
-            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-4 py-2 font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
-            aria-busy={busy}
-            disabled={!!invalid || busy || fontLoading}
-            onClick={() => void download()}
-          >
-            {busy && <Spinner />}
-            {busy ? "만드는 중…" : "GIF 다운로드"}
-          </button>
-        </footer>
       </main>
     </div>
   );
