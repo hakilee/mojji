@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { drawEmoji, exportGif, fonts, initialSettings, motions, validateText } from "./emoji";
+import {
+  drawEmoji,
+  exportGif,
+  fonts,
+  initialSettings,
+  motions,
+  textCharacters,
+  validateText,
+} from "./emoji";
 import type { Settings } from "./emoji";
 
 export function Editor() {
@@ -92,7 +100,7 @@ export function Editor() {
             <textarea
               id="text"
               value={settings.text}
-              onChange={(event) => update({ text: event.target.value })}
+              onChange={(event) => update({ text: event.target.value, characterColors: undefined })}
               rows={3}
               aria-describedby={invalid ? "text-error" : undefined}
             />
@@ -125,7 +133,9 @@ export function Editor() {
                   <input
                     type="color"
                     value={settings.color}
-                    onChange={(event) => update({ color: event.target.value })}
+                    onChange={(event) =>
+                      update({ color: event.target.value, characterColors: undefined })
+                    }
                   />
                   글자색 <span>{settings.color}</span>
                 </label>
@@ -138,6 +148,29 @@ export function Editor() {
                   />
                   배경색
                 </label>
+              </div>
+              <div className="character-colors" aria-label="글자별 색상">
+                {textCharacters(settings.text).map(
+                  (character, index) =>
+                    character.trim() && (
+                      <label key={index}>
+                        <span>{character}</span>
+                        <input
+                          type="color"
+                          aria-label={`${index + 1}번째 글자 ${character} 색상`}
+                          value={settings.characterColors?.[index] ?? settings.color}
+                          onChange={(event) =>
+                            update({
+                              characterColors: {
+                                ...settings.characterColors,
+                                [index]: event.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </label>
+                    ),
+                )}
               </div>
               <label className="check">
                 <input
