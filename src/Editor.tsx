@@ -75,7 +75,7 @@ export function Editor() {
     <div className="shell">
       <header className="flex items-center justify-between">
         <a className="brand" href="/">
-          slackmoji<span>✳</span>
+          <img src="/logo.svg" width="64" height="56" alt="슬랙모찌 홈" />
         </a>
         <span className="badge">작은 글자, 큰 리액션</span>
       </header>
@@ -230,7 +230,7 @@ export function Editor() {
         </aside>
       </main>
       <footer>
-        <span>slackmoji ✳</span>
+        <img className="footer-logo" src="/logo.svg" width="32" height="28" alt="슬랙모찌" />
         <span>Made for your everyday reactions.</span>
         <span>텍스트는 서버에 저장되지 않아요.</span>
       </footer>
