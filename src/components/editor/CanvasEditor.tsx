@@ -23,6 +23,7 @@ export function CanvasEditor({
   const canvas = useRef<HTMLCanvasElement>(null);
   const dragging = useRef<{
     id: string;
+    active: boolean;
     clientX: number;
     clientY: number;
     x: number;
@@ -95,6 +96,7 @@ export function CanvasEditor({
           onSelect(id);
           dragging.current = {
             id,
+            active: false,
             clientX: event.clientX,
             clientY: event.clientY,
             x: layer.x,
@@ -107,6 +109,10 @@ export function CanvasEditor({
           const rect = canvas.current?.getBoundingClientRect();
           if (!rect) return;
           const drag = dragging.current;
+          if (!drag.active) {
+            if (Math.hypot(event.clientX - drag.clientX, event.clientY - drag.clientY) <= 3) return;
+            drag.active = true;
+          }
           const bounds = (id: string) => {
             const image = settings.images?.find((item) => item.id === id);
             if (id === "text")
@@ -261,9 +267,11 @@ export function CanvasEditor({
                   : `이미지 레이어 ${(settings.images ?? []).indexOf(layer) + 1}: ${layer.name}`
               }
               aria-pressed={selectedId === id}
-              onClick={() => onSelect(id)}
+              onClick={(event) => {
+                if (event.detail === 0) onSelect(id);
+              }}
               onDoubleClick={text ? onEditText : undefined}
-              className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:bg-stroke-focus/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus aria-pressed:outline-2 aria-pressed:-outline-offset-2 aria-pressed:outline-stroke-focus active:cursor-grabbing"
+              className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:outline hover:-outline-offset-1 hover:outline-stroke-guide/35 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-guide aria-pressed:outline aria-pressed:-outline-offset-1 aria-pressed:outline-stroke-guide/75 active:cursor-grabbing"
             />
           );
         })}
