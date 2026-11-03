@@ -237,7 +237,7 @@ export function EditorPage() {
             composing.current ||
             fontLoading ||
             target.closest(
-              '[aria-modal="true"], textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"], input:not([type="range"]):not([type="color"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"])',
+              'textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"], input:not([type="range"]):not([type="color"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"])',
             )
           )
             return;
@@ -248,7 +248,8 @@ export function EditorPage() {
             (key === "z" || (event.ctrlKey && key === "y"))
           ) {
             event.preventDefault();
-            restore(key === "y" || event.shiftKey ? "redo" : "undo");
+            if (!document.querySelector('[aria-modal="true"]'))
+              restore(key === "y" || event.shiftKey ? "redo" : "undo");
           } else if (
             !event.metaKey &&
             !event.ctrlKey &&
@@ -326,7 +327,7 @@ export function EditorPage() {
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
-            <div className="flex min-h-heading-slot items-center gap-text">
+            <div className="flex min-h-heading-slot items-center gap-1">
               <h2 className="text-body font-semibold">캔버스</h2>
               <HelpBubble label="캔버스 조작">
                 클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을

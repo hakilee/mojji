@@ -251,7 +251,7 @@ export function FontPicker({
               className="flex h-160 max-h-[calc(100dvh-32px)] w-full max-w-xl min-w-0 flex-col gap-inset overflow-y-auto overscroll-contain rounded-workspace border border-stroke-neutral bg-bg-layer-default p-panel text-fg-neutral shadow-floating outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none max-[480px]:p-group"
             >
               <div className="flex shrink-0 items-center justify-between gap-control">
-                <div className="flex min-w-0 items-center gap-text">
+                <div className="flex min-w-0 items-center gap-1">
                   <Dialog.Title className="text-body font-semibold">Google Fonts</Dialog.Title>
                   <HelpBubble label="Google Fonts">선택한 글꼴만 Google에서 불러옵니다.</HelpBubble>
                 </div>

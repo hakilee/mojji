@@ -28,7 +28,7 @@ export function LayerEditor({
   return (
     <div className="space-y-group">
       <div className="space-y-control">
-        <div className="flex items-center gap-text">
+        <div className="flex items-center gap-1">
           <label htmlFor="image-upload" className="text-label font-semibold">
             이미지 업로드
           </label>
