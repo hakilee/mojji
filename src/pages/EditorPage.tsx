@@ -20,6 +20,7 @@ import {
   validateText,
 } from "../lib/emoji";
 import type { Settings } from "../lib/emoji";
+import { CanvasEditor } from "~/components/editor/CanvasEditor";
 import { LayerEditor } from "~/components/editor/LayerEditor";
 import { FontPicker } from "~/components/editor/FontPicker";
 
@@ -32,13 +33,8 @@ export function EditorPage() {
   const [draft, setDraft] = useState(initialSettings.text);
   const [reacted, setReacted] = useState(false);
   const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
-  const dragging = useRef<{
-    id: string;
-    clientX: number;
-    clientY: number;
-    x: number;
-    y: number;
-  } | null>(null);
+  const [openPanels, setOpenPanels] = useState<string[]>(["motion"]);
+  const textInput = useRef<HTMLTextAreaElement>(null);
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -49,6 +45,12 @@ export function EditorPage() {
   function update(patch: Partial<Settings>) {
     setSettings((current) => ({ ...current, ...patch }));
     setStatus("");
+  }
+
+  function selectLayer(id: string | null) {
+    setSelectedLayer(id);
+    if (id)
+      setOpenPanels((current) => (current.includes("layout") ? current : [...current, "layout"]));
   }
 
   useEffect(() => {
@@ -147,12 +149,49 @@ export function EditorPage() {
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
-            <h2 className="min-h-heading-slot text-body font-semibold">텍스트 편집</h2>
-            <div className="min-w-0">
+            <h2 className="min-h-heading-slot text-body font-semibold">캔버스</h2>
+            <CanvasEditor
+              settings={settings}
+              selectedId={selectedLayer}
+              onSelect={selectLayer}
+              onMove={(id, x, y) => {
+                setSettings((current) =>
+                  id === "text"
+                    ? { ...current, textLayout: { ...(current.textLayout ?? { scale: 1 }), x, y } }
+                    : {
+                        ...current,
+                        images: current.images?.map((image) =>
+                          image.id === id ? { ...image, x, y } : image,
+                        ),
+                      },
+                );
+                setStatus("");
+              }}
+              onDelete={(id) => {
+                setSettings((current) => ({
+                  ...current,
+                  images: current.images?.filter((image) => image.id !== id),
+                }));
+                setSelectedLayer(null);
+                setStatus("");
+              }}
+              onEditText={() => {
+                selectLayer("text");
+                textInput.current?.focus();
+              }}
+              onAddImage={() => {
+                setOpenPanels((current) =>
+                  current.includes("layout") ? current : [...current, "layout"],
+                );
+                document.getElementById("image-upload")?.click();
+              }}
+            />
+            <div className="mt-group min-w-0">
               <div className="overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
-                <div className="@container relative aspect-square">
+                <div className="relative">
                   <textarea
-                    className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] absolute inset-0 size-full resize-none overflow-hidden border-0 bg-transparent px-4 text-center text-[min(30px,8cqw)] leading-[1.5]"
+                    ref={textInput}
+                    className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] block min-h-24 w-full resize-none overflow-auto border-0 bg-transparent p-inset text-center text-xl leading-[1.5]"
                     id="text"
                     name="emoji-text"
                     autoComplete="off"
@@ -162,7 +201,6 @@ export function EditorPage() {
                     value={draft}
                     style={{
                       fontFamily: `"${settings.font}"`,
-                      paddingBlock: `max(1rem, calc((100cqw - ${draft.split("\n").length} * 1.5em) / 2))`,
                     }}
                     onCompositionStart={() => {
                       composing.current = true;
@@ -214,11 +252,11 @@ export function EditorPage() {
               className="space-y-control"
               multiple
               keepMounted
-              defaultValue={["motion"]}
+              value={openPanels}
               onValueChange={(values) => {
+                setOpenPanels(values);
                 if (!values.includes("layout")) {
                   setSelectedLayer(null);
-                  dragging.current = null;
                 }
               }}
             >
@@ -234,7 +272,7 @@ export function EditorPage() {
                   images={settings.images ?? []}
                   textLayout={settings.textLayout}
                   selectedId={selectedLayer}
-                  onSelect={setSelectedLayer}
+                  onSelect={selectLayer}
                   onImagesChange={(images) => update({ images })}
                   onAdd={(images) => {
                     setSettings((current) => ({
@@ -475,78 +513,7 @@ export function EditorPage() {
                 className="flex min-h-48 items-center justify-center py-page"
               >
                 <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
-                  <canvas
-                    ref={canvas}
-                    width={128}
-                    height={128}
-                    aria-label="이모지 확대 미리보기"
-                    className={
-                      selectedLayer
-                        ? "touch-none cursor-move rounded-control ring-2 ring-stroke-focus/30"
-                        : undefined
-                    }
-                    onPointerDown={(event) => {
-                      if (!selectedLayer || event.button !== 0) return;
-                      const layer =
-                        selectedLayer === "text"
-                          ? (settings.textLayout ?? { x: 64, y: 64 })
-                          : settings.images?.find((image) => image.id === selectedLayer);
-                      if (!layer) return;
-                      dragging.current = {
-                        id: selectedLayer,
-                        clientX: event.clientX,
-                        clientY: event.clientY,
-                        x: layer.x,
-                        y: layer.y,
-                      };
-                      event.currentTarget.setPointerCapture(event.pointerId);
-                    }}
-                    onPointerMove={(event) => {
-                      if (!dragging.current || !selectedLayer) return;
-                      const drag = dragging.current;
-                      const rect = event.currentTarget.getBoundingClientRect();
-                      const x = Math.round(
-                        Math.max(
-                          0,
-                          Math.min(
-                            128,
-                            drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
-                          ),
-                        ),
-                      );
-                      const y = Math.round(
-                        Math.max(
-                          0,
-                          Math.min(
-                            128,
-                            drag.y + ((event.clientY - drag.clientY) * 128) / rect.height,
-                          ),
-                        ),
-                      );
-                      setSettings((current) =>
-                        drag.id === "text"
-                          ? {
-                              ...current,
-                              textLayout: { ...(current.textLayout ?? { scale: 1 }), x, y },
-                            }
-                          : {
-                              ...current,
-                              images: current.images?.map((image) =>
-                                image.id === drag.id ? { ...image, x, y } : image,
-                              ),
-                            },
-                      );
-                      setStatus("");
-                    }}
-                    onPointerUp={(event) => {
-                      dragging.current = null;
-                      if (event.currentTarget.hasPointerCapture(event.pointerId))
-                        event.currentTarget.releasePointerCapture(event.pointerId);
-                    }}
-                    onLostPointerCapture={() => {
-                      dragging.current = null;
-                    }}
-                  />
+                  <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
                 </div>
               </section>
             </div>

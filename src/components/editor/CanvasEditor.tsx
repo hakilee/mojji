@@ -1,0 +1,221 @@
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
+import { drawEmoji, measureEmojiText } from "~/lib/emoji";
+import type { ImageLayer, Settings } from "~/lib/emoji";
+
+export function CanvasEditor({
+  settings,
+  selectedId,
+  onSelect,
+  onMove,
+  onDelete,
+  onEditText,
+  onAddImage,
+}: {
+  settings: Settings;
+  selectedId: string | null;
+  onSelect: (id: string | null) => void;
+  onMove: (id: string, x: number, y: number) => void;
+  onDelete: (id: string) => void;
+  onEditText: () => void;
+  onAddImage: () => void;
+}) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const dragging = useRef<{
+    id: string;
+    clientX: number;
+    clientY: number;
+    x: number;
+    y: number;
+  } | null>(null);
+  const [geometry, setGeometry] = useState({ width: 0, height: 0 });
+  const [error, setError] = useState("");
+  useEffect(() => {
+    let active = true;
+    async function render() {
+      await document.fonts.load(`100px "${settings.font}"`, settings.text);
+      if (!active) return;
+      const ctx = canvas.current?.getContext("2d");
+      if (!ctx) return;
+      drawEmoji(ctx, { ...settings, motion: "none" }, 0);
+      if (settings.text.trim()) {
+        const { width, height } = measureEmojiText(ctx, settings);
+        const fit = Math.min(126 / width, 126 / height) * (settings.textLayout?.scale ?? 1);
+        setGeometry((previous) =>
+          previous.width === width * fit && previous.height === height * fit
+            ? previous
+            : { width: width * fit, height: height * fit },
+        );
+      } else setGeometry((previous) => (previous.width ? { width: 0, height: 0 } : previous));
+      setError("");
+    }
+    void render().catch(() => {
+      if (active) setError("캔버스를 그리지 못했어요. 글꼴을 다시 선택해 주세요.");
+    });
+    return () => {
+      active = false;
+    };
+  }, [settings]);
+  function move(id: string, x: number, y: number) {
+    onMove(
+      id,
+      Math.round(Math.max(0, Math.min(128, x))),
+      Math.round(Math.max(0, Math.min(128, y))),
+    );
+  }
+  const layers: (ImageLayer | "text")[] = [
+    ...(settings.images ?? []).filter((image) => image.behindText),
+    ...(settings.text.trim() ? ["text" as const] : []),
+    ...(settings.images ?? []).filter((image) => !image.behindText),
+  ];
+  return (
+    <div className="space-y-inset">
+      <div
+        role="group"
+        aria-label="작업 캔버스"
+        aria-describedby="canvas-instructions"
+        className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px]"
+        onPointerDown={(event) => {
+          if (event.button !== 0) return;
+          const button = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]");
+          const id = button?.dataset.layer;
+          if (!id || !button) {
+            onSelect(null);
+            return;
+          }
+          const layer =
+            id === "text"
+              ? (settings.textLayout ?? { x: 64, y: 64 })
+              : settings.images?.find((image) => image.id === id);
+          if (!layer) return;
+          onSelect(id);
+          dragging.current = {
+            id,
+            clientX: event.clientX,
+            clientY: event.clientY,
+            x: layer.x,
+            y: layer.y,
+          };
+          button.setPointerCapture(event.pointerId);
+        }}
+        onPointerMove={(event) => {
+          if (!dragging.current || dragging.current.id !== selectedId) return;
+          const rect = canvas.current?.getBoundingClientRect();
+          if (!rect) return;
+          const drag = dragging.current;
+          move(
+            drag.id,
+            drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
+            drag.y + ((event.clientY - drag.clientY) * 128) / rect.height,
+          );
+        }}
+        onPointerUp={(event) => {
+          dragging.current = null;
+          if ((event.target as HTMLElement).hasPointerCapture(event.pointerId))
+            (event.target as HTMLElement).releasePointerCapture(event.pointerId);
+        }}
+        onLostPointerCapture={() => {
+          dragging.current = null;
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            dragging.current = null;
+            onSelect(null);
+            return;
+          }
+          const id = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]")
+            ?.dataset.layer;
+          if (!id) return;
+          if (event.key === "Delete" && id !== "text") {
+            event.preventDefault();
+            onDelete(id);
+            return;
+          }
+          const layer =
+            id === "text"
+              ? (settings.textLayout ?? { x: 64, y: 64 })
+              : settings.images?.find((image) => image.id === id);
+          if (!layer || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key))
+            return;
+          event.preventDefault();
+          onSelect(id);
+          const step = event.shiftKey ? 10 : 1;
+          move(
+            id,
+            layer.x + (event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : 0),
+            layer.y + (event.key === "ArrowDown" ? step : event.key === "ArrowUp" ? -step : 0),
+          );
+        }}
+      >
+        <canvas
+          ref={canvas}
+          width={128}
+          height={128}
+          aria-label="이모지 작업 캔버스"
+          className="absolute inset-0 size-full"
+        />
+        {layers.map((layer) => {
+          const text = layer === "text";
+          const id = text ? "text" : layer.id;
+          const x = text ? (settings.textLayout?.x ?? 64) : layer.x;
+          const y = text ? (settings.textLayout?.y ?? 64) : layer.y;
+          const width = text
+            ? geometry.width
+            : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, layer.aspectRatio));
+          const height = text
+            ? geometry.height
+            : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, 1 / layer.aspectRatio));
+          const style: CSSProperties = {
+            left: `${(x / 128) * 100}%`,
+            top: `${(y / 128) * 100}%`,
+            width: `${(width / 128) * 100}%`,
+            height: `${(height / 128) * 100}%`,
+            transform: `translate(-50%, -50%) rotate(${text ? 0 : layer.rotation}deg)`,
+          };
+          return (
+            <button
+              key={id}
+              type="button"
+              data-layer={id}
+              style={style}
+              aria-label={
+                text
+                  ? "텍스트 레이어"
+                  : `이미지 레이어 ${(settings.images ?? []).indexOf(layer) + 1}: ${layer.name}`
+              }
+              aria-pressed={selectedId === id}
+              onClick={() => onSelect(id)}
+              onDoubleClick={text ? onEditText : undefined}
+              className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:bg-stroke-focus/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus aria-pressed:outline-2 aria-pressed:-outline-offset-2 aria-pressed:outline-stroke-focus active:cursor-grabbing"
+            />
+          );
+        })}
+      </div>
+      <p id="canvas-instructions" className="text-caption text-fg-neutral-muted">
+        클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절할 수 있어요.
+      </p>
+      {error && (
+        <p role="alert" className="text-caption text-fg-critical">
+          {error}
+        </p>
+      )}
+      <div className="grid grid-cols-2 gap-control">
+        <button
+          type="button"
+          onClick={onEditText}
+          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
+        >
+          텍스트 편집
+        </button>
+        <button
+          type="button"
+          onClick={onAddImage}
+          disabled={(settings.images?.length ?? 0) >= 12}
+          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed disabled:text-fg-disabled"
+        >
+          이미지 추가
+        </button>
+      </div>
+    </div>
+  );
+}
