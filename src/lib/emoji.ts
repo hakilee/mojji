@@ -128,11 +128,50 @@ export function measureEmojiText(ctx: CanvasRenderingContext2D, settings: Settin
   return { lines, runs, metrics, width, height, top, bottom };
 }
 
-function drawImages(ctx: CanvasRenderingContext2D, images: ImageLayer[], behindText: boolean) {
+function applyMotion(ctx: CanvasRenderingContext2D, motion: Settings["motion"], progress: number) {
+  const phase = progress * Math.PI * 2;
+  switch (motion) {
+    case "scale": {
+      const scale = 0.85 + Math.sin(phase) * 0.12;
+      ctx.scale(scale, scale);
+      break;
+    }
+    case "bounce":
+      ctx.translate(0, -Math.abs(Math.sin(phase)) * 12 + 6);
+      break;
+    case "slide":
+      ctx.translate(Math.sin(phase) * 14, 0);
+      break;
+    case "shake":
+      ctx.rotate(Math.sin(phase * 3) * 0.12);
+      break;
+    case "roll":
+      ctx.rotate(phase);
+      break;
+    case "orbit":
+      ctx.translate(Math.cos(phase) * 8, Math.sin(phase) * 8);
+      break;
+    case "swing":
+      ctx.rotate(Math.sin(phase) * 0.25);
+      break;
+    case "jelly":
+      ctx.scale(0.88 + Math.sin(phase) * 0.1, 0.88 - Math.sin(phase) * 0.1);
+      break;
+  }
+}
+
+function drawImages(
+  ctx: CanvasRenderingContext2D,
+  images: ImageLayer[],
+  behindText: boolean,
+  motion: Settings["motion"],
+  progress: number,
+) {
   for (const image of images) {
     if (image.behindText !== behindText) continue;
     ctx.save();
     ctx.translate(image.x, image.y);
+    applyMotion(ctx, motion, progress);
     ctx.rotate((image.rotation * Math.PI) / 180);
     if (image.fit === "cover") {
       const width = Number(image.source.width);
@@ -164,43 +203,15 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     ctx.fillStyle = settings.background;
     ctx.fillRect(0, 0, 128, 128);
   }
-  drawImages(ctx, settings.images ?? [], true);
+  drawImages(ctx, settings.images ?? [], true, settings.motion, progress);
   if (!settings.text.trim()) {
-    drawImages(ctx, settings.images ?? [], false);
+    drawImages(ctx, settings.images ?? [], false, settings.motion, progress);
     return;
   }
   ctx.save();
   ctx.translate(settings.textLayout?.x ?? 64, settings.textLayout?.y ?? 64);
   ctx.scale(settings.textLayout?.scale ?? 1, settings.textLayout?.scale ?? 1);
-  const phase = progress * Math.PI * 2;
-  switch (settings.motion) {
-    case "scale": {
-      const scale = 0.85 + Math.sin(phase) * 0.12;
-      ctx.scale(scale, scale);
-      break;
-    }
-    case "bounce":
-      ctx.translate(0, -Math.abs(Math.sin(phase)) * 12 + 6);
-      break;
-    case "slide":
-      ctx.translate(Math.sin(phase) * 14, 0);
-      break;
-    case "shake":
-      ctx.rotate(Math.sin(phase * 3) * 0.12);
-      break;
-    case "roll":
-      ctx.rotate(phase);
-      break;
-    case "orbit":
-      ctx.translate(Math.cos(phase) * 8, Math.sin(phase) * 8);
-      break;
-    case "swing":
-      ctx.rotate(Math.sin(phase) * 0.25);
-      break;
-    case "jelly":
-      ctx.scale(0.88 + Math.sin(phase) * 0.1, 0.88 - Math.sin(phase) * 0.1);
-      break;
-  }
+  applyMotion(ctx, settings.motion, progress);
   const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, settings);
   ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
   if (settings.gradient) {
@@ -229,7 +240,7 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     }
   });
   ctx.restore();
-  drawImages(ctx, settings.images ?? [], false);
+  drawImages(ctx, settings.images ?? [], false, settings.motion, progress);
 }
 
 export async function exportGif(ctx: CanvasRenderingContext2D, settings: Settings): Promise<Blob> {

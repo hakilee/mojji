@@ -220,14 +220,14 @@ export function CanvasEditor({
         {guides.x !== undefined && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 z-10 border-l border-stroke-focus"
+            className="pointer-events-none absolute inset-y-0 z-10 border-l border-stroke-guide"
             style={{ left: `${(guides.x / 128) * 100}%` }}
           />
         )}
         {guides.y !== undefined && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 z-10 border-t border-stroke-focus"
+            className="pointer-events-none absolute inset-x-0 z-10 border-t border-stroke-guide"
             style={{ top: `${(guides.y / 128) * 100}%` }}
           />
         )}

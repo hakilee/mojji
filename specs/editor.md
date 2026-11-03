@@ -32,3 +32,5 @@ Owner: GitHub issue #1. Browser-only; input never leaves the device.
 Verification: renderer tests decode output for dimensions, frame count, timing, transparency and motion changes; Aside CLI covers browser controls and download behavior. Local `yarn verify` is the delivery gate.
 
 - E5m (#75): Render the work canvas at 768×768 backing resolution, retaining 128-unit coordinates and 128px GIF export. During pointer drag, snap within five CSS pixels to canvas/layer centers and edges (rotated image axis-aligned bounds); display alignment lines only during the drag. Alt bypasses snapping; keyboard nudging remains exact. For GIFs exceeding 128KiB retry palettes of 128/64/32 colors, retaining the smallest candidate and preserving frame count, timing and transparency; still reject oversized output.
+
+- E5p (#77): Selected motion applies to each uploaded image around its own placement center as well as text, including image-only compositions. Preserve front/behind ordering, image rotation, speed/delay, reduced-motion preview and static editing. Alignment guides use a pink semantic token, independent of neutral focus/selection outlines.
