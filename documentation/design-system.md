@@ -56,6 +56,8 @@ Shared components live in `src/components/design-system/`. Import their public e
 
 Accordion panels use the primitive's measured height and transition-state attributes for a reversible 200 ms collapse transition. Chevrons rotate with the same timing. Both transitions are disabled by the user's reduced-motion preference; panel padding stays on the inner fieldset so the collapsed height is zero.
 
+The effects panel uses a labelled native select for speed and a native range input for repeat delay, with a seconds output and spoken value. Static effects disable these controls without resetting them. The font panel accepts local font files through the browser font API; its single uploaded-font slot can be reselected, survives disclosure and releases replaced or unmounted faces. Failed uploads preserve the current selection. Neither control adds a runtime dependency.
+
 Library imports use individual component subpaths. The small app-owned public export module remains available at `~/components/design-system`. Spinner and motion artwork have no interactive behavior to replace. Native textarea, color inputs and select retain platform behavior.
 
 ## Three-column workspace (#52)

@@ -1,5 +1,12 @@
 import { Spinner } from "~/components/design-system";
-import { startTransition, useDeferredValue, useState, ViewTransition } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+  ViewTransition,
+} from "react";
 import { fonts } from "../../lib/emoji";
 
 export function FontPicker({
@@ -18,10 +25,21 @@ export function FontPicker({
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [uploadedFamily, setUploadedFamily] = useState("");
+  const uploadedFace = useRef<FontFace | null>(null);
+  const mounted = useRef(true);
   const search = useDeferredValue(query.trim().toLowerCase());
   const results = (catalog ?? []).filter(
     (item) => (!koreanOnly || item.korean) && item.family.toLowerCase().includes(search),
   );
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (uploadedFace.current) document.fonts.delete(uploadedFace.current);
+    };
+  }, []);
 
   async function selectFont(family: string) {
     setLoading(family);
@@ -90,6 +108,69 @@ export function FontPicker({
             <small>{family}</small>
           </button>
         ))}
+      </div>
+      <div className="mt-3 space-y-control">
+        <label htmlFor="font-upload" className="block text-label font-semibold">
+          폰트 파일 업로드
+        </label>
+        <input
+          id="font-upload"
+          type="file"
+          accept=".otf,.ttf,.woff,.woff2"
+          disabled={!!loading}
+          className="block w-full min-w-0 rounded-control border border-stroke-neutral bg-bg-layer-default p-2 text-caption text-fg-neutral-muted file:mr-2 file:cursor-pointer file:rounded-control file:border-0 file:bg-bg-neutral-weak file:px-3 file:py-2 file:text-caption file:font-semibold file:text-fg-neutral focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:opacity-50"
+          onChange={async (event) => {
+            const file = event.target.files?.[0];
+            event.target.value = "";
+            if (!file) return;
+            setLoading("upload");
+            setError("");
+            onLoading(true);
+            try {
+              if (!/\.(?:otf|ttf|woff2?)$/i.test(file.name)) throw new Error("format");
+              const family = `${file.name.replace(/["\\\r\n]/g, "")} (업로드)`;
+              const face = await new FontFace(`"${family}"`, await file.arrayBuffer()).load();
+              if (!mounted.current) return;
+              document.fonts.add(face);
+              if (uploadedFace.current) document.fonts.delete(uploadedFace.current);
+              uploadedFace.current = face;
+              setUploadedFamily(family);
+              onChange(family);
+            } catch {
+              if (mounted.current)
+                setError(
+                  "폰트를 불러오지 못했어요. 올바른 OTF, TTF, WOFF 또는 WOFF2 파일을 선택해 주세요.",
+                );
+            } finally {
+              if (mounted.current) {
+                setLoading("");
+                onLoading(false);
+              }
+            }
+          }}
+        />
+        {loading === "upload" && (
+          <p
+            role="status"
+            className="flex items-center gap-control text-caption text-fg-neutral-muted"
+          >
+            <Spinner /> 폰트 불러오는 중…
+          </p>
+        )}
+        {uploadedFamily && (
+          <button
+            type="button"
+            disabled={!!loading}
+            aria-pressed={font === uploadedFamily}
+            className="w-full cursor-pointer rounded-control border border-stroke-neutral p-3 text-left text-label wrap-anywhere aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:opacity-50"
+            onClick={() => {
+              setError("");
+              onChange(uploadedFamily);
+            }}
+          >
+            {uploadedFamily}
+          </button>
+        )}
       </div>
       <button
         type="button"

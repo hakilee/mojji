@@ -50,6 +50,46 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     },
   );
 
+  test.each([
+    { speed: 0.5, delay: 0, frameDelay: 120 },
+    { speed: 1, delay: 500, frameDelay: 60 },
+    { speed: 1.5, delay: 1000, frameDelay: 40 },
+    { speed: 2, delay: 2000, frameDelay: 30 },
+  ] as const)(
+    "exports $speed× with a $delay ms hold before each loop",
+    async ({ speed, delay, frameDelay }) => {
+      const canvas = createCanvas(128, 128);
+      const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
+      const settings = { ...initialSettings, text: "YES", speed, delay };
+      const gif = decodeFrames(await (await exportGif(ctx, settings)).arrayBuffer());
+      const baseline = decodeFrames(
+        await (await exportGif(ctx, { ...settings, speed: 1, delay: 0 })).arrayBuffer(),
+      );
+      expect(gif).toHaveLength(20);
+      expect(gif[0].delay).toBe(frameDelay + delay);
+      expect(gif.slice(1).every((frame) => frame.delay === frameDelay)).toBe(true);
+      expect(gif.reduce((total, frame) => total + frame.delay, 0)).toBe(frameDelay * 20 + delay);
+      expect(gif.map((frame) => frame.data)).toEqual(baseline.map((frame) => frame.data));
+    },
+  );
+
+  test("ignores timing settings for static output", async () => {
+    const canvas = createCanvas(128, 128);
+    const gif = decodeFrames(
+      await (
+        await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
+          ...initialSettings,
+          text: "YES",
+          motion: "none",
+          speed: 2,
+          delay: 2000,
+        })
+      ).arrayBuffer(),
+    );
+    expect(gif).toHaveLength(1);
+    expect(gif[0].delay).toBe(60);
+  });
+
   test.each(["I", "YES", "안녕", "안녕\n반가워", "A\nB\nC"])(
     "fills the static GIF with centered visible text %j",
     async (text) => {
