@@ -3,6 +3,7 @@
 /* App theme roles: documentation/colors.md. */
 @theme {
   --spacing-control: 0.5rem;
+  --spacing-control-size: 2.5rem;
   --spacing-text: 0.375rem;
   --spacing-section: 1.5rem;
   --spacing-panel: 1.5rem;
@@ -43,6 +44,7 @@
   --color-bg-checker-tile: #eeeff1;
   --font-sans: "Pretendard Variable", sans-serif;
   --radius-control: 8px;
+  --radius-control-inset: 4px;
   --radius-panel: 12px;
   --animate-font-reveal: font-reveal 160ms ease-out;
   --animate-font-hide: font-reveal 120ms ease-in reverse;
