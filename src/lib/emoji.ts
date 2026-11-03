@@ -1,6 +1,7 @@
 import { encode } from "modern-gif";
 
 export const maxTextCharacters = 9;
+export const motionFrameDelays = { 0.5: 120, 1: 60, 1.5: 40, 2: 30 } as const;
 
 export const fonts: readonly string[] = ["Black Han Sans", "Jua", "Noto Sans KR"];
 export const motions = {
@@ -23,6 +24,8 @@ export type Settings = {
   background: string;
   transparent: boolean;
   motion: keyof typeof motions;
+  speed: keyof typeof motionFrameDelays;
+  delay: number;
 };
 export const initialSettings: Settings = {
   text: "최고야!",
@@ -31,6 +34,8 @@ export const initialSettings: Settings = {
   background: "#ffffff",
   transparent: true,
   motion: "bounce",
+  speed: 1,
+  delay: 0,
 };
 
 export function textCharacters(text: string): string[] {
@@ -207,7 +212,10 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
     drawEmoji(ctx, settings, index / count);
     frames.push({
       data: ctx.getImageData(0, 0, 128, 128).data,
-      delay: 60,
+      delay:
+        settings.motion === "none"
+          ? 60
+          : motionFrameDelays[settings.speed] + (index === 0 ? settings.delay : 0),
       disposal: 2 as const,
     });
   }

@@ -12,6 +12,7 @@ import {
   constrainText,
   initialSettings,
   motions,
+  motionFrameDelays,
   maxTextCharacters,
   textCharacters,
   validateText,
@@ -52,11 +53,20 @@ export function EditorPage() {
     async function start() {
       await document.fonts.load(`40px "${settings.font}"`, settings.text);
       if (!active) return;
+      const startedAt = performance.now();
+      const duration = motionFrameDelays[settings.speed] * 20;
       function render(time: number) {
         const ctx = canvas.current?.getContext("2d");
         const small = smallCanvas.current?.getContext("2d");
         if (ctx && small) {
-          drawEmoji(ctx, settings, reducedMotion ? 0 : (time % 1200) / 1200);
+          drawEmoji(
+            ctx,
+            settings,
+            reducedMotion
+              ? 0
+              : Math.max(0, ((time - startedAt) % (duration + settings.delay)) - settings.delay) /
+                  duration,
+          );
           small.clearRect(0, 0, 128, 128);
           small.drawImage(ctx.canvas, 0, 0);
         }
@@ -139,7 +149,7 @@ export function EditorPage() {
                     aria-invalid={!!invalid}
                     value={draft}
                     style={{
-                      fontFamily: settings.font,
+                      fontFamily: `"${settings.font}"`,
                       paddingBlock: `max(1rem, calc((100cqw - ${draft.split("\n").length} * 1.5em) / 2))`,
                     }}
                     onCompositionStart={() => {
@@ -326,6 +336,49 @@ export function EditorPage() {
                     </button>
                   ))}
                 </div>
+                <fieldset
+                  disabled={settings.motion === "none"}
+                  className="mt-4 space-y-4 border-0 p-0 disabled:opacity-50"
+                >
+                  <legend className="sr-only">모션 타이밍</legend>
+                  <label className="flex items-center justify-between gap-control text-label">
+                    속도
+                    <select
+                      className="min-h-10 rounded-control border border-stroke-neutral bg-bg-layer-default px-3 text-label focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+                      value={settings.speed}
+                      onChange={(event) =>
+                        update({ speed: Number(event.target.value) as Settings["speed"] })
+                      }
+                    >
+                      {Object.keys(motionFrameDelays)
+                        .sort((a, b) => Number(a) - Number(b))
+                        .map((speed) => (
+                          <option key={speed} value={speed}>
+                            {speed}×
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <div className="space-y-control">
+                    <div className="flex items-center justify-between gap-control text-label">
+                      <label htmlFor="motion-delay">반복 딜레이</label>
+                      <output htmlFor="motion-delay" className="tabular-nums text-fg-neutral-muted">
+                        {(settings.delay / 1000).toFixed(1)}초
+                      </output>
+                    </div>
+                    <input
+                      id="motion-delay"
+                      type="range"
+                      min="0"
+                      max="2000"
+                      step="100"
+                      value={settings.delay}
+                      aria-valuetext={`${(settings.delay / 1000).toFixed(1)}초`}
+                      className="block h-6 w-full cursor-pointer accent-fg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+                      onChange={(event) => update({ delay: event.target.valueAsNumber })}
+                    />
+                  </div>
+                </fieldset>
               </AccordionItem>
             </Accordion>
           </section>
