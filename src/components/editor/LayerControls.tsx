@@ -1,17 +1,20 @@
+import type { RefObject } from "react";
 import { Button, FloatingPanel, RangeField, SegmentedControl } from "~/components/design-system";
 import type { ImageLayer, Settings } from "~/lib/emoji";
 export function LayerControls({
   images,
   textLayout,
   selectedId,
-  onSelect,
+  anchor,
+  onClose,
   onImagesChange,
   onTextLayoutChange,
 }: {
   images: ImageLayer[];
   textLayout: Settings["textLayout"];
   selectedId: string | null;
-  onSelect: (id: string | null) => void;
+  anchor: RefObject<HTMLElement | null>;
+  onClose: () => void;
   onImagesChange: (images: ImageLayer[]) => void;
   onTextLayoutChange: (layout: Settings["textLayout"]) => void;
 }) {
@@ -24,11 +27,23 @@ export function LayerControls({
   const layout = textLayout ?? { x: 64, y: 64, scale: 1 };
   if (!selected && selectedId !== "text") return null;
   return (
-    <FloatingPanel key={selectedId} label={selected ? "이미지 레이어 편집" : "텍스트 레이어 편집"}>
+    <FloatingPanel
+      id="layer-controls"
+      label={selected ? "이미지" : "텍스트"}
+      anchor={anchor}
+      onClose={(details) => {
+        if (
+          details.reason === "outside-press" &&
+          details.event.target instanceof Element &&
+          details.event.target.closest("#layer-settings")
+        ) {
+          details.cancel();
+          return;
+        }
+        onClose();
+      }}
+    >
       <div className="space-y-group">
-        <p className="text-caption text-fg-neutral-muted">
-          드래그로 배치하거나 아래에서 정확하게 조절하세요.
-        </p>
         <div className="grid grid-cols-3 gap-control">
           {[
             { label: "상단", y: 24 },
@@ -36,6 +51,8 @@ export function LayerControls({
             { label: "하단", y: 104 },
           ].map((preset) => (
             <Button
+              variant="white"
+              size="x-small"
               key={preset.label}
               onClick={() =>
                 selected
@@ -107,6 +124,8 @@ export function LayerControls({
                 const target = siblings[index + direction];
                 return (
                   <Button
+                    variant="white"
+                    size="small"
                     key={label}
                     disabled={!target}
                     onClick={() => {
@@ -123,6 +142,8 @@ export function LayerControls({
               })}
             </div>
             <Button
+              variant="white"
+              size="small"
               className="w-full"
               onClick={() =>
                 changeImage({
@@ -138,14 +159,15 @@ export function LayerControls({
               배경 채우기
             </Button>
             <Button
-              variant="critical"
+              variant="white"
+              size="small"
               className="w-full"
               onClick={() => {
                 onImagesChange(images.filter((image) => image.id !== selectedId));
-                onSelect(null);
+                onClose();
               }}
             >
-              선택 이미지 삭제
+              <span className="text-fg-critical">선택 이미지 삭제</span>
             </Button>
           </>
         ) : (
@@ -158,7 +180,12 @@ export function LayerControls({
               value={Math.round(layout.scale * 100)}
               onChange={(scale) => onTextLayoutChange({ ...layout, scale: scale / 100 })}
             />
-            <Button className="w-full" onClick={() => onTextLayoutChange(undefined)}>
+            <Button
+              variant="white"
+              size="small"
+              className="w-full"
+              onClick={() => onTextLayoutChange(undefined)}
+            >
               텍스트 배치 초기화
             </Button>
           </>

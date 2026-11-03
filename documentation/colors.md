@@ -8,7 +8,7 @@
 - Neutral foreground: `fg-neutral` for primary text, `fg-neutral-secondary` for supporting labels, `fg-neutral-muted` for captions. Muted text remains readable on white and neutral surfaces.
 - Neutral surfaces: `bg-neutral-weak` and its hover/pressed roles support secondary controls. `stroke-neutral` defines structure; `stroke-neutral-strong` clarifies field boundaries and hover.
 - Brand: charcoal primary actions, pale neutral selected surfaces and dark keyboard focus. Solid and weak actions have separate hover/pressed roles; disabled controls do not react to pointer states.
-- Positive and critical: success and validation feedback; critical weak surfaces support destructive-button hover and pressed states.
+- Positive and critical: success and validation feedback; destructive action labels use the critical foreground on the white button variant.
 - Disabled: muted foreground and neutral background.
 - Checker: alternating neutral tiles for transparency previews.
 - Guide: pink is reserved for canvas layer selection, hover, alignment and contextual focus.

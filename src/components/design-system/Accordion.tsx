@@ -4,21 +4,24 @@ import type { ReactNode } from "react";
 export const Accordion = AccordionPrimitive.Root;
 
 export function AccordionItem({
+  id,
   title,
   value,
   children,
 }: {
+  id?: string;
   title: string;
   value: string;
   children: ReactNode;
 }) {
   return (
     <AccordionPrimitive.Item
+      id={id}
       value={value}
-      className="min-w-0 overflow-hidden rounded-panel border border-stroke-neutral bg-bg-layer-default"
+      className="min-w-0 border-b border-stroke-neutral last:border-b-0"
     >
       <AccordionPrimitive.Header>
-        <AccordionPrimitive.Trigger className="group flex w-full min-h-12 cursor-pointer text-left items-center justify-between gap-control px-group py-inset text-label font-semibold text-fg-neutral-secondary select-none transition-colors duration-150 hover:bg-bg-neutral-weak-hover focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus data-panel-open:bg-bg-neutral-weak motion-reduce:transition-none">
+        <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer text-left items-center justify-between gap-control px-group py-inset text-label font-medium text-fg-neutral-secondary select-none transition-colors duration-150 hover:text-fg-neutral focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus motion-reduce:transition-none">
           {title}
           <svg
             className="size-4 shrink-0 text-fg-neutral-muted transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none"
@@ -35,7 +38,7 @@ export function AccordionItem({
         </AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
       <AccordionPrimitive.Panel className="h-[var(--accordion-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 motion-reduce:transition-none">
-        <fieldset className="min-w-0 border-0 border-t border-solid border-stroke-neutral p-group">
+        <fieldset className="min-w-0 border-0 px-group pb-inset pt-control">
           <legend className="sr-only">{title}</legend>
           {children}
         </fieldset>

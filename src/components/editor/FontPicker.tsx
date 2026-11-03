@@ -170,7 +170,7 @@ export function FontPicker({
         )}
       </div>
       <Button
-        variant="subtle"
+        variant="neutral"
         className="mt-inset w-full"
         aria-expanded={expanded}
         aria-controls="font-search-panel"

@@ -1,4 +1,3 @@
-import { LayerControls } from "~/components/editor/LayerControls";
 import {
   Accordion,
   AccordionItem,
@@ -156,6 +155,9 @@ export function EditorPage() {
               settings={settings}
               selectedId={selectedLayer}
               onSelect={selectLayer}
+              onDismiss={(id) => setSelectedLayer((current) => (current === id ? null : current))}
+              onImagesChange={(images) => update({ images })}
+              onTextLayoutChange={(textLayout) => update({ textLayout })}
               onMove={(id, x, y) => {
                 setSettings((current) =>
                   id === "text"
@@ -188,16 +190,6 @@ export function EditorPage() {
                 document.getElementById("image-upload")?.click();
               }}
             />
-            <div className="mt-inset flex justify-center">
-              <LayerControls
-                images={settings.images ?? []}
-                textLayout={settings.textLayout}
-                selectedId={selectedLayer}
-                onSelect={selectLayer}
-                onImagesChange={(images) => update({ images })}
-                onTextLayoutChange={(textLayout) => update({ textLayout })}
-              />
-            </div>
             <div className="mt-group min-w-0">
               <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak shadow-control transition-[border-color,box-shadow] duration-150 hover:border-stroke-neutral-strong focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 has-aria-invalid:border-fg-critical has-aria-invalid:ring-fg-critical/20 motion-reduce:transition-none">
                 <div className="relative">
@@ -276,7 +268,7 @@ export function EditorPage() {
                   onLoading={setFontLoading}
                 />
               </AccordionItem>
-              <AccordionItem value="layout" title="이미지 · 배치">
+              <AccordionItem id="layer-settings" value="layout" title="이미지 · 배치">
                 <LayerEditor
                   images={settings.images ?? []}
                   selectedId={selectedLayer}
@@ -526,7 +518,7 @@ export function EditorPage() {
                 {status}
               </p>
               <Button
-                variant="primary"
+                variant="black"
                 className="w-full"
                 aria-busy={busy}
                 disabled={!!invalid || busy || fontLoading}

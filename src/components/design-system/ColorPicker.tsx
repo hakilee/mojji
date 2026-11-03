@@ -62,7 +62,7 @@ export function ColorPicker({
               <Popover.Title className="text-label font-semibold">{label}</Popover.Title>
               <Popover.Close
                 aria-label="색상 선택 닫기"
-                render={<Button variant="subtle" className="shrink-0" />}
+                render={<Button variant="neutral" svgOnly className="shrink-0" />}
               >
                 <svg
                   viewBox="0 0 24 24"

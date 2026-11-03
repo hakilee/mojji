@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
 import type { ImageLayer, Settings } from "~/lib/emoji";
+import { LayerControls } from "./LayerControls";
 import { Button } from "~/components/design-system";
 
 export function CanvasEditor({
@@ -12,6 +13,9 @@ export function CanvasEditor({
   onDelete,
   onEditText,
   onAddImage,
+  onImagesChange,
+  onTextLayoutChange,
+  onDismiss,
 }: {
   settings: Settings;
   selectedId: string | null;
@@ -20,8 +24,12 @@ export function CanvasEditor({
   onDelete: (id: string) => void;
   onEditText: () => void;
   onAddImage: () => void;
+  onImagesChange: (images: ImageLayer[]) => void;
+  onTextLayoutChange: (layout: Settings["textLayout"]) => void;
+  onDismiss: (id: string) => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const selectedAnchor = useRef<HTMLButtonElement | null>(null);
   const dragging = useRef<{
     id: string;
     active: boolean;
@@ -259,6 +267,9 @@ export function CanvasEditor({
           return (
             <button
               key={id}
+              ref={(element) => {
+                if (element && selectedId === id) selectedAnchor.current = element;
+              }}
               type="button"
               data-layer={id}
               style={style}
@@ -268,8 +279,14 @@ export function CanvasEditor({
                   : `이미지 레이어 ${(settings.images ?? []).indexOf(layer) + 1}: ${layer.name}`
               }
               aria-pressed={selectedId === id}
+              aria-haspopup="dialog"
+              aria-expanded={selectedId === id}
+              aria-controls={selectedId === id ? "layer-controls" : undefined}
               onClick={(event) => {
-                if (event.detail === 0) onSelect(id);
+                if (event.detail === 0) {
+                  onSelect(id);
+                  requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
+                }
               }}
               onDoubleClick={text ? onEditText : undefined}
               className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:outline hover:-outline-offset-1 hover:outline-stroke-guide/35 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-guide aria-pressed:outline aria-pressed:-outline-offset-1 aria-pressed:outline-stroke-guide/75 active:cursor-grabbing"
@@ -277,6 +294,18 @@ export function CanvasEditor({
           );
         })}
       </div>
+      {selectedId && (
+        <LayerControls
+          key={selectedId}
+          anchor={selectedAnchor}
+          images={settings.images ?? []}
+          textLayout={settings.textLayout}
+          selectedId={selectedId}
+          onClose={() => onDismiss(selectedId)}
+          onImagesChange={onImagesChange}
+          onTextLayoutChange={onTextLayoutChange}
+        />
+      )}
       <p id="canvas-instructions" className="text-caption text-fg-neutral-muted">
         클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
         해제하세요.
@@ -287,8 +316,15 @@ export function CanvasEditor({
         </p>
       )}
       <div className="grid grid-cols-2 gap-control">
-        <Button onClick={onEditText}>텍스트 편집</Button>
-        <Button onClick={onAddImage} disabled={(settings.images?.length ?? 0) >= 12}>
+        <Button variant="white" size="small" onClick={onEditText}>
+          텍스트 편집
+        </Button>
+        <Button
+          variant="white"
+          size="small"
+          onClick={onAddImage}
+          disabled={(settings.images?.length ?? 0) >= 12}
+        >
           이미지 추가
         </Button>
       </div>

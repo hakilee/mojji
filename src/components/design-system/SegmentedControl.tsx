@@ -17,7 +17,7 @@ export function SegmentedControl<T extends string>({
       value={value}
       onValueChange={onChange}
       aria-label={label}
-      className="flex min-h-control-size gap-1 rounded-control bg-bg-neutral-weak p-1 ring-1 ring-inset ring-stroke-neutral"
+      className="flex min-h-control-size gap-1 rounded-panel bg-bg-neutral-weak p-1 ring-1 ring-inset ring-stroke-neutral"
     >
       {options.map((option) => (
         <Radio.Root
