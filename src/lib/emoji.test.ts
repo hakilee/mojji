@@ -1,18 +1,64 @@
 import { createCanvas } from "@napi-rs/canvas";
 import { decode, decodeFrames } from "modern-gif";
-import { describe, expect, test } from "vitest";
+import { describe, expect, onTestFinished, test, vi } from "vitest";
 import {
   constrainText,
   drawEmoji,
   exportGif,
   initialSettings,
   type ImageLayer,
+  type Settings,
   motions,
   textCharacters,
   validateText,
 } from "~/lib/emoji";
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
+  test.each(["text", "image"] as const)(
+    "recovers correct pixels after a failed %s paint [E2d]",
+    (layer) => {
+      const source = createCanvas(16, 16);
+      source.getContext("2d").fillRect(0, 0, 16, 16);
+      const settings: Settings = {
+        ...initialSettings,
+        images: [
+          {
+            id: "image",
+            name: "image",
+            source: source as unknown as HTMLCanvasElement,
+            aspectRatio: 1,
+            x: 30,
+            y: 40,
+            size: 20,
+            rotation: 25,
+            behindText: false,
+            fit: "contain",
+          },
+        ],
+      };
+      const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+      ctx.scale(1.1, 1.1);
+      const transform = ctx.getTransform();
+      const paint = layer === "text" ? vi.spyOn(ctx, "fillText") : vi.spyOn(ctx, "drawImage");
+      onTestFinished(() => paint.mockRestore());
+      paint.mockImplementationOnce(() => {
+        throw new Error("paint unavailable");
+      });
+
+      expect(() => drawEmoji(ctx, settings, 0)).toThrow("paint unavailable");
+      expect(ctx.getTransform()).toEqual(transform);
+      drawEmoji(ctx, settings, 0);
+
+      const expected = createCanvas(128, 128).getContext(
+        "2d",
+      ) as unknown as CanvasRenderingContext2D;
+      expected.setTransform(transform);
+      drawEmoji(expected, settings, 0);
+      expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(
+        expected.getImageData(0, 0, 128, 128).data,
+      );
+    },
+  );
   test.each(["", "   ", "a".repeat(10), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
     const canvas = createCanvas(128, 128);
     const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;

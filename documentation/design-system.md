@@ -18,6 +18,7 @@ Use the public exports at `~/components/design-system` instead of copying contro
 | `ChoiceButton` | Font specimens/results, layer list and motions        | Required boolean `selected` maps to `aria-pressed`; shared selection, hover, pressed, keyboard and disabled states; consumers own content layout |
 | `Input`        | Search, HEX and local file upload                     | Base UI input props/ref and change events; shared border, focus, invalid and disabled states, native file-selector styling                       |
 | `Select`       | Gradient direction and motion speed                   | Native select props/ref, platform keyboard behavior and the same field geometry/states                                                           |
+| `HelpBubble`   | Optional canvas, image/layer and remote-font guidance | Labelled 40px native help button, headless tooltip, hover/focus/click/tap, Escape/outside dismissal and viewport constraints                     |
 
 Buttons use medium (40px, 24px horizontal inset, 12px radius, semibold), small (34px, 12px inset, 7px radius, medium) and x-small (28px, 8px inset, 8px radius, 13px medium text) sizes. Medium and small labels are 14px. Input/select fields use 36px height, 12px horizontal inset and 10px radius. Choice cards use 12px all-round padding. Keep layout-only classes at call sites; variant/state styling belongs to the component. Do not replace canvas hit areas or the Slack-like reaction with generic controls: those have independent interaction and geometry contracts.
 
@@ -76,6 +77,12 @@ Accordion panels use the primitive's measured height and transition-state attrib
 The effects panel uses a labelled native select for speed and a native range input for repeat delay, with a seconds output and spoken value. Static effects disable these controls without resetting them. The font panel accepts local font files through the browser font API; its single uploaded-font slot can be reselected, survives disclosure and releases replaced or unmounted faces. Failed uploads preserve the current selection. Neither control adds a runtime dependency.
 
 Library imports use individual component subpaths. The small app-owned public export module remains available at `~/components/design-system`. Spinner and motion artwork have no interactive behavior to replace. Native textarea and select retain platform behavior. The color picker retains a native full-color input alongside its presets and HEX field.
+
+## Help and render recovery (#83)
+
+`HelpBubble` puts optional guidance beside its heading or control, instead of permanently showing helper paragraphs. The tooltip retains neutral surfaces, 6px corners, 12px medium text, 12/6px insets and a 4px anchor offset. Base UI owns positioning, focus/hover behavior and dismissal; explicit activation opens it for touch users as well. Bubbles stay inside the viewport and respect reduced motion. Error messages, progress, result counts and selected-font state are not optional help and remain visible.
+
+`src/lib/font-loading.ts` shares a 15-second font-load deadline between the work canvas, animated previews, GIF export and remote-font selection. Whitespace-only/image-only compositions skip unused font loading. Font failures retain their cause for diagnosis but show localized guidance; no automatic font substitution changes the composition. Work-canvas errors distinguish font loading from drawing, provide a redraw action for both canvases and a direct font-settings action when relevant, and disappear after a successful render. The renderer and high-resolution editor restore saved canvas state even when painting throws, so a retry cannot compound transforms. Renderer tests compare recovered output pixels and Aside verifies visible failure/recovery and download.
 
 ## Three-column workspace (#52)
 

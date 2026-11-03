@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChoiceButton, Input, Spinner } from "~/components/design-system";
+import { ChoiceButton, HelpBubble, Input, Spinner } from "~/components/design-system";
 import type { ImageLayer } from "~/lib/emoji";
 import { loadImage } from "~/lib/image-upload";
 
@@ -26,9 +26,15 @@ export function LayerEditor({
   return (
     <div className="space-y-group">
       <div className="space-y-control">
-        <label htmlFor="image-upload" className="block text-label font-semibold">
-          이미지 업로드
-        </label>
+        <div className="flex items-center gap-text">
+          <label htmlFor="image-upload" className="text-label font-semibold">
+            이미지 업로드
+          </label>
+          <HelpBubble label="이미지 업로드">
+            <p>PNG · JPG · WebP · GIF, 최대 12개 · 파일당 5MB. GIF는 첫 프레임을 사용해요.</p>
+            <p className="mt-control">레이어 목록은 위쪽 항목이 앞에 표시돼요.</p>
+          </HelpBubble>
+        </div>
         <Input
           id="image-upload"
           type="file"
@@ -58,9 +64,6 @@ export function LayerEditor({
             setLoading(false);
           }}
         />
-        <p className="text-caption text-fg-neutral-muted">
-          PNG · JPG · WebP · GIF, 최대 12개 · 파일당 5MB. GIF는 첫 프레임을 사용해요.
-        </p>
         {loading && (
           <p role="status" className="flex items-center gap-control text-caption">
             <Spinner />
@@ -74,7 +77,6 @@ export function LayerEditor({
         )}
       </div>
       <div className="space-y-control" role="group" aria-label="레이어 선택">
-        <p className="text-caption text-fg-neutral-muted">위쪽 레이어가 앞에 표시돼요.</p>
         {[
           ...images.filter((image) => !image.behindText).toReversed(),
           "text" as const,

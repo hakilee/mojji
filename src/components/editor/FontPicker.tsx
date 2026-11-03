@@ -1,4 +1,11 @@
-import { Button, Checkbox, ChoiceButton, Input, Spinner } from "~/components/design-system";
+import {
+  Button,
+  Checkbox,
+  ChoiceButton,
+  HelpBubble,
+  Input,
+  Spinner,
+} from "~/components/design-system";
 import {
   startTransition,
   useDeferredValue,
@@ -8,6 +15,7 @@ import {
   ViewTransition,
 } from "react";
 import { fonts } from "../../lib/emoji";
+import { loadFont } from "~/lib/font-loading";
 
 export function FontPicker({
   font,
@@ -66,13 +74,7 @@ export function FontPicker({
           document.head.append(link);
         });
       }
-      let fontTimeout: ReturnType<typeof setTimeout> | undefined;
-      const loaded = await Promise.race([
-        document.fonts.load(`40px "${family}"`, "가나다Aa"),
-        new Promise<never>((_, reject) => {
-          fontTimeout = setTimeout(() => reject(new Error("timeout")), 15000);
-        }),
-      ]).finally(() => clearTimeout(fontTimeout));
+      const loaded = await loadFont(family, "가나다Aa");
       if (!loaded.length) throw new Error("font unavailable");
       onChange(family);
     } catch {
@@ -169,30 +171,33 @@ export function FontPicker({
           </ChoiceButton>
         )}
       </div>
-      <Button
-        variant="neutral"
-        className="mt-inset w-full"
-        aria-expanded={expanded}
-        aria-controls="font-search-panel"
-        onClick={async () => {
-          startTransition(() => setExpanded((value) => !value));
-          if (catalog || catalogLoading || expanded) return;
-          setCatalogLoading(true);
-          setError("");
-          try {
-            const { default: families } = await import("../../data/google-fonts.json");
-            startTransition(() => setCatalog(families));
-          } catch {
-            setError("글꼴 목록을 불러오지 못했어요. Google Fonts를 닫았다가 다시 열어 주세요.");
-          } finally {
-            setCatalogLoading(false);
-          }
-        }}
-      >
-        <span className="flex w-full items-center justify-between gap-control">
-          Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
-        </span>
-      </Button>
+      <div className="mt-inset flex items-center gap-text">
+        <Button
+          variant="neutral"
+          className="min-w-0 flex-1"
+          aria-expanded={expanded}
+          aria-controls="font-search-panel"
+          onClick={async () => {
+            startTransition(() => setExpanded((value) => !value));
+            if (catalog || catalogLoading || expanded) return;
+            setCatalogLoading(true);
+            setError("");
+            try {
+              const { default: families } = await import("../../data/google-fonts.json");
+              startTransition(() => setCatalog(families));
+            } catch {
+              setError("글꼴 목록을 불러오지 못했어요. Google Fonts를 닫았다가 다시 열어 주세요.");
+            } finally {
+              setCatalogLoading(false);
+            }
+          }}
+        >
+          <span className="flex w-full items-center justify-between gap-control">
+            Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+          </span>
+        </Button>
+        <HelpBubble label="Google Fonts">선택한 글꼴만 Google에서 불러옵니다.</HelpBubble>
+      </div>
       {expanded && (
         <ViewTransition default="none" enter="font-reveal" exit="font-hide">
           <div className="mt-inset" id="font-search-panel" aria-busy={catalogLoading}>
@@ -216,9 +221,6 @@ export function FontPicker({
                 onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
               />
             </div>
-            <p className="mt-2 text-xs text-fg-neutral-muted">
-              선택한 글꼴만 Google에서 불러옵니다.
-            </p>
             <div
               className="mt-inset max-h-60 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
               aria-label="검색 결과"

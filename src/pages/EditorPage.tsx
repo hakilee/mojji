@@ -5,6 +5,7 @@ import {
   Checkbox,
   ChoiceButton,
   ColorPicker,
+  HelpBubble,
   MotionIcon,
   SegmentedControl,
   Select,
@@ -26,6 +27,7 @@ import type { Settings } from "../lib/emoji";
 import { CanvasEditor } from "~/components/editor/CanvasEditor";
 import { LayerEditor } from "~/components/editor/LayerEditor";
 import { FontPicker } from "~/components/editor/FontPicker";
+import { loadFont } from "~/lib/font-loading";
 
 export function EditorPage() {
   const [reducedMotion, setReducedMotion] = useState(
@@ -41,6 +43,7 @@ export function EditorPage() {
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
+  const [renderAttempt, setRenderAttempt] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const smallCanvas = useRef<HTMLCanvasElement>(null);
   const invalid =
@@ -66,14 +69,15 @@ export function EditorPage() {
     let active = true;
     let frame = 0;
     async function start() {
-      await document.fonts.load(`40px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       if (!active) return;
       const startedAt = performance.now();
       const duration = motionFrameDelays[settings.speed] * 20;
       function render(time: number) {
-        const ctx = canvas.current?.getContext("2d");
-        const small = smallCanvas.current?.getContext("2d");
-        if (ctx && small) {
+        try {
+          const ctx = canvas.current?.getContext("2d");
+          const small = smallCanvas.current?.getContext("2d");
+          if (!ctx || !small) throw new Error("Canvas context unavailable");
           drawEmoji(
             ctx,
             settings,
@@ -84,25 +88,34 @@ export function EditorPage() {
           );
           small.clearRect(0, 0, 128, 128);
           small.drawImage(ctx.canvas, 0, 0);
+        } catch {
+          if (active)
+            setStatus("미리보기를 그리지 못했어요. 설정을 바꾸거나 페이지를 다시 열어 주세요.");
+          return;
         }
         if (!reducedMotion && settings.motion !== "none") frame = requestAnimationFrame(render);
       }
       frame = requestAnimationFrame(render);
     }
-    void start().catch(() => {
-      if (active) setStatus("폰트를 불러오지 못했어요. 페이지를 새로고침해 주세요.");
+    void start().catch((cause) => {
+      if (active)
+        setStatus(
+          cause instanceof Error
+            ? cause.message
+            : "미리보기를 불러오지 못했어요. 다시 시도해 주세요.",
+        );
     });
     return () => {
       active = false;
       cancelAnimationFrame(frame);
     };
-  }, [settings, reducedMotion]);
+  }, [settings, reducedMotion, renderAttempt]);
 
   async function download() {
     setBusy(true);
     setStatus("GIF를 만들고 있어요…");
     try {
-      await document.fonts.load(`40px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       const output = document.createElement("canvas");
       output.width = 128;
       output.height = 128;
@@ -150,9 +163,26 @@ export function EditorPage() {
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
-            <h2 className="min-h-heading-slot text-body font-semibold">캔버스</h2>
+            <div className="flex min-h-heading-slot items-center gap-text">
+              <h2 className="text-body font-semibold">캔버스</h2>
+              <HelpBubble label="캔버스 조작">
+                클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
+                해제하세요.
+              </HelpBubble>
+            </div>
             <CanvasEditor
               settings={settings}
+              renderAttempt={renderAttempt}
+              onRetry={() => {
+                setStatus("");
+                setRenderAttempt((attempt) => attempt + 1);
+              }}
+              onChooseFont={() => {
+                setOpenPanels((current) =>
+                  current.includes("font") ? current : [...current, "font"],
+                );
+                document.getElementById("font-settings")?.querySelector("button")?.focus();
+              }}
               selectedId={selectedLayer}
               onSelect={selectLayer}
               onDismiss={(id) => setSelectedLayer((current) => (current === id ? null : current))}
@@ -261,7 +291,7 @@ export function EditorPage() {
                 setOpenPanels(values);
               }}
             >
-              <AccordionItem value="font" title="글꼴">
+              <AccordionItem id="font-settings" value="font" title="글꼴">
                 <FontPicker
                   font={settings.font}
                   onChange={(font) => update({ font })}

@@ -10,3 +10,4 @@ export { RangeField } from "./RangeField";
 export { Input } from "./Input";
 export { Select } from "./Select";
 export { FloatingPanel } from "./FloatingPanel";
+export { HelpBubble } from "./HelpBubble";

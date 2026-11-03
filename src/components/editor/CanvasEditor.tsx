@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
+import { loadFont } from "~/lib/font-loading";
 import type { ImageLayer, Settings } from "~/lib/emoji";
 import { LayerControls } from "./LayerControls";
-import { Button } from "~/components/design-system";
+import { Button, Spinner } from "~/components/design-system";
 
 export function CanvasEditor({
   settings,
@@ -12,6 +13,9 @@ export function CanvasEditor({
   onMove,
   onDelete,
   onEditText,
+  onChooseFont,
+  renderAttempt,
+  onRetry,
   onAddImage,
   onImagesChange,
   onTextLayoutChange,
@@ -23,6 +27,9 @@ export function CanvasEditor({
   onMove: (id: string, x: number, y: number) => void;
   onDelete: (id: string) => void;
   onEditText: () => void;
+  onChooseFont: () => void;
+  renderAttempt: number;
+  onRetry: () => void;
   onAddImage: () => void;
   onImagesChange: (images: ImageLayer[]) => void;
   onTextLayoutChange: (layout: Settings["textLayout"]) => void;
@@ -40,18 +47,29 @@ export function CanvasEditor({
   } | null>(null);
   const [geometry, setGeometry] = useState({ width: 0, height: 0 });
   const [guides, setGuides] = useState<{ x?: number; y?: number }>({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState<{ message: string; font: boolean } | null>(null);
+  const [completedRender, setCompletedRender] = useState<{
+    settings: Settings;
+    attempt: number;
+  } | null>(null);
+  const rendering =
+    completedRender?.settings !== settings || completedRender?.attempt !== renderAttempt;
   useEffect(() => {
     let active = true;
+    let fontLoaded = false;
     async function render() {
-      await document.fonts.load(`100px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       if (!active) return;
+      fontLoaded = true;
       const ctx = canvas.current?.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) throw new Error("Canvas context unavailable");
       ctx.save();
-      ctx.scale(6, 6);
-      drawEmoji(ctx, { ...settings, motion: "none" }, 0);
-      ctx.restore();
+      try {
+        ctx.scale(6, 6);
+        drawEmoji(ctx, { ...settings, motion: "none" }, 0);
+      } finally {
+        ctx.restore();
+      }
       if (settings.text.trim()) {
         const { width, height } = measureEmojiText(ctx, settings);
         const fit = Math.min(126 / width, 126 / height) * (settings.textLayout?.scale ?? 1);
@@ -61,15 +79,26 @@ export function CanvasEditor({
             : { width: width * fit, height: height * fit },
         );
       } else setGeometry((previous) => (previous.width ? { width: 0, height: 0 } : previous));
-      setError("");
+      setError(null);
     }
-    void render().catch(() => {
-      if (active) setError("캔버스를 그리지 못했어요. 글꼴을 다시 선택해 주세요.");
-    });
+    void render()
+      .catch((cause) => {
+        if (active)
+          setError({
+            font: !fontLoaded,
+            message:
+              !fontLoaded && cause instanceof Error
+                ? cause.message
+                : "캔버스를 그리지 못했어요. 다시 그리기를 눌러 주세요.",
+          });
+      })
+      .finally(() => {
+        if (active) setCompletedRender({ settings, attempt: renderAttempt });
+      });
     return () => {
       active = false;
     };
-  }, [settings]);
+  }, [settings, renderAttempt]);
   function move(id: string, x: number, y: number) {
     onMove(
       id,
@@ -87,7 +116,7 @@ export function CanvasEditor({
       <div
         role="group"
         aria-label="작업 캔버스"
-        aria-describedby="canvas-instructions"
+        aria-busy={rendering}
         className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px]"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
@@ -306,14 +335,29 @@ export function CanvasEditor({
           onTextLayoutChange={onTextLayoutChange}
         />
       )}
-      <p id="canvas-instructions" className="text-caption text-fg-neutral-muted">
-        클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
-        해제하세요.
-      </p>
       {error && (
-        <p role="alert" className="text-caption text-fg-critical">
-          {error}
-        </p>
+        <div className="space-y-control">
+          <p role="alert" className="text-caption text-fg-critical">
+            {error.message}
+          </p>
+          <div className="flex flex-wrap gap-control">
+            <Button
+              variant="white"
+              size="small"
+              disabled={rendering}
+              aria-busy={rendering}
+              onClick={onRetry}
+            >
+              {rendering && <Spinner />}
+              다시 그리기
+            </Button>
+            {error.font && (
+              <Button variant="neutral" size="small" onClick={onChooseFont}>
+                글꼴 설정 열기
+              </Button>
+            )}
+          </div>
+        </div>
       )}
       <div className="grid grid-cols-2 gap-control">
         <Button variant="white" size="small" onClick={onEditText}>
