@@ -86,10 +86,10 @@ export function FontPicker({
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-control">
         {fonts.map((family) => (
           <button
-            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed flex flex-col items-start gap-1 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default p-3 text-left enabled:hover:border-stroke-brand max-[760px]:p-2 [&_small]:text-[10px] [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
+            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed flex flex-col items-start gap-1 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default p-inset text-left enabled:hover:border-stroke-brand [&_small]:text-caption [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
             key={family}
             type="button"
             disabled={!!loading}
@@ -109,7 +109,7 @@ export function FontPicker({
           </button>
         ))}
       </div>
-      <div className="mt-3 space-y-control">
+      <div className="mt-inset space-y-control">
         <label htmlFor="font-upload" className="block text-label font-semibold">
           폰트 파일 업로드
         </label>
@@ -174,7 +174,7 @@ export function FontPicker({
       </div>
       <button
         type="button"
-        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed mt-3 flex min-h-[42px] w-full items-center justify-between rounded-control border border-stroke-neutral bg-bg-neutral-weak px-4 py-2 font-semibold hover:border-stroke-brand"
+        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed mt-inset flex min-h-[42px] w-full items-center justify-between rounded-control border border-stroke-neutral bg-bg-neutral-weak px-4 py-2 font-semibold hover:border-stroke-brand"
         aria-expanded={expanded}
         aria-controls="font-search-panel"
         onClick={async () => {
@@ -196,7 +196,7 @@ export function FontPicker({
       </button>
       {expanded && (
         <ViewTransition default="none" enter="font-reveal" exit="font-hide">
-          <div className="mt-3" id="font-search-panel" aria-busy={catalogLoading}>
+          <div className="mt-inset" id="font-search-panel" aria-busy={catalogLoading}>
             <label className="sr-only" htmlFor="font-search">
               Google Fonts 검색
             </label>
@@ -211,7 +211,7 @@ export function FontPicker({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <div className="mt-3">
+            <div className="mt-inset">
               <Checkbox
                 label="한글 지원"
                 checked={koreanOnly}
@@ -222,7 +222,7 @@ export function FontPicker({
               선택한 글꼴만 Google에서 불러옵니다.
             </p>
             <div
-              className="mt-3 max-h-60 overflow-y-auto overscroll-contain rounded-control border border-stroke-neutral [&>button]:flex [&>button]:min-h-[42px] [&>button]:w-full [&>button]:items-center [&>button]:justify-between [&>button]:gap-3 [&>button]:border [&>button]:border-transparent [&>button]:bg-bg-layer-default [&>button]:p-3 [&>button]:text-left [&>button]:wrap-anywhere [&>button]:enabled:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak [&>button>span]:text-xs"
+              className="mt-inset max-h-60 overflow-y-auto overscroll-contain rounded-control border border-stroke-neutral [&>button]:flex [&>button]:min-h-[42px] [&>button]:w-full [&>button]:items-center [&>button]:justify-between [&>button]:gap-inset [&>button]:border [&>button]:border-transparent [&>button]:bg-bg-layer-default [&>button]:p-3 [&>button]:text-left [&>button]:wrap-anywhere [&>button]:enabled:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak [&>button>span]:text-xs"
               aria-label="검색 결과"
             >
               {results.slice(0, 40).map(({ family }) => (

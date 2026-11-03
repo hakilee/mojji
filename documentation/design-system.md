@@ -18,7 +18,7 @@ Compose the following controls using semantic HTML and headless primitives:
 - **Preview**: compact author/message, 16 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
 - **Action**: primary download button with busy/disabled states; functional status announcements only.
 
-Desktop uses one white workspace with editing, settings and vertically stacked, independently centered previews with download below them. The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
+Desktop uses one white workspace with editing, settings and vertically stacked, independently centered previews with download below them. The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 16px, nested surfaces use 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
 
 ## Google Fonts source
 
@@ -71,3 +71,7 @@ Desktop separates editing, settings and preview into three equal columns; widths
 `ColorPicker` composes popover, radio-group and input primitives. Every color setting, including per-character overrides, offers twelve presets, a native full-color chooser and six-digit HEX input. Incomplete HEX is local draft state, never renderer input; blur or dismissal restores the last valid value. The primitive owns dismissal and focus restoration. Transparent backgrounds disable the background trigger without discarding its color. The popup fits the available viewport and scrolls vertically when needed.
 
 `SegmentedControl` has no external layout margin. It uses neutral surfaces, an inset selected border/shadow, 8px outer and 4px inner radii, and the shared minimum control height. Selection and keyboard focus are distinct; radio arrow-key behavior remains primitive-owned. Control height (40px) and inset radius (4px) are shared theme tokens. All three controls keep reduced-motion support.
+
+## Spacing and surface hierarchy (#67)
+
+Use 16px workspace, 12px panel/editor-surface, 8px control and 4px inset radii. Reaction pills retain their independent geometry. Spacing roles are control 8px, inset 12px, group 16px, section/panel 24px and page 32px. Compact page/workspace insets are 16px. Accordion headers and bodies share group insets; title slots share a 40px height with the settings offset. Font options use two columns and caption labels for comfortable readable cards. No component state or rendering behavior changes.
