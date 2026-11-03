@@ -1,6 +1,6 @@
 # Slackmochi UI system
 
-Use this reference to maintain the editor’s visual tokens, controls and font-loading behavior. It covers the original Slackmochi user interface (UI), built without a component library. Issues #23 and #25 own the implementation scope.
+Use this reference to maintain the editor’s visual tokens, controls and font-loading behavior. It covers the app-owned visual system and its headless interaction primitives.
 
 ## Foundations
 
@@ -10,15 +10,15 @@ UI text uses self-hosted Pretendard for UI glyphs. It uses `font-display: swap` 
 
 ## Components and states
 
-Compose the following controls using semantic HTML:
+Compose the following controls using semantic HTML and headless primitives:
 
 - **Text editor**: square font-aware textarea surface with a centered editable line block, persistent family/count footer, focus outline, invalid message. Native textarea editing/selection/undo are preserved; composed input is committed at composition end. Paste/typing is constrained to 9 graphemes and three lines, with a live limit announcement.
 - **Font picker**: three bundled specimen cards, optional searchable Google Fonts panel with Korean filter, loading/disabled/error state. External fonts apply only after successful load; existing font remains on failure. Requests time out instead of leaving download disabled indefinitely.
-- **Controls**: semantic selected buttons (`aria-pressed`), two-mode color segment, color wells, native checkbox/select and motion choices. Individual colors and gradient mode are mutually exclusive.
+- **Controls**: labelled radio segments, composed color pickers, shared checkboxes, native select and motion choices. Individual colors and gradient mode are mutually exclusive.
 - **Preview**: compact author/message, 16 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
 - **Action**: primary download button with busy/disabled states; functional status announcements only.
 
-Desktop uses one white workspace with a 40:60 editing/preview split and vertically stacked, independently centered previews with download below them (#45). The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
+Desktop uses one white workspace with editing, settings and vertically stacked, independently centered previews with download below them. The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
 
 ## Google Fonts source
 
@@ -58,8 +58,16 @@ Accordion panels use the primitive's measured height and transition-state attrib
 
 The effects panel uses a labelled native select for speed and a native range input for repeat delay, with a seconds output and spoken value. Static effects disable these controls without resetting them. The font panel accepts local font files through the browser font API; its single uploaded-font slot can be reselected, survives disclosure and releases replaced or unmounted faces. Failed uploads preserve the current selection. Neither control adds a runtime dependency.
 
-Library imports use individual component subpaths. The small app-owned public export module remains available at `~/components/design-system`. Spinner and motion artwork have no interactive behavior to replace. Native textarea, color inputs and select retain platform behavior.
+Library imports use individual component subpaths. The small app-owned public export module remains available at `~/components/design-system`. Spinner and motion artwork have no interactive behavior to replace. Native textarea and select retain platform behavior. The color picker retains a native full-color input alongside its presets and HEX field.
 
 ## Three-column workspace (#52)
 
 Desktop separates editing, settings and preview into three equal columns; widths at or below 1000px stack. Primary UI actions use neutral charcoal, with pale gray selected surfaces. Content colors and logo artwork remain independent. Shared Tailwind tokens define control gaps (8px), text gaps (6px), panel/section spacing (24px), page gutter (32px), and caption/label/body/title type pairs (12/16, 14/19, 16/22, 20/27px).
+
+## Selection controls (#63)
+
+`Checkbox` delegates checked state, keyboard interaction and hidden form input semantics to its headless primitive. The transparency setting and Korean-font filter use the same labelled 20px indicator in a minimum 40px row.
+
+`ColorPicker` composes popover, radio-group and input primitives. Every color setting, including per-character overrides, offers twelve presets, a native full-color chooser and six-digit HEX input. Incomplete HEX is local draft state, never renderer input; blur or dismissal restores the last valid value. The primitive owns dismissal and focus restoration. Transparent backgrounds disable the background trigger without discarding its color. The popup fits the available viewport and scrolls vertically when needed.
+
+`SegmentedControl` has no external layout margin. It uses neutral surfaces, an inset selected border/shadow, 8px outer and 4px inner radii, and the shared minimum control height. Selection and keyboard focus are distinct; radio arrow-key behavior remains primitive-owned. Control height (40px) and inset radius (4px) are shared theme tokens. All three controls keep reduced-motion support.

@@ -1,6 +1,8 @@
 import {
   Accordion,
   AccordionItem,
+  Checkbox,
+  ColorPicker,
   MotionIcon,
   SegmentedControl,
   Spinner,
@@ -207,60 +209,45 @@ export function EditorPage() {
                 />
               </AccordionItem>
               <AccordionItem value="color" title="색상">
-                <SegmentedControl
-                  label="색상 방식"
-                  value={settings.gradient ? "gradient" : "solid"}
-                  options={[
-                    { value: "solid", label: "단색 · 글자별" },
-                    { value: "gradient", label: "그라데이션" },
-                  ]}
-                  onChange={(value) =>
-                    update(
-                      value === "gradient"
-                        ? {
-                            gradient: { end: "#fc6a66", direction: "horizontal" },
-                            characterColors: undefined,
-                          }
-                        : { gradient: undefined },
-                    )
-                  }
-                />
-                <div className="flex flex-wrap gap-4 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:text-caption">
-                  <label>
-                    <input
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                      type="color"
-                      value={settings.color}
-                      onChange={(event) =>
-                        update({ color: event.target.value, characterColors: undefined })
-                      }
-                    />
-                    {settings.gradient ? "시작색" : "글자색"}
-                  </label>
+                <div className="mb-4">
+                  <SegmentedControl
+                    label="색상 방식"
+                    value={settings.gradient ? "gradient" : "solid"}
+                    options={[
+                      { value: "solid", label: "단색 · 글자별" },
+                      { value: "gradient", label: "그라데이션" },
+                    ]}
+                    onChange={(value) =>
+                      update(
+                        value === "gradient"
+                          ? {
+                              gradient: { end: "#fc6a66", direction: "horizontal" },
+                              characterColors: undefined,
+                            }
+                          : { gradient: undefined },
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-control">
+                  <ColorPicker
+                    label={settings.gradient ? "시작색" : "글자색"}
+                    value={settings.color}
+                    onChange={(color) => update({ color, characterColors: undefined })}
+                  />
                   {settings.gradient && (
-                    <label>
-                      <input
-                        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                        type="color"
-                        aria-label="그라데이션 끝색"
-                        value={settings.gradient.end}
-                        onChange={(event) =>
-                          update({ gradient: { ...settings.gradient!, end: event.target.value } })
-                        }
-                      />
-                      끝색
-                    </label>
-                  )}
-                  <label>
-                    <input
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                      type="color"
-                      value={settings.background}
-                      disabled={settings.transparent}
-                      onChange={(event) => update({ background: event.target.value })}
+                    <ColorPicker
+                      label="끝색"
+                      value={settings.gradient.end}
+                      onChange={(end) => update({ gradient: { ...settings.gradient!, end } })}
                     />
-                    배경색
-                  </label>
+                  )}
+                  <ColorPicker
+                    label="배경색"
+                    value={settings.background}
+                    disabled={settings.transparent}
+                    onChange={(background) => update({ background })}
+                  />
                 </div>
                 {settings.gradient && (
                   <label className="mt-4 flex items-center gap-3 text-caption [&>select]:w-auto [&>select]:flex-1">
@@ -283,43 +270,32 @@ export function EditorPage() {
                   </label>
                 )}
                 {!settings.gradient && (
-                  <div
-                    className="mt-4 flex flex-wrap gap-2 [&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:rounded-control [&>label]:border [&>label]:border-stroke-neutral [&>label]:px-2 [&>label]:py-1 [&_input]:size-6"
-                    aria-label="글자별 색상"
-                  >
+                  <div className="mt-4 flex flex-wrap gap-control" aria-label="글자별 색상">
                     {textCharacters(settings.text).map(
                       (character, index) =>
                         character.trim() && (
-                          <label key={index}>
-                            <span>{character}</span>
-                            <input
-                              className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-[30px] cursor-pointer rounded-md border-0 bg-transparent p-0"
-                              type="color"
-                              aria-label={`${index + 1}번째 글자 ${character} 색상`}
-                              value={settings.characterColors?.[index] ?? settings.color}
-                              onChange={(event) =>
-                                update({
-                                  characterColors: {
-                                    ...settings.characterColors,
-                                    [index]: event.target.value,
-                                  },
-                                })
-                              }
-                            />
-                          </label>
+                          <ColorPicker
+                            key={index}
+                            label={`${index + 1}번째 글자 ${character} 색상`}
+                            displayLabel={character}
+                            value={settings.characterColors?.[index] ?? settings.color}
+                            onChange={(color) =>
+                              update({
+                                characterColors: { ...settings.characterColors, [index]: color },
+                              })
+                            }
+                          />
                         ),
                     )}
                   </div>
                 )}
-                <label className="mt-4 flex items-center gap-2 rounded-control bg-bg-neutral-weak p-3 text-caption">
-                  <input
-                    className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-4 accent-fg-brand"
-                    type="checkbox"
+                <div className="mt-4 rounded-control bg-bg-neutral-weak px-3">
+                  <Checkbox
+                    label="투명 배경으로 만들기"
                     checked={settings.transparent}
-                    onChange={(event) => update({ transparent: event.target.checked })}
+                    onCheckedChange={(transparent) => update({ transparent })}
                   />
-                  투명 배경으로 만들기
-                </label>
+                </div>
               </AccordionItem>
               <AccordionItem value="motion" title="효과">
                 <div className="grid grid-cols-3 gap-2 [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-2 [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-1 [&>button]:min-h-20 [&>button]:py-4 [&>button]:text-caption [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">

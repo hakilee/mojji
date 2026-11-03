@@ -1,4 +1,4 @@
-import { Spinner } from "~/components/design-system";
+import { Checkbox, Spinner } from "~/components/design-system";
 import {
   startTransition,
   useDeferredValue,
@@ -211,15 +211,13 @@ export function FontPicker({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <label className="mt-3 flex items-center gap-2 text-xs">
-              <input
-                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 size-4 accent-fg-brand"
-                type="checkbox"
+            <div className="mt-3">
+              <Checkbox
+                label="한글 지원"
                 checked={koreanOnly}
-                onChange={(event) => startTransition(() => setKoreanOnly(event.target.checked))}
+                onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
               />
-              한글 지원
-            </label>
+            </div>
             <p className="mt-2 text-xs text-fg-neutral-muted">
               선택한 글꼴만 Google에서 불러옵니다.
             </p>
