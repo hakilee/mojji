@@ -32,7 +32,7 @@ export function HelpBubble({ label, children }: { label: string; children: React
         >
           <Popover.Popup
             initialFocus={false}
-            className="w-70 max-w-[calc(100vw-32px)] origin-[var(--transform-origin)] rounded-panel bg-bg-brand-solid text-label text-fg-on-brand-solid outline-none transition-[opacity,transform] duration-150 data-starting-style:scale-90 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none motion-reduce:data-starting-style:scale-100"
+            className="w-70 max-w-[calc(100vw-32px)] origin-[var(--transform-origin)] rounded-panel bg-bg-brand-solid text-label text-fg-on-brand-solid outline-none transition-[opacity,scale] duration-150 data-starting-style:scale-90 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none motion-reduce:data-starting-style:scale-100"
           >
             <Popover.Arrow className="pointer-events-none h-2 w-3 fill-bg-brand-solid data-[side=top]:-bottom-2 data-[side=top]:rotate-180 data-[side=bottom]:-top-2 data-[side=left]:-right-2 data-[side=left]:rotate-90 data-[side=right]:-left-2 data-[side=right]:-rotate-90">
               <svg viewBox="0 0 12 8" className="size-full">
