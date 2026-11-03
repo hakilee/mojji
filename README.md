@@ -65,7 +65,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 
 ## 배포
 
-Vercel CLI로 로컬에서 빌드한 결과만 배포합니다. [배포 가이드](documentation/deployment.md)를 참고하세요. Git 연결 자동 배포와 GitHub Actions는 사용하지 않습니다.
+Wrangler로 로컬에서 빌드한 결과만 Cloudflare Workers의 `haklee` 계정에 배포합니다. [배포 가이드](documentation/deployment.md)를 참고하세요. Git 연결 자동 배포와 GitHub Actions는 사용하지 않습니다.
 
 ## 브랜드 자산
 
