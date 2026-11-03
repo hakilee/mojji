@@ -73,6 +73,61 @@ export function validateText(text: string): string | null {
   return null;
 }
 
+export function measureEmojiText(ctx: CanvasRenderingContext2D, settings: Settings) {
+  const lines = settings.text.split("\n");
+  ctx.font = `100px "${settings.font}"`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  let characterIndex = 0;
+  const runs = lines.map((line) => {
+    let advance = 0;
+    const characters = textCharacters(line).map((character) => {
+      const metric = ctx.measureText(character);
+      const run = {
+        character,
+        metric,
+        x: advance,
+        color: settings.characterColors?.[characterIndex] ?? settings.color,
+      };
+      advance += metric.width;
+      characterIndex += 1;
+      return run;
+    });
+    characterIndex += 1;
+    return characters;
+  });
+  const metrics = lines.map((line, index) =>
+    settings.characterColors && !settings.gradient && runs[index].length
+      ? {
+          actualBoundingBoxLeft: -Math.min(
+            ...runs[index].map((run) => run.x - run.metric.actualBoundingBoxLeft),
+          ),
+          actualBoundingBoxRight: Math.max(
+            ...runs[index].map((run) => run.x + run.metric.actualBoundingBoxRight),
+          ),
+          actualBoundingBoxAscent: Math.max(
+            ...runs[index].map((run) => run.metric.actualBoundingBoxAscent),
+          ),
+          actualBoundingBoxDescent: Math.max(
+            ...runs[index].map((run) => run.metric.actualBoundingBoxDescent),
+          ),
+        }
+      : ctx.measureText(line),
+  );
+  const width = Math.max(
+    1,
+    ...metrics.map((metric) => metric.actualBoundingBoxLeft + metric.actualBoundingBoxRight),
+  );
+  const top = Math.min(
+    ...metrics.map((metric, index) => index * 105 - metric.actualBoundingBoxAscent),
+  );
+  const bottom = Math.max(
+    ...metrics.map((metric, index) => index * 105 + metric.actualBoundingBoxDescent),
+  );
+  const height = Math.max(1, bottom - top);
+  return { lines, runs, metrics, width, height, top, bottom };
+}
+
 function drawImages(ctx: CanvasRenderingContext2D, images: ImageLayer[], behindText: boolean) {
   for (const image of images) {
     if (image.behindText !== behindText) continue;
@@ -146,57 +201,7 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
       ctx.scale(0.88 + Math.sin(phase) * 0.1, 0.88 - Math.sin(phase) * 0.1);
       break;
   }
-  const lines = settings.text.split("\n");
-  ctx.font = `100px "${settings.font}"`;
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-  let characterIndex = 0;
-  const runs = lines.map((line) => {
-    let advance = 0;
-    const characters = textCharacters(line).map((character) => {
-      const metric = ctx.measureText(character);
-      const run = {
-        character,
-        metric,
-        x: advance,
-        color: settings.characterColors?.[characterIndex] ?? settings.color,
-      };
-      advance += metric.width;
-      characterIndex += 1;
-      return run;
-    });
-    characterIndex += 1;
-    return characters;
-  });
-  const metrics = lines.map((line, index) =>
-    settings.characterColors && !settings.gradient && runs[index].length
-      ? {
-          actualBoundingBoxLeft: -Math.min(
-            ...runs[index].map((run) => run.x - run.metric.actualBoundingBoxLeft),
-          ),
-          actualBoundingBoxRight: Math.max(
-            ...runs[index].map((run) => run.x + run.metric.actualBoundingBoxRight),
-          ),
-          actualBoundingBoxAscent: Math.max(
-            ...runs[index].map((run) => run.metric.actualBoundingBoxAscent),
-          ),
-          actualBoundingBoxDescent: Math.max(
-            ...runs[index].map((run) => run.metric.actualBoundingBoxDescent),
-          ),
-        }
-      : ctx.measureText(line),
-  );
-  const width = Math.max(
-    1,
-    ...metrics.map((metric) => metric.actualBoundingBoxLeft + metric.actualBoundingBoxRight),
-  );
-  const top = Math.min(
-    ...metrics.map((metric, index) => index * 105 - metric.actualBoundingBoxAscent),
-  );
-  const bottom = Math.max(
-    ...metrics.map((metric, index) => index * 105 + metric.actualBoundingBoxDescent),
-  );
-  const height = Math.max(1, bottom - top);
+  const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, settings);
   ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
   if (settings.gradient) {
     const gradient = ctx.createLinearGradient(

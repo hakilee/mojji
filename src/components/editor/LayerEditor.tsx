@@ -129,7 +129,7 @@ export function LayerEditor({
       {(selected || selectedId === "text") && (
         <div className="space-y-group">
           <p className="text-caption text-fg-neutral-muted">
-            선택한 레이어는 확대 미리보기에서 드래그할 수 있어요.
+            선택한 레이어는 왼쪽 작업 캔버스에서 드래그할 수 있어요.
           </p>
           <div className="grid grid-cols-3 gap-control">
             {[
