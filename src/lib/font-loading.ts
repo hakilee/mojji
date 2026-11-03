@@ -1,3 +1,27 @@
+import type { Layer } from "./emoji";
+
+export class LayerFontError extends Error {
+  constructor(
+    readonly layerId: string,
+    cause: unknown,
+  ) {
+    super(cause instanceof Error ? cause.message : "글꼴을 불러오지 못했어요.", { cause });
+  }
+}
+
+export async function loadLayerFonts(layers: readonly Layer[]): Promise<void> {
+  await Promise.all(
+    layers.map(async (layer) => {
+      if (layer.type !== "text" || !layer.text.trim()) return;
+      try {
+        await loadFont(layer.font, layer.text);
+      } catch (cause) {
+        throw new LayerFontError(layer.id, cause);
+      }
+    }),
+  );
+}
+
 export async function loadFont(font: string, text: string): Promise<FontFace[]> {
   if (!text.trim()) return [];
   let timeout: ReturnType<typeof setTimeout> | undefined;

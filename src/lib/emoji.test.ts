@@ -6,6 +6,7 @@ import {
   drawEmoji,
   exportGif,
   initialSettings,
+  initialTextLayer,
   type ImageLayer,
   type Settings,
   motions,
@@ -21,8 +22,10 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       source.getContext("2d").fillRect(0, 0, 16, 16);
       const settings: Settings = {
         ...initialSettings,
-        images: [
+        layers: [
+          { ...initialTextLayer },
           {
+            type: "image",
             id: "image",
             name: "image",
             source: source as unknown as HTMLCanvasElement,
@@ -31,7 +34,6 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
             y: 40,
             size: 20,
             rotation: 25,
-            behindText: false,
             fit: "contain",
           },
         ],
@@ -63,7 +65,9 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     const canvas = createCanvas(128, 128);
     const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
     expect(validateText(text)).not.toBeNull();
-    await expect(exportGif(ctx, { ...initialSettings, text })).rejects.toThrow();
+    await expect(
+      exportGif(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, text }] }),
+    ).rejects.toThrow();
   });
 
   test("reduces oversized image animation palettes without losing timing or frames", async () => {
@@ -82,9 +86,9 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
     const blob = await exportGif(ctx, {
       ...initialSettings,
-      text: "Hi",
-      images: [
+      layers: [
         {
+          type: "image",
           id: "noise",
           name: "noise",
           source: source as unknown as HTMLCanvasElement,
@@ -93,9 +97,9 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           y: 64,
           size: 80,
           rotation: 0,
-          behindText: true,
           fit: "contain",
         },
+        { ...initialTextLayer, text: "Hi" },
       ],
     });
     expect(blob.size).toBeLessThanOrEqual(128 * 1024);
@@ -117,10 +121,11 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
       const blob = await exportGif(ctx, {
         ...initialSettings,
-        text: "",
         motion,
-        images: [
+        layers: [
+          { ...initialTextLayer, text: "" },
           {
+            type: "image",
             id: "image",
             name: "image",
             source: source as unknown as HTMLCanvasElement,
@@ -129,7 +134,6 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
             y: 64,
             size: 48,
             rotation: 15,
-            behindText: false,
             fit: "contain",
           },
         ],
@@ -154,8 +158,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
       const blob = await exportGif(ctx, {
         ...initialSettings,
-        text: "YES",
         motion,
+        layers: [{ ...initialTextLayer, text: "YES" }],
       });
       const buffer = await blob.arrayBuffer();
       const gif = decode(buffer);
@@ -183,7 +187,12 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     async ({ speed, delay, frameDelay }) => {
       const canvas = createCanvas(128, 128);
       const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
-      const settings = { ...initialSettings, text: "YES", speed, delay };
+      const settings = {
+        ...initialSettings,
+        speed,
+        delay,
+        layers: [{ ...initialTextLayer, text: "YES" }],
+      };
       const gif = decodeFrames(await (await exportGif(ctx, settings)).arrayBuffer());
       const baseline = decodeFrames(
         await (await exportGif(ctx, { ...settings, speed: 1, delay: 0 })).arrayBuffer(),
@@ -202,10 +211,10 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       await (
         await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
           ...initialSettings,
-          text: "YES",
           motion: "none",
           speed: 2,
           delay: 2000,
+          layers: [{ ...initialTextLayer, text: "YES" }],
         })
       ).arrayBuffer(),
     );
@@ -219,8 +228,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const canvas = createCanvas(128, 128);
       const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
         ...initialSettings,
-        text,
         motion: "none",
+        layers: [{ ...initialTextLayer, text }],
       });
       const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
       const xs: number[] = [];
@@ -257,7 +266,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           ctx.translate(64, 64);
           drawEmoji(
             ctx as unknown as CanvasRenderingContext2D,
-            { ...initialSettings, text, motion: effect },
+            { ...initialSettings, motion: effect, layers: [{ ...initialTextLayer, text }] },
             0,
           );
           const pixels = ctx.getImageData(0, 0, 256, 256).data;
@@ -287,7 +296,13 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           ctx.translate(64, 64);
           drawEmoji(
             ctx as unknown as CanvasRenderingContext2D,
-            { ...initialSettings, text, motion, characterColors: { 0: "#ff0000", 2: "#00ff00" } },
+            {
+              ...initialSettings,
+              motion,
+              layers: [
+                { ...initialTextLayer, text, characterColors: { 0: "#ff0000", 2: "#00ff00" } },
+              ],
+            },
             frame / 120,
           );
           const pixels = ctx.getImageData(0, 0, 256, 256).data;
@@ -323,10 +338,15 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const canvas = createCanvas(128, 128);
       const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
         ...initialSettings,
-        text: "HH",
         motion: "none",
-        color: "#ff0000",
-        gradient: { end: "#0000ff", direction },
+        layers: [
+          {
+            ...initialTextLayer,
+            text: "HH",
+            color: "#ff0000",
+            gradient: { end: "#0000ff", direction },
+          },
+        ],
       });
       const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
       let red = 0;
@@ -354,10 +374,15 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     const canvas = createCanvas(128, 128);
     const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
       ...initialSettings,
-      text: "AA\nA",
       motion: "none",
-      color: "#0000ff",
-      characterColors: { 0: "#ff0000", 3: "#00ff00" },
+      layers: [
+        {
+          ...initialTextLayer,
+          text: "AA\nA",
+          color: "#0000ff",
+          characterColors: { 0: "#ff0000", 3: "#00ff00" },
+        },
+      ],
     });
     const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
     for (const color of [
@@ -380,14 +405,23 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
   test("uses selected opaque background and replaces earlier canvas contents", async () => {
     const canvas = createCanvas(128, 128);
     const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
-    drawEmoji(ctx, { ...initialSettings, transparent: false, background: "#ff0000" }, 0);
+    drawEmoji(
+      ctx,
+      {
+        ...initialSettings,
+        transparent: false,
+        background: "#ff0000",
+        layers: [{ ...initialTextLayer }],
+      },
+      0,
+    );
     expect(Array.from(ctx.getImageData(0, 0, 1, 1).data)).toEqual([255, 0, 0, 255]);
     const blob = await exportGif(ctx, {
       ...initialSettings,
-      text: "OK",
       transparent: false,
       background: "#00ff00",
       motion: "none",
+      layers: [{ ...initialTextLayer, text: "OK" }],
     });
     expect(Array.from(decodeFrames(await blob.arrayBuffer())[0].data.slice(0, 4))).toEqual([
       0, 255, 0, 255,
@@ -404,6 +438,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     blue.getContext("2d").fillStyle = "#0000ff";
     blue.getContext("2d").fillRect(0, 0, 4, 2);
     const first: ImageLayer = {
+      type: "image",
       id: "red",
       name: "red.png",
       source: red as unknown as HTMLCanvasElement,
@@ -412,14 +447,12 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       y: 64,
       size: 128,
       rotation: 0,
-      behindText: true,
       fit: "cover",
     };
     const second: ImageLayer = {
       ...first,
       id: "blue",
       source: blue as unknown as HTMLCanvasElement,
-      behindText: false,
       size: 32,
     };
     const canvas = createCanvas(128, 128);
@@ -428,9 +461,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       await (
         await exportGif(ctx, {
           ...initialSettings,
-          text: "",
           motion: "none",
-          images: [first, second],
+          layers: [{ ...initialTextLayer, text: "" }, first, second],
         })
       ).arrayBuffer(),
     );
@@ -441,7 +473,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     ]);
     drawEmoji(
       ctx,
-      { ...initialSettings, text: "", images: [{ ...second, behindText: true }, first] },
+      { ...initialSettings, layers: [{ ...second }, { ...initialTextLayer, text: "" }, first] },
       0,
     );
     expect(Array.from(ctx.getImageData(64, 64, 1, 1).data)).toEqual([255, 0, 0, 255]);
@@ -452,6 +484,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     source.getContext("2d").fillStyle = "#ff0000";
     source.getContext("2d").fillRect(0, 0, 4, 2);
     const image: ImageLayer = {
+      type: "image",
       id: "image",
       name: "image.png",
       source: source as unknown as HTMLCanvasElement,
@@ -460,29 +493,45 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       y: 64,
       size: 64,
       rotation: 0,
-      behindText: false,
       fit: "contain",
     };
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
-    drawEmoji(ctx, { ...initialSettings, text: "", images: [image] }, 0);
+    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, text: "" }, image] }, 0);
     expect(ctx.getImageData(40, 40, 1, 1).data[3]).toBe(0);
     expect(ctx.getImageData(40, 56, 1, 1).data[3]).toBe(255);
-    drawEmoji(ctx, { ...initialSettings, text: "", images: [{ ...image, fit: "cover" }] }, 0);
+    drawEmoji(
+      ctx,
+      {
+        ...initialSettings,
+        layers: [
+          { ...initialTextLayer, text: "" },
+          { ...image, fit: "cover" },
+        ],
+      },
+      0,
+    );
     expect(ctx.getImageData(40, 40, 1, 1).data[3]).toBe(255);
     drawEmoji(
       ctx,
-      { ...initialSettings, text: "", images: [{ ...image, x: 80, y: 48, rotation: 90 }] },
+      {
+        ...initialSettings,
+        layers: [
+          { ...initialTextLayer, text: "" },
+          { ...image, x: 80, y: 48, rotation: 90 },
+        ],
+      },
       0,
     );
     expect(ctx.getImageData(80, 24, 1, 1).data[3]).toBe(255);
     expect(ctx.getImageData(56, 48, 1, 1).data[3]).toBe(0);
   });
 
-  test("draws text above behind layers and below front layers", () => {
+  test("draws text above or below images according to the shared layer order", () => {
     const source = createCanvas(128, 128);
     source.getContext("2d").fillStyle = "#ff0000";
     source.getContext("2d").fillRect(0, 0, 128, 128);
     const image: ImageLayer = {
+      type: "image",
       id: "image",
       name: "image.png",
       source: source as unknown as HTMLCanvasElement,
@@ -491,13 +540,16 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       y: 64,
       size: 128,
       rotation: 0,
-      behindText: true,
       fit: "cover",
     };
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
     drawEmoji(
       ctx,
-      { ...initialSettings, color: "#0000ff", text: "HH", motion: "none", images: [image] },
+      {
+        ...initialSettings,
+        motion: "none",
+        layers: [image, { ...initialTextLayer, color: "#0000ff", text: "HH" }],
+      },
       0,
     );
     expect(
@@ -509,10 +561,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       ctx,
       {
         ...initialSettings,
-        color: "#0000ff",
-        text: "HH",
         motion: "none",
-        images: [{ ...image, behindText: false }],
+        layers: [{ ...initialTextLayer, color: "#0000ff", text: "HH" }, { ...image }],
       },
       0,
     );
@@ -521,11 +571,91 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     ).toBe(false);
   });
 
+  test("exports independent text styles and placements while skipping blank layers [E5y]", async () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    const blob = await exportGif(ctx, {
+      ...initialSettings,
+      motion: "none",
+      layers: [
+        { ...initialTextLayer, text: "HH", color: "#ff0000", x: 32, y: 32, scale: 0.35 },
+        { ...initialTextLayer, id: "blank", text: "  \n" },
+        {
+          ...initialTextLayer,
+          id: "second",
+          text: "Hi",
+          font: "Jua",
+          color: "#0000ff",
+          x: 96,
+          y: 96,
+          scale: 0.3,
+        },
+      ],
+    });
+    const [frame] = decodeFrames(await blob.arrayBuffer());
+    let red = 0;
+    let blue = 0;
+    for (let y = 0; y < 128; y++)
+      for (let x = 0; x < 128; x++) {
+        const index = (y * 128 + x) * 4;
+        if (frame.data[index + 3] !== 255) continue;
+        if (frame.data[index] > 200 && frame.data[index + 2] < 50) {
+          red++;
+          expect(x).toBeLessThan(64);
+          expect(y).toBeLessThan(64);
+        }
+        if (frame.data[index + 2] > 200 && frame.data[index] < 50) {
+          blue++;
+          expect(x).toBeGreaterThan(64);
+          expect(y).toBeGreaterThan(64);
+        }
+      }
+    expect(red).toBeGreaterThan(50);
+    expect(blue).toBeGreaterThan(50);
+    expect(frame.data[3]).toBe(0);
+  });
+
+  test("paints every text layer in order without leaking character colors [E5y]", () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(
+      ctx,
+      {
+        ...initialSettings,
+        motion: "none",
+        layers: [
+          { ...initialTextLayer, text: "HH", characterColors: { 0: "#ff0000" } },
+          { ...initialTextLayer, id: "front", text: "HH", color: "#0000ff" },
+        ],
+      },
+      0,
+    );
+    const pixels = ctx.getImageData(0, 0, 128, 128).data;
+    expect(pixels.some((value, index) => index % 4 === 2 && value === 255)).toBe(true);
+    expect(pixels.some((value, index) => index % 4 === 0 && value === 255)).toBe(false);
+  });
+
+  test("rejects documents with no visible layers [E5y]", async () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    for (const layers of [
+      [],
+      [
+        { ...initialTextLayer, text: "" },
+        { ...initialTextLayer, id: "second", text: " \n " },
+      ],
+    ])
+      await expect(exportGif(ctx, { ...initialSettings, layers })).rejects.toThrow(
+        "텍스트나 이미지를 추가해 주세요.",
+      );
+  });
+
   test("positions and scales text without changing the default tight fit", () => {
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
     drawEmoji(
       ctx,
-      { ...initialSettings, text: "HH", motion: "none", textLayout: { x: 32, y: 96, scale: 0.4 } },
+      {
+        ...initialSettings,
+        motion: "none",
+        layers: [{ ...initialTextLayer, text: "HH", x: 32, y: 96, scale: 0.4 }],
+      },
       0,
     );
     const pixels = ctx.getImageData(0, 0, 128, 128).data;

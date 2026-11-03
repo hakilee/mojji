@@ -16,6 +16,7 @@ export const motions = {
   jelly: "말랑말랑",
 };
 export type ImageLayer = {
+  type: "image";
   id: string;
   name: string;
   source: HTMLCanvasElement;
@@ -24,28 +25,42 @@ export type ImageLayer = {
   y: number;
   size: number;
   rotation: number;
-  behindText: boolean;
   fit: "contain" | "cover";
 };
-export type Settings = {
+export type TextLayer = {
+  type: "text";
+  id: string;
   text: string;
-  images?: ImageLayer[];
-  textLayout?: { x: number; y: number; scale: number };
+  x: number;
+  y: number;
+  scale: number;
   font: string;
   fontLabel?: string;
   color: string;
   gradient?: { end: string; direction: "horizontal" | "vertical" };
   characterColors?: Record<number, string>;
+};
+export type Layer = TextLayer | ImageLayer;
+export type Settings = {
+  layers: Layer[];
   background: string;
   transparent: boolean;
   motion: keyof typeof motions;
   speed: keyof typeof motionFrameDelays;
   delay: number;
 };
-export const initialSettings: Settings = {
+export const initialTextLayer: TextLayer = {
+  type: "text",
+  id: "text-1",
   text: "최고야!",
+  x: 64,
+  y: 64,
+  scale: 1,
   font: "Black Han Sans",
   color: "#7555e8",
+};
+export const initialSettings: Settings = {
+  layers: [initialTextLayer],
   background: "#ffffff",
   transparent: true,
   motion: "bounce",
@@ -74,7 +89,18 @@ export function validateText(text: string): string | null {
   return null;
 }
 
-export function measureEmojiText(ctx: CanvasRenderingContext2D, settings: Settings) {
+export function validateSettings(settings: Settings): string | null {
+  for (const layer of settings.layers) {
+    if (layer.type !== "text" || !layer.text.trim()) continue;
+    const error = validateText(layer.text);
+    if (error) return error;
+  }
+  return settings.layers.some((layer) => layer.type === "image" || layer.text.trim())
+    ? null
+    : "텍스트나 이미지를 추가해 주세요.";
+}
+
+export function measureEmojiText(ctx: CanvasRenderingContext2D, settings: TextLayer) {
   const lines = settings.text.split("\n");
   ctx.font = `100px "${settings.font}"`;
   ctx.textAlign = "left";
@@ -161,98 +187,75 @@ function applyMotion(ctx: CanvasRenderingContext2D, motion: Settings["motion"], 
   }
 }
 
-function drawImages(
-  ctx: CanvasRenderingContext2D,
-  images: ImageLayer[],
-  behindText: boolean,
-  motion: Settings["motion"],
-  progress: number,
-) {
-  for (const image of images) {
-    if (image.behindText !== behindText) continue;
-    ctx.save();
-    try {
-      ctx.translate(image.x, image.y);
-      applyMotion(ctx, motion, progress);
-      ctx.rotate((image.rotation * Math.PI) / 180);
-      if (image.fit === "cover") {
-        const width = Number(image.source.width);
-        const height = Number(image.source.height);
-        const side = Math.min(width, height);
-        ctx.drawImage(
-          image.source,
-          (width - side) / 2,
-          (height - side) / 2,
-          side,
-          side,
-          -image.size / 2,
-          -image.size / 2,
-          image.size,
-          image.size,
-        );
-      } else {
-        const width = image.size * Math.min(1, image.aspectRatio);
-        const height = image.size * Math.min(1, 1 / image.aspectRatio);
-        ctx.drawImage(image.source, -width / 2, -height / 2, width, height);
-      }
-    } finally {
-      ctx.restore();
-    }
-  }
-}
-
 export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, progress: number) {
   ctx.clearRect(0, 0, 128, 128);
   if (!settings.transparent) {
     ctx.fillStyle = settings.background;
     ctx.fillRect(0, 0, 128, 128);
   }
-  drawImages(ctx, settings.images ?? [], true, settings.motion, progress);
-  if (!settings.text.trim()) {
-    drawImages(ctx, settings.images ?? [], false, settings.motion, progress);
-    return;
-  }
-  ctx.save();
-  try {
-    ctx.translate(settings.textLayout?.x ?? 64, settings.textLayout?.y ?? 64);
-    ctx.scale(settings.textLayout?.scale ?? 1, settings.textLayout?.scale ?? 1);
-    applyMotion(ctx, settings.motion, progress);
-    const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, settings);
-    ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
-    if (settings.gradient) {
-      const gradient = ctx.createLinearGradient(
-        settings.gradient.direction === "horizontal" ? -width / 2 : 0,
-        settings.gradient.direction === "vertical" ? -height / 2 : 0,
-        settings.gradient.direction === "horizontal" ? width / 2 : 0,
-        settings.gradient.direction === "vertical" ? height / 2 : 0,
-      );
-      gradient.addColorStop(0, settings.color);
-      gradient.addColorStop(1, settings.gradient.end);
-      ctx.fillStyle = gradient;
-    } else {
-      ctx.fillStyle = settings.color;
-    }
-    lines.forEach((line, index) => {
-      const x = (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
-      const y = index * 105 - (top + bottom) / 2;
-      if (settings.characterColors && !settings.gradient) {
-        runs[index].forEach((run) => {
-          ctx.fillStyle = run.color;
-          ctx.fillText(run.character, x + run.x, y);
-        });
-      } else {
-        ctx.fillText(line, x, y);
+  for (const layer of settings.layers) {
+    if (layer.type === "text" && !layer.text.trim()) continue;
+    ctx.save();
+    try {
+      ctx.translate(layer.x, layer.y);
+      if (layer.type === "text") ctx.scale(layer.scale, layer.scale);
+      applyMotion(ctx, settings.motion, progress);
+      if (layer.type === "image") {
+        ctx.rotate((layer.rotation * Math.PI) / 180);
+        if (layer.fit === "cover") {
+          const width = Number(layer.source.width);
+          const height = Number(layer.source.height);
+          const side = Math.min(width, height);
+          ctx.drawImage(
+            layer.source,
+            (width - side) / 2,
+            (height - side) / 2,
+            side,
+            side,
+            -layer.size / 2,
+            -layer.size / 2,
+            layer.size,
+            layer.size,
+          );
+        } else {
+          const width = layer.size * Math.min(1, layer.aspectRatio);
+          const height = layer.size * Math.min(1, 1 / layer.aspectRatio);
+          ctx.drawImage(layer.source, -width / 2, -height / 2, width, height);
+        }
+        continue;
       }
-    });
-  } finally {
-    ctx.restore();
+      const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, layer);
+      ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
+      if (layer.gradient) {
+        const gradient = ctx.createLinearGradient(
+          layer.gradient.direction === "horizontal" ? -width / 2 : 0,
+          layer.gradient.direction === "vertical" ? -height / 2 : 0,
+          layer.gradient.direction === "horizontal" ? width / 2 : 0,
+          layer.gradient.direction === "vertical" ? height / 2 : 0,
+        );
+        gradient.addColorStop(0, layer.color);
+        gradient.addColorStop(1, layer.gradient.end);
+        ctx.fillStyle = gradient;
+      } else ctx.fillStyle = layer.color;
+      lines.forEach((line, index) => {
+        const x =
+          (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
+        const y = index * 105 - (top + bottom) / 2;
+        if (layer.characterColors && !layer.gradient) {
+          runs[index].forEach((run) => {
+            ctx.fillStyle = run.color;
+            ctx.fillText(run.character, x + run.x, y);
+          });
+        } else ctx.fillText(line, x, y);
+      });
+    } finally {
+      ctx.restore();
+    }
   }
-  drawImages(ctx, settings.images ?? [], false, settings.motion, progress);
 }
 
 export async function exportGif(ctx: CanvasRenderingContext2D, settings: Settings): Promise<Blob> {
-  const error =
-    settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
+  const error = validateSettings(settings);
   if (error) throw new Error(error);
   const frames = [];
   const count = settings.motion === "none" ? 1 : 20;

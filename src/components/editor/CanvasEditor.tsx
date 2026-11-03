@@ -1,42 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
-import { loadFont } from "~/lib/font-loading";
-import type { ImageLayer, Settings } from "~/lib/emoji";
-import { LayerControls } from "./LayerControls";
+import { LayerFontError, loadLayerFonts } from "~/lib/font-loading";
+import type { Settings } from "~/lib/emoji";
 import { Button, Spinner } from "~/components/design-system";
 
 export function CanvasEditor({
   settings,
   selectedId,
+  selectedAnchor,
   onSelect,
   onMove,
-  onDelete,
   onEditText,
   onChooseFont,
   renderAttempt,
   onRetry,
-  onAddImage,
-  onImagesChange,
-  onTextLayoutChange,
-  onDismiss,
 }: {
   settings: Settings;
   selectedId: string | null;
+  selectedAnchor: RefObject<HTMLButtonElement | null>;
   onSelect: (id: string | null) => void;
   onMove: (id: string, x: number, y: number) => void;
-  onDelete: (id: string) => void;
-  onEditText: () => void;
-  onChooseFont: () => void;
+  onEditText: (id: string) => void;
+  onChooseFont: (id: string) => void;
   renderAttempt: number;
   onRetry: () => void;
-  onAddImage: () => void;
-  onImagesChange: (images: ImageLayer[]) => void;
-  onTextLayoutChange: (layout: Settings["textLayout"]) => void;
-  onDismiss: (id: string) => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
-  const selectedAnchor = useRef<HTMLButtonElement | null>(null);
   const dragging = useRef<{
     id: string;
     active: boolean;
@@ -45,9 +35,9 @@ export function CanvasEditor({
     x: number;
     y: number;
   } | null>(null);
-  const [geometry, setGeometry] = useState({ width: 0, height: 0 });
+  const [geometry, setGeometry] = useState<Record<string, { width: number; height: number }>>({});
   const [guides, setGuides] = useState<{ x?: number; y?: number }>({});
-  const [error, setError] = useState<{ message: string; font: boolean } | null>(null);
+  const [error, setError] = useState<{ message: string; fontId: string | null } | null>(null);
   const [completedRender, setCompletedRender] = useState<{
     settings: Settings;
     attempt: number;
@@ -56,11 +46,9 @@ export function CanvasEditor({
     completedRender?.settings !== settings || completedRender?.attempt !== renderAttempt;
   useEffect(() => {
     let active = true;
-    let fontLoaded = false;
     async function render() {
-      await loadFont(settings.font, settings.text);
+      await loadLayerFonts(settings.layers);
       if (!active) return;
-      fontLoaded = true;
       const ctx = canvas.current?.getContext("2d");
       if (!ctx) throw new Error("Canvas context unavailable");
       ctx.save();
@@ -70,24 +58,35 @@ export function CanvasEditor({
       } finally {
         ctx.restore();
       }
-      if (settings.text.trim()) {
-        const { width, height } = measureEmojiText(ctx, settings);
-        const fit = Math.min(126 / width, 126 / height) * (settings.textLayout?.scale ?? 1);
-        setGeometry((previous) =>
-          previous.width === width * fit && previous.height === height * fit
-            ? previous
-            : { width: width * fit, height: height * fit },
-        );
-      } else setGeometry((previous) => (previous.width ? { width: 0, height: 0 } : previous));
+      const nextGeometry: Record<string, { width: number; height: number }> = {};
+      for (const layer of settings.layers) {
+        if (layer.type !== "text") continue;
+        if (!layer.text.trim()) {
+          nextGeometry[layer.id] = { width: 48, height: 24 };
+          continue;
+        }
+        const { width, height } = measureEmojiText(ctx, layer);
+        const fit = Math.min(126 / width, 126 / height) * layer.scale;
+        nextGeometry[layer.id] = { width: width * fit, height: height * fit };
+      }
+      setGeometry((previous) =>
+        Object.keys(previous).length === Object.keys(nextGeometry).length &&
+        Object.entries(nextGeometry).every(
+          ([id, size]) =>
+            previous[id]?.width === size.width && previous[id]?.height === size.height,
+        )
+          ? previous
+          : nextGeometry,
+      );
       setError(null);
     }
     void render()
       .catch((cause) => {
         if (active)
           setError({
-            font: !fontLoaded,
+            fontId: cause instanceof LayerFontError ? cause.layerId : null,
             message:
-              !fontLoaded && cause instanceof Error
+              cause instanceof LayerFontError
                 ? cause.message
                 : "캔버스를 그리지 못했어요. 다시 그리기를 눌러 주세요.",
           });
@@ -106,11 +105,7 @@ export function CanvasEditor({
       Math.round(Math.max(0, Math.min(128, y))),
     );
   }
-  const layers: (ImageLayer | "text")[] = [
-    ...(settings.images ?? []).filter((image) => image.behindText),
-    ...(settings.text.trim() ? ["text" as const] : []),
-    ...(settings.images ?? []).filter((image) => !image.behindText),
-  ];
+  const layers = settings.layers;
   return (
     <div className="space-y-inset">
       <div
@@ -128,10 +123,7 @@ export function CanvasEditor({
             onSelect(null);
             return;
           }
-          const layer =
-            id === "text"
-              ? (settings.textLayout ?? { x: 64, y: 64 })
-              : settings.images?.find((image) => image.id === id);
+          const layer = layers.find((item) => item.id === id);
           if (!layer) return;
           onSelect(id);
           dragging.current = {
@@ -154,15 +146,15 @@ export function CanvasEditor({
             drag.active = true;
           }
           const bounds = (id: string) => {
-            const image = settings.images?.find((item) => item.id === id);
-            if (id === "text")
-              return {
-                x: settings.textLayout?.x ?? 64,
-                y: settings.textLayout?.y ?? 64,
-                width: geometry.width,
-                height: geometry.height,
-              };
+            const image = layers.find((item) => item.id === id);
             if (!image) return { x: 64, y: 64, width: 0, height: 0 };
+            if (image.type === "text")
+              return {
+                x: image.x,
+                y: image.y,
+                width: geometry[id]?.width ?? 48,
+                height: geometry[id]?.height ?? 24,
+              };
             const width = image.size * (image.fit === "cover" ? 1 : Math.min(1, image.aspectRatio));
             const height =
               image.size * (image.fit === "cover" ? 1 : Math.min(1, 1 / image.aspectRatio));
@@ -177,9 +169,7 @@ export function CanvasEditor({
           const moving = bounds(drag.id);
           const targets = [
             { x: 64, y: 64, width: 128, height: 128 },
-            ...layers
-              .filter((layer) => (layer === "text" ? "text" : layer.id) !== drag.id)
-              .map((layer) => bounds(layer === "text" ? "text" : layer.id)),
+            ...layers.filter((layer) => layer.id !== drag.id).map((layer) => bounds(layer.id)),
           ];
           const next = {
             x: drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
@@ -235,10 +225,7 @@ export function CanvasEditor({
           const id = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]")
             ?.dataset.layer;
           if (!id) return;
-          const layer =
-            id === "text"
-              ? (settings.textLayout ?? { x: 64, y: 64 })
-              : settings.images?.find((image) => image.id === id);
+          const layer = layers.find((item) => item.id === id);
           if (!layer || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key))
             return;
           event.preventDefault();
@@ -273,22 +260,23 @@ export function CanvasEditor({
           />
         )}
         {layers.map((layer) => {
-          const text = layer === "text";
-          const id = text ? "text" : layer.id;
-          const x = text ? (settings.textLayout?.x ?? 64) : layer.x;
-          const y = text ? (settings.textLayout?.y ?? 64) : layer.y;
-          const width = text
-            ? geometry.width
-            : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, layer.aspectRatio));
-          const height = text
-            ? geometry.height
-            : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, 1 / layer.aspectRatio));
+          const id = layer.id;
+          const x = layer.x;
+          const y = layer.y;
+          const width =
+            layer.type === "text"
+              ? (geometry[id]?.width ?? 48)
+              : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, layer.aspectRatio));
+          const height =
+            layer.type === "text"
+              ? (geometry[id]?.height ?? 24)
+              : layer.size * (layer.fit === "cover" ? 1 : Math.min(1, 1 / layer.aspectRatio));
           const style: CSSProperties = {
             left: `${(x / 128) * 100}%`,
             top: `${(y / 128) * 100}%`,
             width: `${(width / 128) * 100}%`,
             height: `${(height / 128) * 100}%`,
-            transform: `translate(-50%, -50%) rotate(${text ? 0 : layer.rotation}deg)`,
+            transform: `translate(-50%, -50%) rotate(${layer.type === "text" ? 0 : layer.rotation}deg)`,
           };
           return (
             <button
@@ -300,9 +288,9 @@ export function CanvasEditor({
               data-layer={id}
               style={style}
               aria-label={
-                text
-                  ? "텍스트 레이어"
-                  : `이미지 레이어 ${(settings.images ?? []).indexOf(layer) + 1}: ${layer.name}`
+                layer.type === "text"
+                  ? `텍스트 레이어: ${layer.text.trim() || "빈 텍스트"}`
+                  : `이미지 레이어: ${layer.name}`
               }
               aria-pressed={selectedId === id}
               aria-haspopup="dialog"
@@ -314,25 +302,12 @@ export function CanvasEditor({
                   requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
                 }
               }}
-              onDoubleClick={text ? onEditText : undefined}
+              onDoubleClick={layer.type === "text" ? () => onEditText(id) : undefined}
               className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:outline hover:-outline-offset-1 hover:outline-stroke-guide/35 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-guide aria-pressed:outline aria-pressed:-outline-offset-1 aria-pressed:outline-stroke-guide/75 active:cursor-grabbing"
             />
           );
         })}
       </div>
-      {selectedId && (
-        <LayerControls
-          key={selectedId}
-          anchor={selectedAnchor}
-          images={settings.images ?? []}
-          textLayout={settings.textLayout}
-          selectedId={selectedId}
-          onClose={() => onDismiss(selectedId)}
-          onDelete={onDelete}
-          onImagesChange={onImagesChange}
-          onTextLayoutChange={onTextLayoutChange}
-        />
-      )}
       {error && (
         <div className="space-y-control">
           <p role="alert" className="text-caption text-fg-critical">
@@ -349,27 +324,14 @@ export function CanvasEditor({
               {rendering && <Spinner />}
               다시 그리기
             </Button>
-            {error.font && (
-              <Button variant="neutral" size="small" onClick={onChooseFont}>
+            {error.fontId && (
+              <Button variant="neutral" size="small" onClick={() => onChooseFont(error.fontId!)}>
                 글꼴 설정 열기
               </Button>
             )}
           </div>
         </div>
       )}
-      <div className="grid grid-cols-2 gap-control">
-        <Button variant="white" size="small" onClick={onEditText}>
-          텍스트 편집
-        </Button>
-        <Button
-          variant="white"
-          size="small"
-          onClick={onAddImage}
-          disabled={(settings.images?.length ?? 0) >= 12}
-        >
-          이미지 추가
-        </Button>
-      </div>
     </div>
   );
 }

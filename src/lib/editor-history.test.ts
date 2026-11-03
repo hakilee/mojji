@@ -1,34 +1,148 @@
 import { createCanvas } from "@napi-rs/canvas";
 import { describe, expect, test } from "vitest";
 import { editorHistoryReducer, initialEditorHistory } from "./editor-history";
-import { drawEmoji, initialSettings, type ImageLayer, type Settings } from "./emoji";
+import { drawEmoji, initialSettings, initialTextLayer, type ImageLayer } from "./emoji";
 
 describe("editor history [E2b E5v]", () => {
-  test("deletes text and restores its content, styling, placement and selection", () => {
+  test("edits and deletes independent text layers with reversible selection [E5y]", () => {
+    let history = editorHistoryReducer(initialEditorHistory, {
+      type: "add-text",
+      layer: { ...initialTextLayer, id: "second", text: "두번째", font: "Jua", color: "#0000ff" },
+    });
+    expect(history.present.selectedLayer).toBe("second");
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: "second",
+      patch: { text: "수정", gradient: { end: "#ff0000", direction: "vertical" }, x: 90 },
+    });
+    expect(history.present.settings.layers[0]).toEqual(initialTextLayer);
+    const edited = history.present;
+
+    history = editorHistoryReducer(history, { type: "delete", id: "second" });
+    expect(history.present.settings.layers).toEqual([initialTextLayer]);
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(edited);
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present.settings.layers[1]).toMatchObject({
+      text: "두번째",
+      font: "Jua",
+      x: 64,
+    });
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(initialEditorHistory.present);
+    for (let index = 0; index < 3; index++)
+      history = editorHistoryReducer(history, { type: "redo" });
+    expect(history.present.settings.layers).toEqual([initialTextLayer]);
+    expect(history.present.selectedLayer).toBeNull();
+  });
+
+  test("reorders mixed layers and restores their resources and rendered output [E5y]", () => {
+    const source = createCanvas(128, 128);
+    source.getContext("2d").fillStyle = "#ff0000";
+    source.getContext("2d").fillRect(0, 0, 128, 128);
+    const image: ImageLayer = {
+      type: "image",
+      id: "image",
+      name: "image.png",
+      source: source as unknown as HTMLCanvasElement,
+      aspectRatio: 1,
+      x: 64,
+      y: 64,
+      size: 128,
+      rotation: 0,
+      fit: "cover",
+    };
     let history = editorHistoryReducer(initialEditorHistory, {
       type: "change",
       patch: {
+        motion: "none",
+        layers: [
+          initialTextLayer,
+          image,
+          { ...initialTextLayer, id: "front", text: "HH", color: "#0000ff" },
+        ],
+      },
+    });
+    history = editorHistoryReducer(history, { type: "select", id: "front" });
+    const before = history.present;
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(ctx, before.settings, 0);
+    const expected = ctx.getImageData(0, 0, 128, 128).data;
+
+    history = editorHistoryReducer(history, { type: "reorder", id: "front", direction: -1 });
+    expect(history.present.settings.layers.map((layer) => layer.id)).toEqual([
+      initialTextLayer.id,
+      "front",
+      "image",
+    ]);
+    drawEmoji(ctx, history.present.settings, 0);
+    expect(ctx.getImageData(0, 0, 128, 128).data).not.toEqual(expected);
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(before);
+    expect(
+      history.present.settings.layers.filter((layer) => layer.type === "image")[0].source,
+    ).toBe(source);
+    drawEmoji(ctx, history.present.settings, 0);
+    expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(expected);
+    history = editorHistoryReducer(history, { type: "redo" });
+    expect(history.present.settings.layers.map((layer) => layer.id)).toEqual([
+      initialTextLayer.id,
+      "front",
+      "image",
+    ]);
+    expect(editorHistoryReducer(history, { type: "reorder", id: "image", direction: 1 })).toBe(
+      history,
+    );
+  });
+
+  test("keeps blank texts selectable and ignores late edits to deleted layers [E5y]", () => {
+    let history = editorHistoryReducer(initialEditorHistory, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "" },
+    });
+    history = editorHistoryReducer(history, { type: "select", id: initialTextLayer.id });
+    expect(history.present.selectedLayer).toBe(initialTextLayer.id);
+    history = editorHistoryReducer(history, { type: "delete", id: initialTextLayer.id });
+
+    expect(
+      editorHistoryReducer(history, {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { font: "Jua" },
+      }),
+    ).toBe(history);
+    expect(
+      editorHistoryReducer(history, { type: "reorder", id: initialTextLayer.id, direction: -1 }),
+    ).toBe(history);
+  });
+
+  test("deletes text and restores its content, styling, placement and selection", () => {
+    let history = editorHistoryReducer(initialEditorHistory, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: {
         text: "복구!",
-        textLayout: { x: 30, y: 90, scale: 0.6 },
+        x: 30,
+        y: 90,
+        scale: 0.6,
         characterColors: { 0: "#ff0000", 2: "#00ff00" },
       },
     });
-    history = editorHistoryReducer(history, { type: "select", id: "text" });
+    history = editorHistoryReducer(history, { type: "select", id: initialTextLayer.id });
     const before = history.present;
 
-    history = editorHistoryReducer(history, { type: "delete", id: "text" });
+    history = editorHistoryReducer(history, { type: "delete", id: initialTextLayer.id });
 
     expect(history.present.settings).toEqual({
       ...before.settings,
-      text: "",
-      textLayout: undefined,
-      characterColors: undefined,
+      layers: [],
     });
     expect(history.present.selectedLayer).toBeNull();
     history = editorHistoryReducer(history, { type: "undo" });
     expect(history.present).toEqual(before);
     history = editorHistoryReducer(history, { type: "redo" });
-    expect(history.present.settings.text).toBe("");
+    expect(history.present.settings.layers).toEqual([]);
     expect(history.present.selectedLayer).toBeNull();
   });
 
@@ -37,6 +151,7 @@ describe("editor history [E2b E5v]", () => {
     source.getContext("2d").fillStyle = "#f43060";
     source.getContext("2d").fillRect(0, 0, 16, 8);
     const image: ImageLayer = {
+      type: "image",
       id: "front",
       name: "front.png",
       source: source as unknown as HTMLCanvasElement,
@@ -45,12 +160,11 @@ describe("editor history [E2b E5v]", () => {
       y: 77,
       size: 65,
       rotation: 27,
-      behindText: false,
       fit: "contain",
     };
     let history = editorHistoryReducer(initialEditorHistory, {
       type: "change",
-      patch: { text: "", images: [{ ...image, id: "back", behindText: true, x: 80 }, image] },
+      patch: { layers: [{ ...image, id: "back", x: 80 }, image] },
     });
     history = editorHistoryReducer(history, { type: "select", id: image.id });
     const before = history.present;
@@ -58,41 +172,56 @@ describe("editor history [E2b E5v]", () => {
     drawEmoji(expected, before.settings, 0);
 
     history = editorHistoryReducer(history, { type: "delete", id: image.id });
-    expect(history.present.settings.images?.map((layer) => layer.id)).toEqual(["back"]);
+    expect(history.present.settings.layers.map((layer) => layer.id)).toEqual(["back"]);
     history = editorHistoryReducer(history, { type: "undo" });
     const restored = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
     drawEmoji(restored, history.present.settings, 0);
 
     expect(history.present).toEqual(before);
-    expect(history.present.settings.images?.[1].source).toBe(source);
+    expect(
+      history.present.settings.layers.filter((layer) => layer.type === "image")[1].source,
+    ).toBe(source);
     expect(restored.getImageData(0, 0, 128, 128).data).toEqual(
       expected.getImageData(0, 0, 128, 128).data,
     );
     history = editorHistoryReducer(history, { type: "redo" });
-    expect(history.present.settings.images?.map((layer) => layer.id)).toEqual(["back"]);
+    expect(history.present.settings.layers.map((layer) => layer.id)).toEqual(["back"]);
   });
 
   test.each(["pointer", "keyboard"] as const)(
     "undoes one %s gesture at a time, including repeated movement",
     (group) => {
-      let history = editorHistoryReducer(initialEditorHistory, { type: "select", id: "text" });
+      let history = editorHistoryReducer(initialEditorHistory, {
+        type: "select",
+        id: initialTextLayer.id,
+      });
       history = editorHistoryReducer(history, { type: "begin-group", group });
       for (const x of [65, 66, 69, 70]) {
         history = editorHistoryReducer(history, { type: "begin-group", group });
-        history = editorHistoryReducer(history, { type: "move", id: "text", x, y: 64 });
+        history = editorHistoryReducer(history, {
+          type: "move",
+          id: initialTextLayer.id,
+          x,
+          y: 64,
+        });
       }
       history = editorHistoryReducer(history, { type: "end-group", group });
       history = editorHistoryReducer(history, { type: "begin-group", group });
-      history = editorHistoryReducer(history, { type: "move", id: "text", x: 80, y: 64 });
+      history = editorHistoryReducer(history, {
+        type: "move",
+        id: initialTextLayer.id,
+        x: 80,
+        y: 64,
+      });
       history = editorHistoryReducer(history, { type: "end-group", group });
 
       history = editorHistoryReducer(history, { type: "undo" });
-      expect(history.present.settings.textLayout?.x).toBe(70);
+      expect(history.present.settings.layers[0].x).toBe(70);
       history = editorHistoryReducer(history, { type: "undo" });
-      expect(history.present.settings.textLayout).toBeUndefined();
-      expect(history.present.selectedLayer).toBe("text");
+      expect(history.present.settings.layers[0]).toMatchObject({ x: 64, y: 64, scale: 1 });
+      expect(history.present.selectedLayer).toBe(initialTextLayer.id);
       history = editorHistoryReducer(history, { type: "redo" });
-      expect(history.present.settings.textLayout?.x).toBe(70);
+      expect(history.present.settings.layers[0].x).toBe(70);
     },
   );
 
@@ -119,16 +248,24 @@ describe("editor history [E2b E5v]", () => {
       type: "begin-group",
       group: "input",
     });
-    history = editorHistoryReducer(history, { type: "change", patch: { text: "A" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "A" },
+    });
     history = editorHistoryReducer(history, { type: "end-group", group: "pointer" });
     history = editorHistoryReducer(history, { type: "end-group", group: "keyboard" });
-    history = editorHistoryReducer(history, { type: "change", patch: { text: "AB" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "AB" },
+    });
     history = editorHistoryReducer(history, { type: "end-group", group: "input" });
 
     history = editorHistoryReducer(history, { type: "undo" });
-    expect(history.present.settings.text).toBe(initialSettings.text);
+    expect(history.present.settings.layers[0]).toMatchObject({ text: initialTextLayer.text });
     history = editorHistoryReducer(history, { type: "redo" });
-    expect(history.present.settings.text).toBe("AB");
+    expect(history.present.settings.layers[0]).toMatchObject({ text: "AB" });
   });
 
   test.each(["text", "placement"])(
@@ -139,15 +276,14 @@ describe("editor history [E2b E5v]", () => {
         group: "pointer",
       });
       history = editorHistoryReducer(history, {
-        type: "change",
-        patch: field === "text" ? { text: "임시" } : { textLayout: { x: 70, y: 64, scale: 1 } },
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: field === "text" ? { text: "임시" } : { x: 70, y: 64, scale: 1 },
       });
       history = editorHistoryReducer(history, {
-        type: "change",
-        patch:
-          field === "text"
-            ? { text: initialSettings.text }
-            : { textLayout: { x: 64, y: 64, scale: 1 } },
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: field === "text" ? { text: initialTextLayer.text } : { x: 64, y: 64, scale: 1 },
       });
       history = editorHistoryReducer(history, { type: "end-group" });
 
@@ -158,18 +294,23 @@ describe("editor history [E2b E5v]", () => {
 
   test("ignores no-op edits and UI selection without losing redo", () => {
     let history = editorHistoryReducer(initialEditorHistory, {
-      type: "change",
+      type: "change-text",
+      id: initialTextLayer.id,
       patch: { gradient: { end: "#123456", direction: "horizontal" }, characterColors: undefined },
     });
-    history = editorHistoryReducer(history, { type: "change", patch: { color: "#112233" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { color: "#112233" },
+    });
     history = editorHistoryReducer(history, { type: "undo" });
-    history = editorHistoryReducer(history, { type: "select", id: "text" });
+    history = editorHistoryReducer(history, { type: "select", id: initialTextLayer.id });
 
     expect(
       editorHistoryReducer(history, {
-        type: "change",
+        type: "change-text",
+        id: initialTextLayer.id,
         patch: {
-          ...history.present.settings,
           gradient: { end: "#123456", direction: "horizontal" },
         },
       }),
@@ -178,36 +319,69 @@ describe("editor history [E2b E5v]", () => {
     expect(editorHistoryReducer(history, { type: "move", id: "missing", x: 1, y: 1 })).toBe(
       history,
     );
-    expect(editorHistoryReducer(history, { type: "redo" }).present.settings.color).toBe("#112233");
+    expect(
+      editorHistoryReducer(history, { type: "redo" }).present.settings.layers[0],
+    ).toMatchObject({ color: "#112233" });
   });
 
   test("clears redo only when a new document edit branches from restored settings", () => {
     let history = editorHistoryReducer(initialEditorHistory, {
-      type: "change",
+      type: "change-text",
+      id: initialTextLayer.id,
       patch: { text: "이전" },
     });
-    history = editorHistoryReducer(history, { type: "change", patch: { text: "이후" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "이후" },
+    });
     history = editorHistoryReducer(history, { type: "undo" });
-    history = editorHistoryReducer(history, { type: "change", patch: { text: "새 편집" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "새 편집" },
+    });
 
     expect(editorHistoryReducer(history, { type: "redo" })).toBe(history);
-    expect(editorHistoryReducer(history, { type: "undo" }).present.settings.text).toBe("이전");
+    expect(
+      editorHistoryReducer(history, { type: "undo" }).present.settings.layers[0],
+    ).toMatchObject({ text: "이전" });
   });
 
   test("captures colors, motion and same-label font replacements as document edits", () => {
-    const changes: Partial<Settings>[] = [
-      { color: "#123456", characterColors: { 0: "#654321" } },
-      { gradient: { end: "#aabbcc", direction: "vertical" }, characterColors: undefined },
-      { transparent: false, background: "#ff3322" },
-      { motion: "swing", speed: 2, delay: 700 },
-      { font: "upload-first", fontLabel: "same.woff2 (업로드)" },
-      { font: "upload-second", fontLabel: "same.woff2 (업로드)" },
-      { font: "Jua", fontLabel: undefined },
-    ];
+    const changes = [
+      {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { color: "#123456", characterColors: { 0: "#654321" } },
+      },
+      {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { gradient: { end: "#aabbcc", direction: "vertical" }, characterColors: undefined },
+      },
+      { type: "change", patch: { transparent: false, background: "#ff3322" } },
+      { type: "change", patch: { motion: "swing", speed: 2, delay: 700 } },
+      {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { font: "upload-first", fontLabel: "same.woff2 (업로드)" },
+      },
+      {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { font: "upload-second", fontLabel: "same.woff2 (업로드)" },
+      },
+      {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { font: "Jua", fontLabel: undefined },
+      },
+    ] as const;
     let history = initialEditorHistory;
     const documents = [history.present.settings];
-    for (const patch of changes) {
-      history = editorHistoryReducer(history, { type: "change", patch });
+    for (const action of changes) {
+      history = editorHistoryReducer(history, action);
       documents.push(history.present.settings);
     }
 
@@ -224,15 +398,19 @@ describe("editor history [E2b E5v]", () => {
   test("retains the most recent 100 actions and can redo them", () => {
     let history = initialEditorHistory;
     for (let index = 1; index <= 101; index++)
-      history = editorHistoryReducer(history, { type: "change", patch: { text: String(index) } });
+      history = editorHistoryReducer(history, {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { text: String(index) },
+      });
 
     for (let index = 0; index < 100; index++)
       history = editorHistoryReducer(history, { type: "undo" });
-    expect(history.present.settings.text).toBe("1");
+    expect(history.present.settings.layers[0]).toMatchObject({ text: "1" });
     expect(editorHistoryReducer(history, { type: "undo" })).toBe(history);
     for (let index = 0; index < 100; index++)
       history = editorHistoryReducer(history, { type: "redo" });
-    expect(history.present.settings.text).toBe("101");
+    expect(history.present.settings.layers[0]).toMatchObject({ text: "101" });
     expect(editorHistoryReducer(history, { type: "redo" })).toBe(history);
   });
 
@@ -241,17 +419,31 @@ describe("editor history [E2b E5v]", () => {
     (ending) => {
       let history = initialEditorHistory;
       for (let index = 1; index <= 100; index++)
-        history = editorHistoryReducer(history, { type: "change", patch: { text: String(index) } });
+        history = editorHistoryReducer(history, {
+          type: "change-text",
+          id: initialTextLayer.id,
+          patch: { text: String(index) },
+        });
       history = editorHistoryReducer(history, { type: "begin-group", group: "input" });
-      history = editorHistoryReducer(history, { type: "change", patch: { text: "진행 중" } });
+      history = editorHistoryReducer(history, {
+        type: "change-text",
+        id: initialTextLayer.id,
+        patch: { text: "진행 중" },
+      });
 
       if (ending === "return")
-        history = editorHistoryReducer(history, { type: "change", patch: { text: "100" } });
+        history = editorHistoryReducer(history, {
+          type: "change-text",
+          id: initialTextLayer.id,
+          patch: { text: "100" },
+        });
       history = editorHistoryReducer(history, { type: ending === "undo" ? "undo" : "end-group" });
       for (let index = 0; index < 100; index++)
         history = editorHistoryReducer(history, { type: "undo" });
 
-      expect(history.present.settings.text).toBe(ending === "return" ? initialSettings.text : "1");
+      expect(history.present.settings.layers[0]).toMatchObject({
+        text: ending === "return" ? initialTextLayer.text : "1",
+      });
       expect(editorHistoryReducer(history, { type: "undo" })).toBe(history);
     },
   );
@@ -259,6 +451,7 @@ describe("editor history [E2b E5v]", () => {
   test("adds asynchronously decoded images to the current document within the layer limit", () => {
     const source = createCanvas(1, 1) as unknown as HTMLCanvasElement;
     const images: ImageLayer[] = Array.from({ length: 12 }, (_, index) => ({
+      type: "image",
       id: String(index),
       name: `${index}.png`,
       source,
@@ -267,27 +460,34 @@ describe("editor history [E2b E5v]", () => {
       y: 64,
       size: 40,
       rotation: 0,
-      behindText: true,
       fit: "contain",
     }));
     let history = editorHistoryReducer(initialEditorHistory, {
       type: "add-images",
       images: images.slice(0, 11),
     });
-    history = editorHistoryReducer(history, { type: "change", patch: { text: "최근 입력" } });
+    history = editorHistoryReducer(history, {
+      type: "change-text",
+      id: initialTextLayer.id,
+      patch: { text: "최근 입력" },
+    });
 
     history = editorHistoryReducer(history, {
       type: "add-images",
       images: [images[11], { ...images[0], id: "excess" }],
     });
 
-    expect(history.present.settings.text).toBe("최근 입력");
-    expect(history.present.settings.images?.map((image) => image.id)).toEqual(
-      images.map((image) => image.id),
-    );
+    expect(history.present.settings.layers[0]).toMatchObject({ text: "최근 입력" });
+    expect(
+      history.present.settings.layers
+        .filter((layer) => layer.type === "image")
+        .map((image) => image.id),
+    ).toEqual(images.map((image) => image.id));
     history = editorHistoryReducer(history, { type: "undo" });
-    expect(history.present.settings.images).toHaveLength(11);
-    expect(history.present.settings.text).toBe("최근 입력");
+    expect(history.present.settings.layers.filter((layer) => layer.type === "image")).toHaveLength(
+      11,
+    );
+    expect(history.present.settings.layers[0]).toMatchObject({ text: "최근 입력" });
   });
 
   test("does not let an old panel dismissal clear a newly selected layer", () => {
@@ -296,6 +496,7 @@ describe("editor history [E2b E5v]", () => {
       type: "add-images",
       images: [
         {
+          type: "image",
           id: "image",
           name: "a.png",
           source,
@@ -304,15 +505,14 @@ describe("editor history [E2b E5v]", () => {
           y: 64,
           size: 40,
           rotation: 0,
-          behindText: true,
           fit: "contain",
         },
       ],
     });
-    history = editorHistoryReducer(history, { type: "select", id: "text" });
+    history = editorHistoryReducer(history, { type: "select", id: initialTextLayer.id });
     history = editorHistoryReducer(history, { type: "select", id: "image" });
 
-    history = editorHistoryReducer(history, { type: "deselect", id: "text" });
+    history = editorHistoryReducer(history, { type: "deselect", id: initialTextLayer.id });
     expect(history.present.selectedLayer).toBe("image");
     history = editorHistoryReducer(history, { type: "deselect", id: "image" });
     expect(history.present.selectedLayer).toBeNull();

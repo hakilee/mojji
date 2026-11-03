@@ -7,26 +7,23 @@ import {
   ColorPicker,
   HelpBubble,
   MotionIcon,
-  SegmentedControl,
   Select,
   Spinner,
 } from "~/components/design-system";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
-  constrainText,
   motions,
   motionFrameDelays,
-  maxTextCharacters,
-  textCharacters,
-  validateText,
+  initialTextLayer,
+  validateSettings,
 } from "../lib/emoji";
 import type { Settings } from "../lib/emoji";
 import { CanvasEditor } from "~/components/editor/CanvasEditor";
 import { LayerEditor } from "~/components/editor/LayerEditor";
-import { FontPicker } from "~/components/editor/FontPicker";
-import { loadFont } from "~/lib/font-loading";
+import { LayerControls } from "~/components/editor/LayerControls";
+import { loadLayerFonts } from "~/lib/font-loading";
 import { editorHistoryReducer, initialEditorHistory } from "~/lib/editor-history";
 
 export function EditorPage() {
@@ -36,22 +33,43 @@ export function EditorPage() {
   const [history, dispatch] = useReducer(editorHistoryReducer, initialEditorHistory);
   const { settings, selectedLayer } = history.present;
   const [fontLoading, setFontLoading] = useState(false);
-  const [draft, setDraft] = useState<string | null>(null);
+  const [composing, setComposing] = useState(false);
+  const [uploadedFont, setUploadedFont] = useState<{ family: string; label: string } | null>(null);
+  const uploadedFaces = useRef(new Map<string, FontFace>());
   const [reacted, setReacted] = useState(false);
   const [openPanels, setOpenPanels] = useState<string[]>(["motion"]);
-  const textInput = useRef<HTMLTextAreaElement>(null);
-  const composing = useRef(false);
+  const selectedAnchor = useRef<HTMLButtonElement | null>(null);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [renderAttempt, setRenderAttempt] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const smallCanvas = useRef<HTMLCanvasElement>(null);
-  const textValue = draft ?? settings.text;
-  const retainedFonts = new Set(
-    [...history.past, history.present, ...history.future].map((snapshot) => snapshot.settings.font),
+  const retainedFonts = useMemo(
+    () =>
+      new Set(
+        [...history.past, history.present, ...history.future].flatMap((snapshot) =>
+          snapshot.settings.layers.flatMap((layer) => (layer.type === "text" ? [layer.font] : [])),
+        ),
+      ),
+    [history.past, history.present, history.future],
   );
-  const invalid =
-    settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
+  const selected = settings.layers.find((layer) => layer.id === selectedLayer);
+  const invalid = validateSettings(settings);
+  useEffect(() => {
+    const faces = uploadedFaces.current;
+    return () => {
+      for (const face of faces.values()) document.fonts.delete(face);
+      faces.clear();
+    };
+  }, []);
+  useEffect(() => {
+    for (const [family, face] of uploadedFaces.current) {
+      if (family !== uploadedFont?.family && !retainedFonts.has(family)) {
+        document.fonts.delete(face);
+        uploadedFaces.current.delete(family);
+      }
+    }
+  }, [retainedFonts, uploadedFont]);
   function update(patch: Partial<Settings>) {
     dispatch({ type: "change", patch });
     setStatus("");
@@ -64,7 +82,7 @@ export function EditorPage() {
   function deleteLayer(id: string) {
     dispatch({ type: "delete", id });
     setStatus(
-      id === "text"
+      settings.layers.find((layer) => layer.id === id)?.type === "text"
         ? "텍스트를 삭제했어요. 실행 취소로 복구할 수 있어요."
         : "이미지를 삭제했어요. 실행 취소로 복구할 수 있어요.",
     );
@@ -72,11 +90,7 @@ export function EditorPage() {
   }
 
   function restore(type: "undo" | "redo") {
-    if (
-      fontLoading ||
-      composing.current ||
-      !(type === "undo" ? history.past : history.future).length
-    )
+    if (fontLoading || composing || !(type === "undo" ? history.past : history.future).length)
       return;
     dispatch({ type });
     setStatus(type === "undo" ? "실행을 취소했어요." : "다시 실행했어요.");
@@ -118,7 +132,7 @@ export function EditorPage() {
     let active = true;
     let frame = 0;
     async function start() {
-      await loadFont(settings.font, settings.text);
+      await loadLayerFonts(settings.layers);
       if (!active) return;
       const startedAt = performance.now();
       const duration = motionFrameDelays[settings.speed] * 20;
@@ -164,7 +178,7 @@ export function EditorPage() {
     setBusy(true);
     setStatus("GIF를 만들고 있어요…");
     try {
-      await loadFont(settings.font, settings.text);
+      await loadLayerFonts(settings.layers);
       const output = document.createElement("canvas");
       output.width = 128;
       output.height = 128;
@@ -234,7 +248,7 @@ export function EditorPage() {
           if (
             event.defaultPrevented ||
             event.nativeEvent.isComposing ||
-            composing.current ||
+            composing ||
             fontLoading ||
             target.closest(
               'textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"], input:not([type="range"]):not([type="color"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"])',
@@ -285,7 +299,7 @@ export function EditorPage() {
               aria-label="실행 취소"
               aria-keyshortcuts="Meta+Z Control+Z"
               title="실행 취소 (⌘/Ctrl+Z)"
-              disabled={!history.past.length || fontLoading || draft !== null}
+              disabled={!history.past.length || fontLoading || composing}
               onClick={() => restore("undo")}
             >
               <svg
@@ -307,7 +321,7 @@ export function EditorPage() {
               aria-label="다시 실행"
               aria-keyshortcuts="Meta+Shift+Z Control+Shift+Z Control+Y"
               title="다시 실행 (⌘/Ctrl+Shift+Z, Ctrl+Y)"
-              disabled={!history.future.length || fontLoading || draft !== null}
+              disabled={!history.future.length || fontLoading || composing}
               onClick={() => restore("redo")}
             >
               <svg
@@ -337,99 +351,85 @@ export function EditorPage() {
             </div>
             <CanvasEditor
               settings={settings}
+              selectedId={selectedLayer}
+              selectedAnchor={selectedAnchor}
               renderAttempt={renderAttempt}
               onRetry={() => {
                 setStatus("");
                 setRenderAttempt((attempt) => attempt + 1);
               }}
-              onChooseFont={() => {
-                setOpenPanels((current) =>
-                  current.includes("font") ? current : [...current, "font"],
-                );
-                document.getElementById("font-settings")?.querySelector("button")?.focus();
+              onChooseFont={(id) => {
+                selectLayer(id);
+                requestAnimationFrame(() => {
+                  const button = document
+                    .getElementById("layer-font-settings")
+                    ?.querySelector("button");
+                  if (button?.getAttribute("aria-expanded") === "false") button.click();
+                  button?.focus();
+                });
               }}
-              selectedId={selectedLayer}
               onSelect={selectLayer}
-              onDismiss={(id) => dispatch({ type: "deselect", id })}
-              onImagesChange={(images) => update({ images })}
-              onTextLayoutChange={(textLayout) => update({ textLayout })}
               onMove={(id, x, y) => {
                 dispatch({ type: "move", id, x, y });
                 setStatus("");
               }}
-              onDelete={deleteLayer}
-              onEditText={() => {
-                selectLayer("text");
-                textInput.current?.focus();
-              }}
-              onAddImage={() => {
-                setOpenPanels((current) =>
-                  current.includes("layout") ? current : [...current, "layout"],
-                );
-                document.getElementById("image-upload")?.click();
+              onEditText={(id) => {
+                selectLayer(id);
+                requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
               }}
             />
-            <div className="mt-group min-w-0">
-              <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak transition-colors duration-150 hover:not-focus-within:border-stroke-neutral-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-stroke-brand has-aria-invalid:border-fg-critical has-aria-invalid:outline-fg-critical motion-reduce:transition-none">
-                <div className="relative">
-                  <textarea
-                    ref={textInput}
-                    className="outline-none [-webkit-tap-highlight-color:transparent] block min-h-24 w-full resize-none overflow-auto border-0 bg-transparent p-inset text-center text-xl leading-[1.5]"
-                    id="text"
-                    name="emoji-text"
-                    autoComplete="off"
-                    aria-label="이모지 텍스트"
-                    aria-describedby={invalid ? "text-error text-count" : "text-count"}
-                    aria-invalid={!!invalid}
-                    value={textValue}
-                    style={{
-                      fontFamily: `"${settings.font}"`,
-                    }}
-                    onCompositionStart={() => {
-                      composing.current = true;
-                      setDraft(settings.text);
-                    }}
-                    onCompositionEnd={(event) => {
-                      composing.current = false;
-                      const text = constrainText(event.currentTarget.value);
-                      setDraft(null);
-                      update({ text, characterColors: undefined });
-                      if (text !== event.currentTarget.value)
-                        setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                    }}
-                    onChange={(event) => {
-                      if (composing.current) {
-                        setDraft(event.target.value);
-                        return;
-                      }
-                      const text = constrainText(event.target.value);
-                      setDraft(null);
-                      update({ text, characterColors: undefined });
-                      if (text !== event.target.value)
-                        setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
-                    }}
-                    rows={Math.max(1, textValue.split("\n").length)}
-                    wrap="off"
-                    spellCheck={false}
-                  />
-                </div>
-              </div>
-              <div
-                className="mt-control flex justify-between gap-control px-1 text-caption text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
-                id="text-count"
-              >
-                <span>{settings.fontLabel ?? settings.font}</span>
-                <span>
-                  {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
-                  {settings.text.split("\n").length}/3줄
-                </span>
-              </div>
-              {invalid && (
-                <p id="text-error" className="mt-2 text-caption text-fg-critical">
-                  {invalid}
-                </p>
-              )}
-            </div>
+            <LayerEditor
+              layers={settings.layers}
+              selectedId={selectedLayer}
+              onSelect={selectLayer}
+              onAddText={() => {
+                dispatch({
+                  type: "add-text",
+                  layer: {
+                    ...initialTextLayer,
+                    id: crypto.randomUUID(),
+                    text: "텍스트",
+                    scale: 0.6,
+                  },
+                });
+                setStatus("");
+                requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
+              }}
+              onAdd={(images) => {
+                dispatch({ type: "add-images", images });
+                setStatus("");
+              }}
+            />
+            {selected && (
+              <LayerControls
+                key={selected.id}
+                layer={selected}
+                layers={settings.layers}
+                anchor={selectedAnchor}
+                uploadedFont={uploadedFont}
+                onUpload={({ family, label, face }) => {
+                  document.fonts.add(face);
+                  uploadedFaces.current.set(family, face);
+                  setUploadedFont({ family, label });
+                }}
+                onLoading={setFontLoading}
+                onComposingChange={setComposing}
+                onClose={() => dispatch({ type: "deselect", id: selected.id })}
+                onDelete={() => deleteLayer(selected.id)}
+                onTextChange={(patch) => {
+                  dispatch({ type: "change-text", id: selected.id, patch });
+                  setStatus("");
+                }}
+                onImageChange={(patch) => {
+                  dispatch({ type: "change-image", id: selected.id, patch });
+                  setStatus("");
+                }}
+                onReorder={(direction) => {
+                  dispatch({ type: "reorder", id: selected.id, direction });
+                  setStatus("");
+                }}
+              />
+            )}
           </section>
           <section aria-label="이모지 설정" className="min-w-0 pt-heading-slot max-[1000px]:pt-0">
             <Accordion
@@ -441,108 +441,13 @@ export function EditorPage() {
                 setOpenPanels(values);
               }}
             >
-              <AccordionItem id="font-settings" value="font" title="글꼴">
-                <FontPicker
-                  font={settings.font}
-                  fontLabel={settings.fontLabel}
-                  retainedFonts={retainedFonts}
-                  onChange={(font, fontLabel) => update({ font, fontLabel })}
-                  onLoading={setFontLoading}
+              <AccordionItem value="background" title="배경">
+                <ColorPicker
+                  label="배경색"
+                  value={settings.background}
+                  disabled={settings.transparent}
+                  onChange={(background) => update({ background })}
                 />
-              </AccordionItem>
-              <AccordionItem id="layer-settings" value="layout" title="이미지 · 배치">
-                <LayerEditor
-                  images={settings.images ?? []}
-                  hasText={!!settings.text.trim()}
-                  selectedId={selectedLayer}
-                  onSelect={selectLayer}
-                  onAdd={(images) => {
-                    dispatch({ type: "add-images", images });
-                    setStatus("");
-                  }}
-                />
-              </AccordionItem>
-              <AccordionItem value="color" title="색상">
-                <div className="mb-group">
-                  <SegmentedControl
-                    label="색상 방식"
-                    value={settings.gradient ? "gradient" : "solid"}
-                    options={[
-                      { value: "solid", label: "단색 · 글자별" },
-                      { value: "gradient", label: "그라데이션" },
-                    ]}
-                    onChange={(value) =>
-                      update(
-                        value === "gradient"
-                          ? {
-                              gradient: { end: "#fc6a66", direction: "horizontal" },
-                              characterColors: undefined,
-                            }
-                          : { gradient: undefined },
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-control">
-                  <ColorPicker
-                    label={settings.gradient ? "시작색" : "글자색"}
-                    value={settings.color}
-                    onChange={(color) => update({ color, characterColors: undefined })}
-                  />
-                  {settings.gradient && (
-                    <ColorPicker
-                      label="끝색"
-                      value={settings.gradient.end}
-                      onChange={(end) => update({ gradient: { ...settings.gradient!, end } })}
-                    />
-                  )}
-                  <ColorPicker
-                    label="배경색"
-                    value={settings.background}
-                    disabled={settings.transparent}
-                    onChange={(background) => update({ background })}
-                  />
-                </div>
-                {settings.gradient && (
-                  <label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
-                    방향
-                    <Select
-                      className="flex-1"
-                      value={settings.gradient.direction}
-                      onChange={(event) =>
-                        update({
-                          gradient: {
-                            ...settings.gradient!,
-                            direction: event.target.value as "horizontal" | "vertical",
-                          },
-                        })
-                      }
-                    >
-                      <option value="horizontal">가로 →</option>
-                      <option value="vertical">세로 ↓</option>
-                    </Select>
-                  </label>
-                )}
-                {!settings.gradient && (
-                  <div className="mt-group flex flex-wrap gap-control" aria-label="글자별 색상">
-                    {textCharacters(settings.text).map(
-                      (character, index) =>
-                        character.trim() && (
-                          <ColorPicker
-                            key={index}
-                            label={`${index + 1}번째 글자 ${character} 색상`}
-                            displayLabel={character}
-                            value={settings.characterColors?.[index] ?? settings.color}
-                            onChange={(color) =>
-                              update({
-                                characterColors: { ...settings.characterColors, [index]: color },
-                              })
-                            }
-                          />
-                        ),
-                    )}
-                  </div>
-                )}
                 <div className="mt-group rounded-control bg-bg-neutral-weak px-3">
                   <Checkbox
                     label="투명 배경으로 만들기"
@@ -695,13 +600,13 @@ export function EditorPage() {
             </div>
             <footer className="flex flex-col items-center gap-inset pt-group">
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
-                {status}
+                {status || invalid}
               </p>
               <Button
                 variant="black"
                 className="w-full"
                 aria-busy={busy}
-                disabled={!!invalid || busy || fontLoading}
+                disabled={!!invalid || busy || fontLoading || composing}
                 onClick={() => void download()}
               >
                 {busy && <Spinner />}

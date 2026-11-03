@@ -15,13 +15,15 @@ import { loadFont } from "~/lib/font-loading";
 export function FontPicker({
   font,
   fontLabel,
-  retainedFonts,
+  uploadedFont,
+  onUpload,
   onChange,
   onLoading,
 }: {
   font: string;
   fontLabel?: string;
-  retainedFonts: ReadonlySet<string>;
+  uploadedFont: { family: string; label: string } | null;
+  onUpload: (font: { family: string; label: string; face: FontFace }) => void;
   onChange: (font: string, label?: string) => void;
   onLoading: (loading: boolean) => void;
 }) {
@@ -33,11 +35,9 @@ export function FontPicker({
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [remoteError, setRemoteError] = useState("");
-  const [uploadedFont, setUploadedFont] = useState<{ family: string; label: string } | null>(null);
   const triggerId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
   const pendingFont = useRef<AbortController | null>(null);
-  const uploadedFaces = useRef(new Map<string, FontFace>());
   const mounted = useRef(true);
   const search = useDeferredValue(query.trim().toLowerCase());
   const results = (catalog ?? []).filter(
@@ -46,23 +46,12 @@ export function FontPicker({
 
   useEffect(() => {
     mounted.current = true;
-    const faces = uploadedFaces.current;
     return () => {
       mounted.current = false;
       pendingFont.current?.abort();
-      for (const face of faces.values()) document.fonts.delete(face);
-      faces.clear();
+      onLoading(false);
     };
-  }, []);
-
-  useEffect(() => {
-    for (const [family, face] of uploadedFaces.current) {
-      if (family !== uploadedFont?.family && !retainedFonts.has(family)) {
-        document.fonts.delete(face);
-        uploadedFaces.current.delete(family);
-      }
-    }
-  }, [retainedFonts, uploadedFont]);
+  }, [onLoading]);
 
   async function loadCatalog() {
     if (catalog || catalogLoading) return;
@@ -179,9 +168,7 @@ export function FontPicker({
               const label = `${file.name} (업로드)`;
               const face = await new FontFace(family, await file.arrayBuffer()).load();
               if (!mounted.current) return;
-              document.fonts.add(face);
-              uploadedFaces.current.set(family, face);
-              setUploadedFont({ family, label });
+              onUpload({ family, label, face });
               onChange(family, label);
             } catch {
               if (mounted.current)
