@@ -147,34 +147,7 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     ...metrics.map((metric, index) => index * 105 + metric.actualBoundingBoxDescent),
   );
   const height = Math.max(1, bottom - top);
-  let scale = Math.min(126 / width, 126 / height);
-  switch (settings.motion) {
-    case "bounce":
-      scale = Math.min(126 / width, 114 / height);
-      break;
-    case "slide":
-      scale = Math.min(98 / width, 126 / height);
-      break;
-    case "shake":
-      scale = Math.min(
-        126 / (width + height * Math.sin(0.12)),
-        126 / (height + width * Math.sin(0.12)),
-      );
-      break;
-    case "orbit":
-      scale = Math.min(110 / width, 110 / height);
-      break;
-    case "swing":
-      scale = Math.min(
-        126 / (width + height * Math.sin(0.25)),
-        126 / (height + width * Math.sin(0.25)),
-      );
-      break;
-    case "roll":
-      scale = 126 / Math.hypot(width, height);
-      break;
-  }
-  ctx.scale(scale, scale);
+  ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
   if (settings.gradient) {
     const gradient = ctx.createLinearGradient(
       settings.gradient.direction === "horizontal" ? -width / 2 : 0,

@@ -121,38 +121,70 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
   );
 
   test.each(Object.keys(motions) as (keyof typeof motions)[])(
-    "keeps 반가워요 inside the canvas throughout %s motion",
+    "uses a full-size base fit and permits animated edge overflow for %s",
     (motion) => {
       const canvas = createCanvas(256, 256);
       const ctx = canvas.getContext("2d");
-      for (let frame = 0; frame < 120; frame += 1) {
-        ctx.resetTransform();
-        ctx.clearRect(0, 0, 256, 256);
-        ctx.translate(64, 64);
-        drawEmoji(
-          ctx as unknown as CanvasRenderingContext2D,
-          {
-            ...initialSettings,
-            text: "반가워요",
-            motion,
-            characterColors: { 0: "#ff0000", 2: "#00ff00" },
-          },
-          frame / 120,
-        );
-        const pixels = ctx.getImageData(0, 0, 256, 256).data;
-        let outside = 0;
-        let inside = 0;
-        for (let y = 0; y < 256; y += 1) {
-          for (let x = 0; x < 256; x += 1) {
-            if (pixels[(y * 256 + x) * 4 + 3]) {
-              if (x < 64 || x >= 192 || y < 64 || y >= 192) outside += 1;
-              else inside += 1;
+      let overflowFrames = 0;
+      for (const text of ["반가워요", "반가\n워요", "반\n가\n워"]) {
+        const dimensions: { width: number; height: number }[] = [];
+        for (const effect of ["none", motion] as const) {
+          ctx.resetTransform();
+          ctx.clearRect(0, 0, 256, 256);
+          ctx.translate(64, 64);
+          drawEmoji(
+            ctx as unknown as CanvasRenderingContext2D,
+            { ...initialSettings, text, motion: effect },
+            0,
+          );
+          const pixels = ctx.getImageData(0, 0, 256, 256).data;
+          const xs: number[] = [];
+          const ys: number[] = [];
+          for (let y = 0; y < 256; y += 1) {
+            for (let x = 0; x < 256; x += 1) {
+              if (pixels[(y * 256 + x) * 4 + 3]) {
+                xs.push(x);
+                ys.push(y);
+              }
             }
           }
+          dimensions.push({
+            width: Math.max(...xs) - Math.min(...xs) + 1,
+            height: Math.max(...ys) - Math.min(...ys) + 1,
+          });
         }
-        expect(outside, `${motion} frame ${frame}`).toBe(0);
-        expect(inside).toBeGreaterThan(0);
+        const factor = motion === "scale" ? 0.85 : motion === "jelly" ? 0.88 : 1;
+        expect(Math.abs(dimensions[1].width - dimensions[0].width * factor)).toBeLessThanOrEqual(2);
+        expect(Math.abs(dimensions[1].height - dimensions[0].height * factor)).toBeLessThanOrEqual(
+          2,
+        );
+        for (let frame = 0; frame < 120; frame += 1) {
+          ctx.resetTransform();
+          ctx.clearRect(0, 0, 256, 256);
+          ctx.translate(64, 64);
+          drawEmoji(
+            ctx as unknown as CanvasRenderingContext2D,
+            { ...initialSettings, text, motion, characterColors: { 0: "#ff0000", 2: "#00ff00" } },
+            frame / 120,
+          );
+          const pixels = ctx.getImageData(0, 0, 256, 256).data;
+          let outside = 0;
+          let inside = 0;
+          for (let y = 0; y < 256; y += 1) {
+            for (let x = 0; x < 256; x += 1) {
+              if (pixels[(y * 256 + x) * 4 + 3]) {
+                if (x < 64 || x >= 192 || y < 64 || y >= 192) outside += 1;
+                else inside += 1;
+              }
+            }
+          }
+          if (outside) overflowFrames += 1;
+          expect(inside, `${motion} frame ${frame}`).toBeGreaterThan(0);
+        }
       }
+      if (["bounce", "slide", "shake", "roll", "orbit", "swing"].includes(motion))
+        expect(overflowFrames).toBeGreaterThan(0);
+      else expect(overflowFrames).toBe(0);
     },
   );
 

@@ -28,9 +28,9 @@ After explicit selection, a stylesheet is requested through the [Google Fonts CS
 
 ## Effects
 
-Available motions: static, scale, bounce, slide, shake, roll, orbit, swing, jelly. Orbit reserves 8 px translation clearance; swing reserves its 0.25 rad envelope; jelly scales both axes below 1. Horizontal/vertical gradients span measured glyph bounds and survive GIF palette quantization. Single-color and per-character rendering remain available. GIF dimensions, timings and size limit are unchanged.
+Available motions: static, scale, bounce, slide, shake, roll, orbit, swing, jelly. Every effect shares the static tight glyph fit; no extra translation/rotation clearance shrinks the text. Transformed glyphs can intentionally clip at the canvas edge. Jelly scales both axes below 1. Horizontal/vertical gradients span measured glyph bounds and survive GIF palette quantization. Single-color and per-character rendering remain available. GIF dimensions, timings and size limit are unchanged.
 
-Verification: `src/lib/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export/clipping behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
+Verification: `src/lib/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export and full-size fitting behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
 
 ## Font-panel transitions
 
