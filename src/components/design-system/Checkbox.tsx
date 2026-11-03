@@ -12,12 +12,12 @@ export function Checkbox({
   disabled?: boolean;
 }) {
   return (
-    <label className="flex min-h-control-size cursor-pointer items-center gap-control text-label has-data-disabled:cursor-not-allowed has-data-disabled:text-fg-disabled">
+    <label className="flex min-h-control-size cursor-pointer items-center gap-control text-label text-fg-neutral-secondary has-data-disabled:cursor-not-allowed has-data-disabled:text-fg-disabled">
       <CheckboxPrimitive.Root
         checked={checked}
         onCheckedChange={onCheckedChange}
         disabled={disabled}
-        className="flex size-5 shrink-0 items-center justify-center rounded-control-inset border border-stroke-neutral-strong bg-bg-layer-default text-fg-on-brand-solid transition-colors hover:border-stroke-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-checked:border-stroke-brand data-checked:bg-bg-brand-solid data-disabled:border-stroke-neutral data-disabled:bg-bg-disabled motion-reduce:transition-none"
+        className="flex size-5 shrink-0 items-center justify-center rounded-control-inset border border-stroke-neutral-strong bg-bg-layer-default text-fg-on-brand-solid transition-colors duration-150 hover:not-data-disabled:border-stroke-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-checked:border-stroke-brand data-checked:bg-bg-brand-solid data-disabled:border-stroke-neutral data-disabled:bg-bg-disabled data-disabled:text-fg-disabled motion-reduce:transition-none"
       >
         <CheckboxPrimitive.Indicator className="flex items-center justify-center">
           <svg

@@ -32,6 +32,7 @@ export type Settings = {
   images?: ImageLayer[];
   textLayout?: { x: number; y: number; scale: number };
   font: string;
+  fontLabel?: string;
   color: string;
   gradient?: { end: string; direction: "horizontal" | "vertical" };
   characterColors?: Record<number, string>;
@@ -170,30 +171,33 @@ function drawImages(
   for (const image of images) {
     if (image.behindText !== behindText) continue;
     ctx.save();
-    ctx.translate(image.x, image.y);
-    applyMotion(ctx, motion, progress);
-    ctx.rotate((image.rotation * Math.PI) / 180);
-    if (image.fit === "cover") {
-      const width = Number(image.source.width);
-      const height = Number(image.source.height);
-      const side = Math.min(width, height);
-      ctx.drawImage(
-        image.source,
-        (width - side) / 2,
-        (height - side) / 2,
-        side,
-        side,
-        -image.size / 2,
-        -image.size / 2,
-        image.size,
-        image.size,
-      );
-    } else {
-      const width = image.size * Math.min(1, image.aspectRatio);
-      const height = image.size * Math.min(1, 1 / image.aspectRatio);
-      ctx.drawImage(image.source, -width / 2, -height / 2, width, height);
+    try {
+      ctx.translate(image.x, image.y);
+      applyMotion(ctx, motion, progress);
+      ctx.rotate((image.rotation * Math.PI) / 180);
+      if (image.fit === "cover") {
+        const width = Number(image.source.width);
+        const height = Number(image.source.height);
+        const side = Math.min(width, height);
+        ctx.drawImage(
+          image.source,
+          (width - side) / 2,
+          (height - side) / 2,
+          side,
+          side,
+          -image.size / 2,
+          -image.size / 2,
+          image.size,
+          image.size,
+        );
+      } else {
+        const width = image.size * Math.min(1, image.aspectRatio);
+        const height = image.size * Math.min(1, 1 / image.aspectRatio);
+        ctx.drawImage(image.source, -width / 2, -height / 2, width, height);
+      }
+    } finally {
+      ctx.restore();
     }
-    ctx.restore();
   }
 }
 
@@ -209,37 +213,40 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     return;
   }
   ctx.save();
-  ctx.translate(settings.textLayout?.x ?? 64, settings.textLayout?.y ?? 64);
-  ctx.scale(settings.textLayout?.scale ?? 1, settings.textLayout?.scale ?? 1);
-  applyMotion(ctx, settings.motion, progress);
-  const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, settings);
-  ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
-  if (settings.gradient) {
-    const gradient = ctx.createLinearGradient(
-      settings.gradient.direction === "horizontal" ? -width / 2 : 0,
-      settings.gradient.direction === "vertical" ? -height / 2 : 0,
-      settings.gradient.direction === "horizontal" ? width / 2 : 0,
-      settings.gradient.direction === "vertical" ? height / 2 : 0,
-    );
-    gradient.addColorStop(0, settings.color);
-    gradient.addColorStop(1, settings.gradient.end);
-    ctx.fillStyle = gradient;
-  } else {
-    ctx.fillStyle = settings.color;
-  }
-  lines.forEach((line, index) => {
-    const x = (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
-    const y = index * 105 - (top + bottom) / 2;
-    if (settings.characterColors && !settings.gradient) {
-      runs[index].forEach((run) => {
-        ctx.fillStyle = run.color;
-        ctx.fillText(run.character, x + run.x, y);
-      });
+  try {
+    ctx.translate(settings.textLayout?.x ?? 64, settings.textLayout?.y ?? 64);
+    ctx.scale(settings.textLayout?.scale ?? 1, settings.textLayout?.scale ?? 1);
+    applyMotion(ctx, settings.motion, progress);
+    const { lines, runs, metrics, width, height, top, bottom } = measureEmojiText(ctx, settings);
+    ctx.scale(Math.min(126 / width, 126 / height), Math.min(126 / width, 126 / height));
+    if (settings.gradient) {
+      const gradient = ctx.createLinearGradient(
+        settings.gradient.direction === "horizontal" ? -width / 2 : 0,
+        settings.gradient.direction === "vertical" ? -height / 2 : 0,
+        settings.gradient.direction === "horizontal" ? width / 2 : 0,
+        settings.gradient.direction === "vertical" ? height / 2 : 0,
+      );
+      gradient.addColorStop(0, settings.color);
+      gradient.addColorStop(1, settings.gradient.end);
+      ctx.fillStyle = gradient;
     } else {
-      ctx.fillText(line, x, y);
+      ctx.fillStyle = settings.color;
     }
-  });
-  ctx.restore();
+    lines.forEach((line, index) => {
+      const x = (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
+      const y = index * 105 - (top + bottom) / 2;
+      if (settings.characterColors && !settings.gradient) {
+        runs[index].forEach((run) => {
+          ctx.fillStyle = run.color;
+          ctx.fillText(run.character, x + run.x, y);
+        });
+      } else {
+        ctx.fillText(line, x, y);
+      }
+    });
+  } finally {
+    ctx.restore();
+  }
   drawImages(ctx, settings.images ?? [], false, settings.motion, progress);
 }
 

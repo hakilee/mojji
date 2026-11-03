@@ -20,7 +20,7 @@ export function RangeField({
   const id = useId();
   return (
     <div className="space-y-control">
-      <div className="flex items-center justify-between gap-control text-label">
+      <div className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
         <label htmlFor={id}>{label}</label>
         <output htmlFor={id} className="text-caption text-fg-neutral-muted tabular-nums">
           {value}

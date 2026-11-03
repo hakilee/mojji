@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
+import { loadFont } from "~/lib/font-loading";
 import type { ImageLayer, Settings } from "~/lib/emoji";
+import { LayerControls } from "./LayerControls";
+import { Button, Spinner } from "~/components/design-system";
 
 export function CanvasEditor({
   settings,
@@ -10,7 +13,13 @@ export function CanvasEditor({
   onMove,
   onDelete,
   onEditText,
+  onChooseFont,
+  renderAttempt,
+  onRetry,
   onAddImage,
+  onImagesChange,
+  onTextLayoutChange,
+  onDismiss,
 }: {
   settings: Settings;
   selectedId: string | null;
@@ -18,9 +27,16 @@ export function CanvasEditor({
   onMove: (id: string, x: number, y: number) => void;
   onDelete: (id: string) => void;
   onEditText: () => void;
+  onChooseFont: () => void;
+  renderAttempt: number;
+  onRetry: () => void;
   onAddImage: () => void;
+  onImagesChange: (images: ImageLayer[]) => void;
+  onTextLayoutChange: (layout: Settings["textLayout"]) => void;
+  onDismiss: (id: string) => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const selectedAnchor = useRef<HTMLButtonElement | null>(null);
   const dragging = useRef<{
     id: string;
     active: boolean;
@@ -31,18 +47,29 @@ export function CanvasEditor({
   } | null>(null);
   const [geometry, setGeometry] = useState({ width: 0, height: 0 });
   const [guides, setGuides] = useState<{ x?: number; y?: number }>({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState<{ message: string; font: boolean } | null>(null);
+  const [completedRender, setCompletedRender] = useState<{
+    settings: Settings;
+    attempt: number;
+  } | null>(null);
+  const rendering =
+    completedRender?.settings !== settings || completedRender?.attempt !== renderAttempt;
   useEffect(() => {
     let active = true;
+    let fontLoaded = false;
     async function render() {
-      await document.fonts.load(`100px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       if (!active) return;
+      fontLoaded = true;
       const ctx = canvas.current?.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) throw new Error("Canvas context unavailable");
       ctx.save();
-      ctx.scale(6, 6);
-      drawEmoji(ctx, { ...settings, motion: "none" }, 0);
-      ctx.restore();
+      try {
+        ctx.scale(6, 6);
+        drawEmoji(ctx, { ...settings, motion: "none" }, 0);
+      } finally {
+        ctx.restore();
+      }
       if (settings.text.trim()) {
         const { width, height } = measureEmojiText(ctx, settings);
         const fit = Math.min(126 / width, 126 / height) * (settings.textLayout?.scale ?? 1);
@@ -52,15 +79,26 @@ export function CanvasEditor({
             : { width: width * fit, height: height * fit },
         );
       } else setGeometry((previous) => (previous.width ? { width: 0, height: 0 } : previous));
-      setError("");
+      setError(null);
     }
-    void render().catch(() => {
-      if (active) setError("캔버스를 그리지 못했어요. 글꼴을 다시 선택해 주세요.");
-    });
+    void render()
+      .catch((cause) => {
+        if (active)
+          setError({
+            font: !fontLoaded,
+            message:
+              !fontLoaded && cause instanceof Error
+                ? cause.message
+                : "캔버스를 그리지 못했어요. 다시 그리기를 눌러 주세요.",
+          });
+      })
+      .finally(() => {
+        if (active) setCompletedRender({ settings, attempt: renderAttempt });
+      });
     return () => {
       active = false;
     };
-  }, [settings]);
+  }, [settings, renderAttempt]);
   function move(id: string, x: number, y: number) {
     onMove(
       id,
@@ -77,9 +115,11 @@ export function CanvasEditor({
     <div className="space-y-inset">
       <div
         role="group"
+        id="work-canvas"
+        tabIndex={0}
         aria-label="작업 캔버스"
-        aria-describedby="canvas-instructions"
-        className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px]"
+        aria-busy={rendering}
+        className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           const button = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]");
@@ -195,11 +235,6 @@ export function CanvasEditor({
           const id = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]")
             ?.dataset.layer;
           if (!id) return;
-          if (event.key === "Delete" && id !== "text") {
-            event.preventDefault();
-            onDelete(id);
-            return;
-          }
           const layer =
             id === "text"
               ? (settings.textLayout ?? { x: 64, y: 64 })
@@ -258,6 +293,9 @@ export function CanvasEditor({
           return (
             <button
               key={id}
+              ref={(element) => {
+                if (element && selectedId === id) selectedAnchor.current = element;
+              }}
               type="button"
               data-layer={id}
               style={style}
@@ -267,8 +305,14 @@ export function CanvasEditor({
                   : `이미지 레이어 ${(settings.images ?? []).indexOf(layer) + 1}: ${layer.name}`
               }
               aria-pressed={selectedId === id}
+              aria-haspopup="dialog"
+              aria-expanded={selectedId === id}
+              aria-controls={selectedId === id ? "layer-controls" : undefined}
               onClick={(event) => {
-                if (event.detail === 0) onSelect(id);
+                if (event.detail === 0) {
+                  onSelect(id);
+                  requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
+                }
               }}
               onDoubleClick={text ? onEditText : undefined}
               className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:outline hover:-outline-offset-1 hover:outline-stroke-guide/35 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-guide aria-pressed:outline aria-pressed:-outline-offset-1 aria-pressed:outline-stroke-guide/75 active:cursor-grabbing"
@@ -276,31 +320,55 @@ export function CanvasEditor({
           );
         })}
       </div>
-      <p id="canvas-instructions" className="text-caption text-fg-neutral-muted">
-        클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
-        해제하세요.
-      </p>
+      {selectedId && (
+        <LayerControls
+          key={selectedId}
+          anchor={selectedAnchor}
+          images={settings.images ?? []}
+          textLayout={settings.textLayout}
+          selectedId={selectedId}
+          onClose={() => onDismiss(selectedId)}
+          onDelete={onDelete}
+          onImagesChange={onImagesChange}
+          onTextLayoutChange={onTextLayoutChange}
+        />
+      )}
       {error && (
-        <p role="alert" className="text-caption text-fg-critical">
-          {error}
-        </p>
+        <div className="space-y-control">
+          <p role="alert" className="text-caption text-fg-critical">
+            {error.message}
+          </p>
+          <div className="flex flex-wrap gap-control">
+            <Button
+              variant="white"
+              size="small"
+              disabled={rendering}
+              aria-busy={rendering}
+              onClick={onRetry}
+            >
+              {rendering && <Spinner />}
+              다시 그리기
+            </Button>
+            {error.font && (
+              <Button variant="neutral" size="small" onClick={onChooseFont}>
+                글꼴 설정 열기
+              </Button>
+            )}
+          </div>
+        </div>
       )}
       <div className="grid grid-cols-2 gap-control">
-        <button
-          type="button"
-          onClick={onEditText}
-          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
-        >
+        <Button variant="white" size="small" onClick={onEditText}>
           텍스트 편집
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="white"
+          size="small"
           onClick={onAddImage}
           disabled={(settings.images?.length ?? 0) >= 12}
-          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed disabled:text-fg-disabled"
         >
           이미지 추가
-        </button>
+        </Button>
       </div>
     </div>
   );

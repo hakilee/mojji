@@ -1,19 +1,21 @@
-import { LayerControls } from "~/components/editor/LayerControls";
 import {
   Accordion,
   AccordionItem,
+  Button,
   Checkbox,
+  ChoiceButton,
   ColorPicker,
+  HelpBubble,
   MotionIcon,
   SegmentedControl,
+  Select,
   Spinner,
 } from "~/components/design-system";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
   constrainText,
-  initialSettings,
   motions,
   motionFrameDelays,
   maxTextCharacters,
@@ -24,33 +26,85 @@ import type { Settings } from "../lib/emoji";
 import { CanvasEditor } from "~/components/editor/CanvasEditor";
 import { LayerEditor } from "~/components/editor/LayerEditor";
 import { FontPicker } from "~/components/editor/FontPicker";
+import { loadFont } from "~/lib/font-loading";
+import { editorHistoryReducer, initialEditorHistory } from "~/lib/editor-history";
 
 export function EditorPage() {
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
-  const [settings, setSettings] = useState(initialSettings);
+  const [history, dispatch] = useReducer(editorHistoryReducer, initialEditorHistory);
+  const { settings, selectedLayer } = history.present;
   const [fontLoading, setFontLoading] = useState(false);
-  const [draft, setDraft] = useState(initialSettings.text);
+  const [draft, setDraft] = useState<string | null>(null);
   const [reacted, setReacted] = useState(false);
-  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
   const [openPanels, setOpenPanels] = useState<string[]>(["motion"]);
   const textInput = useRef<HTMLTextAreaElement>(null);
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
+  const [renderAttempt, setRenderAttempt] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const smallCanvas = useRef<HTMLCanvasElement>(null);
+  const textValue = draft ?? settings.text;
+  const retainedFonts = new Set(
+    [...history.past, history.present, ...history.future].map((snapshot) => snapshot.settings.font),
+  );
   const invalid =
     settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
   function update(patch: Partial<Settings>) {
-    setSettings((current) => ({ ...current, ...patch }));
+    dispatch({ type: "change", patch });
     setStatus("");
   }
 
   function selectLayer(id: string | null) {
-    setSelectedLayer(id);
+    dispatch({ type: "select", id });
   }
+
+  function deleteLayer(id: string) {
+    dispatch({ type: "delete", id });
+    setStatus(
+      id === "text"
+        ? "텍스트를 삭제했어요. 실행 취소로 복구할 수 있어요."
+        : "이미지를 삭제했어요. 실행 취소로 복구할 수 있어요.",
+    );
+    requestAnimationFrame(() => document.getElementById("work-canvas")?.focus());
+  }
+
+  function restore(type: "undo" | "redo") {
+    if (
+      fontLoading ||
+      composing.current ||
+      !(type === "undo" ? history.past : history.future).length
+    )
+      return;
+    dispatch({ type });
+    setStatus(type === "undo" ? "실행을 취소했어요." : "다시 실행했어요.");
+    requestAnimationFrame(() => {
+      const surface = document.getElementById("work-canvas");
+      (
+        surface?.querySelector<HTMLElement>('[data-layer][aria-pressed="true"]') ?? surface
+      )?.focus();
+    });
+  }
+
+  useEffect(() => {
+    const endPointer = () => dispatch({ type: "end-group", group: "pointer" });
+    const endKeyboard = (event: KeyboardEvent) => {
+      if (event.key.startsWith("Arrow")) dispatch({ type: "end-group", group: "keyboard" });
+    };
+    const endAll = () => dispatch({ type: "end-group" });
+    window.addEventListener("pointerup", endPointer);
+    window.addEventListener("pointercancel", endPointer);
+    window.addEventListener("keyup", endKeyboard);
+    window.addEventListener("blur", endAll);
+    return () => {
+      window.removeEventListener("pointerup", endPointer);
+      window.removeEventListener("pointercancel", endPointer);
+      window.removeEventListener("keyup", endKeyboard);
+      window.removeEventListener("blur", endAll);
+    };
+  }, []);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -64,14 +118,15 @@ export function EditorPage() {
     let active = true;
     let frame = 0;
     async function start() {
-      await document.fonts.load(`40px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       if (!active) return;
       const startedAt = performance.now();
       const duration = motionFrameDelays[settings.speed] * 20;
       function render(time: number) {
-        const ctx = canvas.current?.getContext("2d");
-        const small = smallCanvas.current?.getContext("2d");
-        if (ctx && small) {
+        try {
+          const ctx = canvas.current?.getContext("2d");
+          const small = smallCanvas.current?.getContext("2d");
+          if (!ctx || !small) throw new Error("Canvas context unavailable");
           drawEmoji(
             ctx,
             settings,
@@ -82,25 +137,34 @@ export function EditorPage() {
           );
           small.clearRect(0, 0, 128, 128);
           small.drawImage(ctx.canvas, 0, 0);
+        } catch {
+          if (active)
+            setStatus("미리보기를 그리지 못했어요. 설정을 바꾸거나 페이지를 다시 열어 주세요.");
+          return;
         }
         if (!reducedMotion && settings.motion !== "none") frame = requestAnimationFrame(render);
       }
       frame = requestAnimationFrame(render);
     }
-    void start().catch(() => {
-      if (active) setStatus("폰트를 불러오지 못했어요. 페이지를 새로고침해 주세요.");
+    void start().catch((cause) => {
+      if (active)
+        setStatus(
+          cause instanceof Error
+            ? cause.message
+            : "미리보기를 불러오지 못했어요. 다시 시도해 주세요.",
+        );
     });
     return () => {
       active = false;
       cancelAnimationFrame(frame);
     };
-  }, [settings, reducedMotion]);
+  }, [settings, reducedMotion, renderAttempt]);
 
   async function download() {
     setBusy(true);
     setStatus("GIF를 만들고 있어요…");
     try {
-      await document.fonts.load(`40px "${settings.font}"`, settings.text);
+      await loadFont(settings.font, settings.text);
       const output = document.createElement("canvas");
       output.width = 128;
       output.height = 128;
@@ -126,7 +190,7 @@ export function EditorPage() {
   return (
     <div className="mx-auto max-w-[1200px] px-page py-section max-[760px]:px-group max-[760px]:py-group">
       <a
-        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
+        className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
         href="#editor-main"
       >
         편집기로 건너뛰기
@@ -134,46 +198,165 @@ export function EditorPage() {
       <main
         id="editor-main"
         tabIndex={-1}
-        className="rounded-workspace border border-stroke-neutral bg-bg-layer-default"
+        className="rounded-workspace border border-stroke-neutral bg-bg-layer-default shadow-control"
+        onPointerDownCapture={(event) => {
+          if (
+            event.button === 0 &&
+            (event.target as HTMLElement).closest('#work-canvas [data-layer], input[type="range"]')
+          )
+            dispatch({ type: "begin-group", group: "pointer" });
+        }}
+        onKeyDownCapture={(event) => {
+          if (
+            !event.metaKey &&
+            !event.ctrlKey &&
+            event.key.startsWith("Arrow") &&
+            (event.target as HTMLElement).closest(
+              '#work-canvas [data-layer], input[type="range"], [role="radio"]',
+            )
+          )
+            dispatch({ type: "begin-group", group: "keyboard" });
+        }}
+        onFocusCapture={(event) => {
+          if (
+            event.target.matches(
+              'textarea, input:not([type="range"]):not([type="file"]):not([type="checkbox"]):not([type="radio"])',
+            )
+          )
+            dispatch({ type: "begin-group", group: "input" });
+        }}
+        onBlurCapture={() => {
+          dispatch({ type: "end-group", group: "input" });
+          dispatch({ type: "end-group", group: "keyboard" });
+        }}
+        onKeyDown={(event) => {
+          const target = event.target as HTMLElement;
+          if (
+            event.defaultPrevented ||
+            event.nativeEvent.isComposing ||
+            composing.current ||
+            fontLoading ||
+            target.closest(
+              '[aria-modal="true"], textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"], input:not([type="range"]):not([type="color"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"])',
+            )
+          )
+            return;
+          const key = event.key.toLowerCase();
+          if (
+            !event.altKey &&
+            (event.metaKey || event.ctrlKey) &&
+            (key === "z" || (event.ctrlKey && key === "y"))
+          ) {
+            event.preventDefault();
+            restore(key === "y" || event.shiftKey ? "redo" : "undo");
+          } else if (
+            !event.metaKey &&
+            !event.ctrlKey &&
+            !event.altKey &&
+            selectedLayer &&
+            (event.key === "Backspace" || event.key === "Delete") &&
+            !target.closest("input, select") &&
+            target.closest('#work-canvas, [aria-label="레이어 선택"], #layer-controls')
+          ) {
+            event.preventDefault();
+            deleteLayer(selectedLayer);
+          }
+        }}
       >
         <header className="flex items-center gap-control p-panel max-[760px]:p-group">
           <a
-            className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stroke-focus"
+            className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"
             aria-label="슬랙모찌 홈"
           >
             <img src="/logo.svg" width="48" height="42" alt="" />
           </a>
           <h1 className="text-title font-semibold tracking-[-0.5px]">슬랙모찌</h1>
+          <div
+            id="editor-history"
+            className="ml-auto flex gap-control"
+            role="group"
+            aria-label="편집 기록"
+          >
+            <Button
+              variant="white"
+              svgOnly
+              aria-label="실행 취소"
+              aria-keyshortcuts="Meta+Z Control+Z"
+              title="실행 취소 (⌘/Ctrl+Z)"
+              disabled={!history.past.length || fontLoading || draft !== null}
+              onClick={() => restore("undo")}
+            >
+              <svg
+                aria-hidden="true"
+                className="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m9 5-5 5 5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)" />
+              </svg>
+            </Button>
+            <Button
+              variant="white"
+              svgOnly
+              aria-label="다시 실행"
+              aria-keyshortcuts="Meta+Shift+Z Control+Shift+Z Control+Y"
+              title="다시 실행 (⌘/Ctrl+Shift+Z, Ctrl+Y)"
+              disabled={!history.future.length || fontLoading || draft !== null}
+              onClick={() => restore("redo")}
+            >
+              <svg
+                aria-hidden="true"
+                className="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(0 -2)" />
+              </svg>
+            </Button>
+          </div>
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
-            <h2 className="min-h-heading-slot text-body font-semibold">캔버스</h2>
+            <div className="flex min-h-heading-slot items-center gap-text">
+              <h2 className="text-body font-semibold">캔버스</h2>
+              <HelpBubble label="캔버스 조작">
+                클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
+                해제하세요. 선택한 레이어는 Backspace나 Delete로 삭제할 수 있어요. ⌘/Ctrl+Z로 실행
+                취소, ⌘/Ctrl+Shift+Z로 다시 실행하세요.
+              </HelpBubble>
+            </div>
             <CanvasEditor
               settings={settings}
+              renderAttempt={renderAttempt}
+              onRetry={() => {
+                setStatus("");
+                setRenderAttempt((attempt) => attempt + 1);
+              }}
+              onChooseFont={() => {
+                setOpenPanels((current) =>
+                  current.includes("font") ? current : [...current, "font"],
+                );
+                document.getElementById("font-settings")?.querySelector("button")?.focus();
+              }}
               selectedId={selectedLayer}
               onSelect={selectLayer}
+              onDismiss={(id) => dispatch({ type: "deselect", id })}
+              onImagesChange={(images) => update({ images })}
+              onTextLayoutChange={(textLayout) => update({ textLayout })}
               onMove={(id, x, y) => {
-                setSettings((current) =>
-                  id === "text"
-                    ? { ...current, textLayout: { ...(current.textLayout ?? { scale: 1 }), x, y } }
-                    : {
-                        ...current,
-                        images: current.images?.map((image) =>
-                          image.id === id ? { ...image, x, y } : image,
-                        ),
-                      },
-                );
+                dispatch({ type: "move", id, x, y });
                 setStatus("");
               }}
-              onDelete={(id) => {
-                setSettings((current) => ({
-                  ...current,
-                  images: current.images?.filter((image) => image.id !== id),
-                }));
-                setSelectedLayer(null);
-                setStatus("");
-              }}
+              onDelete={deleteLayer}
               onEditText={() => {
                 selectLayer("text");
                 textInput.current?.focus();
@@ -185,18 +368,8 @@ export function EditorPage() {
                 document.getElementById("image-upload")?.click();
               }}
             />
-            <div className="mt-inset flex justify-center">
-              <LayerControls
-                images={settings.images ?? []}
-                textLayout={settings.textLayout}
-                selectedId={selectedLayer}
-                onSelect={selectLayer}
-                onImagesChange={(images) => update({ images })}
-                onTextLayoutChange={(textLayout) => update({ textLayout })}
-              />
-            </div>
             <div className="mt-group min-w-0">
-              <div className="overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
+              <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak shadow-control transition-[border-color,box-shadow] duration-150 hover:border-stroke-neutral-strong focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 has-aria-invalid:border-fg-critical has-aria-invalid:ring-fg-critical/20 motion-reduce:transition-none">
                 <div className="relative">
                   <textarea
                     ref={textInput}
@@ -207,17 +380,18 @@ export function EditorPage() {
                     aria-label="이모지 텍스트"
                     aria-describedby={invalid ? "text-error text-count" : "text-count"}
                     aria-invalid={!!invalid}
-                    value={draft}
+                    value={textValue}
                     style={{
                       fontFamily: `"${settings.font}"`,
                     }}
                     onCompositionStart={() => {
                       composing.current = true;
+                      setDraft(settings.text);
                     }}
                     onCompositionEnd={(event) => {
                       composing.current = false;
                       const text = constrainText(event.currentTarget.value);
-                      setDraft(text);
+                      setDraft(null);
                       update({ text, characterColors: undefined });
                       if (text !== event.currentTarget.value)
                         setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
@@ -228,12 +402,12 @@ export function EditorPage() {
                         return;
                       }
                       const text = constrainText(event.target.value);
-                      setDraft(text);
+                      setDraft(null);
                       update({ text, characterColors: undefined });
                       if (text !== event.target.value)
                         setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
                     }}
-                    rows={Math.max(1, draft.split("\n").length)}
+                    rows={Math.max(1, textValue.split("\n").length)}
                     wrap="off"
                     spellCheck={false}
                   />
@@ -243,7 +417,7 @@ export function EditorPage() {
                 className="mt-control flex justify-between gap-control px-1 text-caption text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
                 id="text-count"
               >
-                <span>{settings.font}</span>
+                <span>{settings.fontLabel ?? settings.font}</span>
                 <span>
                   {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
                   {settings.text.split("\n").length}/3줄
@@ -266,23 +440,23 @@ export function EditorPage() {
                 setOpenPanels(values);
               }}
             >
-              <AccordionItem value="font" title="글꼴">
+              <AccordionItem id="font-settings" value="font" title="글꼴">
                 <FontPicker
                   font={settings.font}
-                  onChange={(font) => update({ font })}
+                  fontLabel={settings.fontLabel}
+                  retainedFonts={retainedFonts}
+                  onChange={(font, fontLabel) => update({ font, fontLabel })}
                   onLoading={setFontLoading}
                 />
               </AccordionItem>
-              <AccordionItem value="layout" title="이미지 · 배치">
+              <AccordionItem id="layer-settings" value="layout" title="이미지 · 배치">
                 <LayerEditor
                   images={settings.images ?? []}
+                  hasText={!!settings.text.trim()}
                   selectedId={selectedLayer}
                   onSelect={selectLayer}
                   onAdd={(images) => {
-                    setSettings((current) => ({
-                      ...current,
-                      images: [...(current.images ?? []), ...images].slice(0, 12),
-                    }));
+                    dispatch({ type: "add-images", images });
                     setStatus("");
                   }}
                 />
@@ -329,10 +503,10 @@ export function EditorPage() {
                   />
                 </div>
                 {settings.gradient && (
-                  <label className="mt-group flex items-center gap-3 text-caption [&>select]:w-auto [&>select]:flex-1">
+                  <label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
                     방향
-                    <select
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
+                    <Select
+                      className="flex-1"
                       value={settings.gradient.direction}
                       onChange={(event) =>
                         update({
@@ -345,7 +519,7 @@ export function EditorPage() {
                     >
                       <option value="horizontal">가로 →</option>
                       <option value="vertical">세로 ↓</option>
-                    </select>
+                    </Select>
                   </label>
                 )}
                 {!settings.gradient && (
@@ -377,29 +551,27 @@ export function EditorPage() {
                 </div>
               </AccordionItem>
               <AccordionItem value="motion" title="효과">
-                <div className="grid grid-cols-3 gap-control [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-control [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-control [&>button]:min-h-20 [&>button]:py-group [&>button]:text-caption [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
+                <div className="grid grid-cols-3 gap-control">
                   {Object.entries(motions).map(([motion, label]) => (
-                    <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
+                    <ChoiceButton
+                      className="flex flex-col items-center gap-control"
                       key={motion}
-                      type="button"
-                      aria-pressed={settings.motion === motion}
+                      selected={settings.motion === motion}
                       onClick={() => update({ motion: motion as Settings["motion"] })}
                     >
                       <MotionIcon motion={motion as Settings["motion"]} />
-                      {label}
-                    </button>
+                      <span className="text-caption">{label}</span>
+                    </ChoiceButton>
                   ))}
                 </div>
                 <fieldset
                   disabled={settings.motion === "none"}
-                  className="mt-group space-y-4 border-0 p-0 disabled:opacity-50"
+                  className="mt-group space-y-group border-0 p-0 disabled:text-fg-disabled"
                 >
                   <legend className="sr-only">모션 타이밍</legend>
-                  <label className="flex items-center justify-between gap-control text-label">
+                  <label className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
                     속도
-                    <select
-                      className="min-h-10 rounded-control border border-stroke-neutral bg-bg-layer-default px-3 text-label focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+                    <Select
                       value={settings.speed}
                       onChange={(event) =>
                         update({ speed: Number(event.target.value) as Settings["speed"] })
@@ -412,10 +584,10 @@ export function EditorPage() {
                             {speed}×
                           </option>
                         ))}
-                    </select>
+                    </Select>
                   </label>
                   <div className="space-y-control">
-                    <div className="flex items-center justify-between gap-control text-label">
+                    <div className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
                       <label htmlFor="motion-delay">반복 딜레이</label>
                       <output htmlFor="motion-delay" className="tabular-nums text-fg-neutral-muted">
                         {(settings.delay / 1000).toFixed(1)}초
@@ -474,7 +646,7 @@ export function EditorPage() {
                         <span>1</span>
                       </span>
                       <button
-                        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
+                        className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
                         type="button"
                         aria-label={`내 이모지 반응 ${reacted ? 2 : 1}개`}
                         aria-pressed={reacted}
@@ -524,15 +696,16 @@ export function EditorPage() {
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status}
               </p>
-              <button
-                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-group py-control text-label font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
+              <Button
+                variant="black"
+                className="w-full"
                 aria-busy={busy}
                 disabled={!!invalid || busy || fontLoading}
                 onClick={() => void download()}
               >
                 {busy && <Spinner />}
                 {busy ? "만드는 중…" : "GIF 다운로드"}
-              </button>
+              </Button>
             </footer>
           </section>
         </div>
