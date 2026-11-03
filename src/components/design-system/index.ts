@@ -5,3 +5,5 @@ export { MotionIcon } from "./MotionIcon";
 export { SegmentedControl } from "./SegmentedControl";
 export { Spinner } from "./Spinner";
 export { RangeField } from "./RangeField";
+
+export { FloatingPanel } from "./FloatingPanel";
