@@ -1,3 +1,4 @@
+import { LayerControls } from "~/components/editor/LayerControls";
 import {
   Accordion,
   AccordionItem,
@@ -49,8 +50,6 @@ export function EditorPage() {
 
   function selectLayer(id: string | null) {
     setSelectedLayer(id);
-    if (id)
-      setOpenPanels((current) => (current.includes("layout") ? current : [...current, "layout"]));
   }
 
   useEffect(() => {
@@ -186,6 +185,16 @@ export function EditorPage() {
                 document.getElementById("image-upload")?.click();
               }}
             />
+            <div className="mt-inset flex justify-center">
+              <LayerControls
+                images={settings.images ?? []}
+                textLayout={settings.textLayout}
+                selectedId={selectedLayer}
+                onSelect={selectLayer}
+                onImagesChange={(images) => update({ images })}
+                onTextLayoutChange={(textLayout) => update({ textLayout })}
+              />
+            </div>
             <div className="mt-group min-w-0">
               <div className="overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
                 <div className="relative">
@@ -255,9 +264,6 @@ export function EditorPage() {
               value={openPanels}
               onValueChange={(values) => {
                 setOpenPanels(values);
-                if (!values.includes("layout")) {
-                  setSelectedLayer(null);
-                }
               }}
             >
               <AccordionItem value="font" title="글꼴">
@@ -270,10 +276,8 @@ export function EditorPage() {
               <AccordionItem value="layout" title="이미지 · 배치">
                 <LayerEditor
                   images={settings.images ?? []}
-                  textLayout={settings.textLayout}
                   selectedId={selectedLayer}
                   onSelect={selectLayer}
-                  onImagesChange={(images) => update({ images })}
                   onAdd={(images) => {
                     setSettings((current) => ({
                       ...current,
@@ -281,7 +285,6 @@ export function EditorPage() {
                     }));
                     setStatus("");
                   }}
-                  onTextLayoutChange={(textLayout) => update({ textLayout })}
                 />
               </AccordionItem>
               <AccordionItem value="color" title="색상">
