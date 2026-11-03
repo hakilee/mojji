@@ -1,6 +1,41 @@
 @import "tailwindcss";
 
-/* App theme roles: documentation/colors.md. */
+/* meki.gg core tokens, pinned in documentation/design-system-source.json. */
+@theme {
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    Roboto, "Noto Sans KR", "Segoe UI", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", sans-serif;
+
+  --text-md: 15px;
+
+  --size-header: 48px;
+  --height-header: var(--size-header);
+  --margin-header: var(--size-header);
+  --color-header-background: rgba(255, 255, 255, 0.95);
+
+  --size-modal-small: 420px;
+  --max-width-modal-small: var(--size-modal-small);
+
+  --padding-app-inline: 16px;
+
+  --color-primary: var(--color-neutral-950);
+
+  --color-background: rgb(246, 247, 249);
+  --color-divider: var(--color-neutral-200);
+
+  --color-text-primary: var(--color-neutral-950);
+  --color-text-secondary: var(--color-neutral-700);
+  --color-text-tertiary: var(--color-neutral-500);
+
+  --z-index-mobile-header-backdrop: 50;
+  --z-index-header: 100;
+  --z-index-modal: 200;
+  --z-index-dropdown: 300;
+  --z-index-popover: 300;
+}
+
+/* Slackmoji extensions and semantic aliases. */
 @theme {
   --spacing-control: 0.5rem;
   --spacing-inset: 0.75rem;
@@ -27,22 +62,22 @@
   --color-bg-reaction: #e3f5fc;
   --color-fg-reaction: #0968a8;
   --color-stroke-reaction: #0968a8;
-  --color-bg-layer-basement: #f6f7f9;
-  --color-bg-layer-default: #ffffff;
-  --color-bg-neutral-weak: #fafafa;
+  --color-bg-layer-basement: var(--color-background);
+  --color-bg-layer-default: var(--color-white);
+  --color-bg-neutral-weak: var(--color-neutral-50);
   --color-bg-neutral-weak-hover: #f5f5f5;
   --color-bg-neutral-weak-pressed: var(--color-neutral-200);
-  --color-bg-brand-solid: #171717;
-  --color-bg-brand-solid-hover: #404040;
-  --color-bg-brand-solid-pressed: #0a0a0a;
+  --color-bg-brand-solid: var(--color-neutral-900);
+  --color-bg-brand-solid-hover: var(--color-neutral-700);
+  --color-bg-brand-solid-pressed: var(--color-primary);
   --color-bg-brand-weak: #f5f5f5;
   --color-bg-brand-weak-pressed: #e5e5e5;
   --color-bg-positive-weak: #eaf7f1;
   --color-bg-disabled: #f5f5f5;
-  --color-fg-neutral: #0a0a0a;
-  --color-fg-neutral-secondary: #404040;
-  --color-fg-neutral-muted: var(--color-neutral-500);
-  --color-fg-brand: #171717;
+  --color-fg-neutral: var(--color-text-primary);
+  --color-fg-neutral-secondary: var(--color-text-secondary);
+  --color-fg-neutral-muted: var(--color-text-tertiary);
+  --color-fg-brand: var(--color-primary);
   --color-fg-on-brand-solid: #ffffff;
   --color-fg-positive: #216b51;
   --color-fg-critical: #bb3041;
@@ -50,14 +85,14 @@
   --color-fg-on-disabled-brand: var(--color-neutral-400);
   --color-bg-brand-disabled: var(--color-neutral-200);
   --color-bg-overlay: rgb(10 10 10 / 0.32);
-  --color-stroke-neutral: #e5e5e5;
+  --color-stroke-neutral: var(--color-divider);
   --color-stroke-neutral-strong: var(--color-neutral-300);
-  --color-stroke-brand: #171717;
+  --color-stroke-brand: var(--color-primary);
   --color-stroke-guide: #ff2ba6;
   --color-stroke-focus: rgb(10 10 10 / 0.9);
   --color-bg-checker-base: #f7f8f9;
   --color-bg-checker-tile: #eeeff1;
-  --font-sans: "Pretendard Variable", sans-serif;
+
   --radius-control: 10px;
   --radius-action: 12px;
   --radius-action-small: 7px;
@@ -67,4 +102,40 @@
   --radius-workspace: 16px;
   --shadow-control: 0 1px 0 rgb(0 0 0 / 0.05);
   --shadow-floating: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
+  body {
+    background: var(--color-background);
+    font-family: var(--font-sans);
+    color: var(--color-text-primary);
+    font-optical-sizing: auto;
+    font-variant-ligatures: common-ligatures contextual;
+    font-variant-numeric: slashed-zero;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(10 10 10 / 0.9);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background-color: rgb(0 0 0 / 0.05);
+  }
+}
+@utility scrollbar-hide {
+  scrollbar-width: none;
+}
+@utility scrollbar-thin {
+  scrollbar-color: var(--color-neutral-300) transparent;
+  scrollbar-width: thin;
+}
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border-white border-b-2 border-l-2 bg-white/80;
+  }
 }

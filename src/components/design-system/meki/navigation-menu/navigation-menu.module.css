@@ -1,0 +1,188 @@
+.root {
+  align-items: center;
+}
+
+.trigger,
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding-inline: 12px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.trigger:hover,
+.link:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation-duration: 250ms;
+  animation-timing-function: ease;
+}
+
+.content[data-motion="from-start"] {
+  animation-name: enterFromLeft;
+}
+
+.content[data-motion="from-end"] {
+  animation-name: enterFromRight;
+}
+
+.content[data-motion="to-start"] {
+  animation-name: exitToLeft;
+}
+
+.content[data-motion="to-end"] {
+  animation-name: exitToRight;
+}
+
+@media only screen and (min-width: 600px) {
+  .content {
+    width: auto;
+  }
+}
+
+.viewportPosition {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  perspective: 2000px;
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+  height: var(--radix-navigation-menu-viewport-height);
+  margin-top: -4px;
+  overflow: hidden;
+  background-color: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-100);
+  border-radius: 16px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  transform-origin: top center;
+  transition:
+    width,
+    height,
+    300ms ease;
+}
+
+.viewport[data-state="open"] {
+  animation: scaleIn 200ms ease;
+}
+
+.viewport[data-state="closed"] {
+  animation: scaleOut 200ms ease;
+}
+
+@media only screen and (min-width: 600px) {
+  .viewport {
+    width: var(--radix-navigation-menu-viewport-width);
+  }
+}
+
+@keyframes enterFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes enterFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes exitToRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+}
+
+@keyframes exitToLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: rotateX(-30deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: rotateX(-10deg) scale(0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+    transition: none;
+  }
+  .link {
+    animation: none;
+    transition: none;
+  }
+  .root {
+    animation: none;
+    transition: none;
+  }
+  .viewport {
+    animation: none;
+    transition: none;
+  }
+  .viewportPosition {
+    animation: none;
+    transition: none;
+  }
+}

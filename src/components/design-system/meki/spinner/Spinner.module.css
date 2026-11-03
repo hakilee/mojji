@@ -1,0 +1,19 @@
+@keyframes spinner-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
+}
+
+.spinner-blade {
+  animation: spinner-fade 1s infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-blade {
+    animation: none;
+    transition: none;
+  }
+}

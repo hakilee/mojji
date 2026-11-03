@@ -1,6 +1,6 @@
 import {
   Accordion,
-  AccordionItem,
+  EditorAccordionItem,
   Button,
   Checkbox,
   ChoiceButton,
@@ -8,6 +8,10 @@ import {
   HelpBubble,
   MotionIcon,
   Select,
+  RangeField,
+  FormField,
+  Link,
+  ReactionButton,
   Spinner,
 } from "~/components/design-system";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -203,12 +207,12 @@ export function EditorPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-page py-section max-[760px]:px-group max-[760px]:py-group">
-      <a
+      <Link
         className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
         href="#editor-main"
       >
         편집기로 건너뛰기
-      </a>
+      </Link>
       <main
         id="editor-main"
         tabIndex={-1}
@@ -216,7 +220,7 @@ export function EditorPage() {
         onPointerDownCapture={(event) => {
           if (
             event.button === 0 &&
-            (event.target as HTMLElement).closest('#work-canvas [data-layer], input[type="range"]')
+            (event.target as HTMLElement).closest('#work-canvas [data-layer], [role="slider"]')
           )
             dispatch({ type: "begin-group", group: "pointer" });
         }}
@@ -226,7 +230,7 @@ export function EditorPage() {
             !event.ctrlKey &&
             event.key.startsWith("Arrow") &&
             (event.target as HTMLElement).closest(
-              '#work-canvas [data-layer], input[type="range"], [role="radio"]',
+              '#work-canvas [data-layer], [role="slider"], input[type="radio"]',
             )
           )
             dispatch({ type: "begin-group", group: "keyboard" });
@@ -279,13 +283,13 @@ export function EditorPage() {
         }}
       >
         <header className="flex items-center gap-control p-panel max-[760px]:p-group">
-          <a
+          <Link
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"
             aria-label="슬랙모찌 홈"
           >
             <img src="/logo.svg" width="48" height="42" alt="" />
-          </a>
+          </Link>
           <h1 className="text-title font-semibold tracking-[-0.5px]">슬랙모찌</h1>
           <div
             id="editor-history"
@@ -434,14 +438,13 @@ export function EditorPage() {
           <section aria-label="이모지 설정" className="min-w-0 pt-heading-slot max-[1000px]:pt-0">
             <Accordion
               className="space-y-control"
-              multiple
-              keepMounted
+              type="multiple"
               value={openPanels}
               onValueChange={(values) => {
                 setOpenPanels(values);
               }}
             >
-              <AccordionItem value="background" title="배경">
+              <EditorAccordionItem value="background" title="배경">
                 <ColorPicker
                   label="배경색"
                   value={settings.background}
@@ -455,12 +458,12 @@ export function EditorPage() {
                     onCheckedChange={(transparent) => update({ transparent })}
                   />
                 </div>
-              </AccordionItem>
-              <AccordionItem value="motion" title="효과">
+              </EditorAccordionItem>
+              <EditorAccordionItem value="motion" title="효과">
                 <div className="grid grid-cols-3 gap-control">
                   {Object.entries(motions).map(([motion, label]) => (
                     <ChoiceButton
-                      className="flex flex-col items-center gap-control"
+                      className="flex flex-col items-center gap-control max-[480px]:px-control"
                       key={motion}
                       selected={settings.motion === motion}
                       onClick={() => update({ motion: motion as Settings["motion"] })}
@@ -475,44 +478,42 @@ export function EditorPage() {
                   className="mt-group space-y-group border-0 p-0 disabled:text-fg-disabled"
                 >
                   <legend className="sr-only">모션 타이밍</legend>
-                  <label className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
+                  <FormField.Label className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
                     속도
                     <Select
-                      value={settings.speed}
-                      onChange={(event) =>
-                        update({ speed: Number(event.target.value) as Settings["speed"] })
+                      value={String(settings.speed)}
+                      disabled={settings.motion === "none"}
+                      onValueChange={(speed) =>
+                        update({ speed: Number(speed) as Settings["speed"] })
                       }
                     >
-                      {Object.keys(motionFrameDelays)
-                        .sort((a, b) => Number(a) - Number(b))
-                        .map((speed) => (
-                          <option key={speed} value={speed}>
-                            {speed}×
-                          </option>
-                        ))}
+                      <Select.Trigger aria-label="속도">
+                        <Select.Value />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {Object.keys(motionFrameDelays)
+                          .sort((a, b) => Number(a) - Number(b))
+                          .map((speed) => (
+                            <Select.Item key={speed} value={speed}>
+                              {speed}×
+                            </Select.Item>
+                          ))}
+                      </Select.Content>
                     </Select>
-                  </label>
-                  <div className="space-y-control">
-                    <div className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
-                      <label htmlFor="motion-delay">반복 딜레이</label>
-                      <output htmlFor="motion-delay" className="tabular-nums text-fg-neutral-muted">
-                        {(settings.delay / 1000).toFixed(1)}초
-                      </output>
-                    </div>
-                    <input
-                      id="motion-delay"
-                      type="range"
-                      min="0"
-                      max="2000"
-                      step="100"
-                      value={settings.delay}
-                      aria-valuetext={`${(settings.delay / 1000).toFixed(1)}초`}
-                      className="block h-6 w-full cursor-pointer accent-fg-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
-                      onChange={(event) => update({ delay: event.target.valueAsNumber })}
-                    />
-                  </div>
+                  </FormField.Label>
+                  <RangeField
+                    id="motion-delay"
+                    label="반복 딜레이"
+                    min={0}
+                    max={2000}
+                    step={100}
+                    value={settings.delay}
+                    valueLabel={`${(settings.delay / 1000).toFixed(1)}초`}
+                    disabled={settings.motion === "none"}
+                    onChange={(delay) => update({ delay })}
+                  />
                 </fieldset>
-              </AccordionItem>
+              </EditorAccordionItem>
             </Accordion>
           </section>
           <section
@@ -551,8 +552,7 @@ export function EditorPage() {
                         </span>{" "}
                         <span>1</span>
                       </span>
-                      <button
-                        className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
+                      <ReactionButton
                         type="button"
                         aria-label={`내 이모지 반응 ${reacted ? 2 : 1}개`}
                         aria-pressed={reacted}
@@ -565,7 +565,7 @@ export function EditorPage() {
                           aria-label="슬랙 반응 크기 미리보기"
                         />
                         <span>{reacted ? 2 : 1}</span>
-                      </button>
+                      </ReactionButton>
                       <span
                         className="inline-flex h-6 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
                         aria-hidden="true"

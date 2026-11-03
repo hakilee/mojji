@@ -1,46 +1,19 @@
-# UI implementation review
+# UI implementation review — #94
 
-Loading, composition, transitions, writing and accessibility review.
+This is the current implementation review; earlier delivery evidence remains in the corresponding GitHub issues/PRs.
 
-## 1. React best practices
+## React best practices
 
-- src/components/editor/FontPicker.tsx:1 - static catalog import moved to on-demand import with loading, error and retry behavior; deferred search keeps input immediate.
-- src/pages/EditorPage.tsx:1 - static preview no longer schedules continuous frames; reduced-motion changes update live and listeners clean up.
+The full meki.gg UI/icon closure is ported without adding application-wide state providers. Compound component factories live in `.ts` barrels and JSX implementations in component-only modules, satisfying Fast Refresh without lint exceptions. Controlled/uncontrolled primitive state remains primitive-owned; the editor owns document/history/resource state. HEX and IME drafts are intentionally separate editable states. Existing font cancellation, deferred search, FontFace ownership and canvas cleanup remain intact.
 
-## 2. Composition patterns
+All UI consumers import the public design-system barrel. Radix primitives own focus trapping, dismissal, keyboard selection and overlay positioning. Source primitives are not duplicated by Base UI. The extended `cn` understands real font-size/spacing/radius/shadow tokens so source size defaults and product overrides compose correctly. The 320px motion-choice padding correction was driven by actual computed styles and screenshot inspection.
 
-- src/components/design-system/Accordion.tsx - three setting sections share headless disclosures and semantic fieldsets through children.
-- Existing explicit font/settings callbacks remain appropriate. The shared accordion root owns disclosure state; editor settings remain in the page without a second app-level provider.
+CSS animations, shared Tabs layout motion, loading blades and segmented selection respect reduced motion. Spinner inherits text color and is decorative unless labelled. Slider labels and value text reach the actual focusable thumb. Native text/file/color/checkbox/radio controls retain platform behavior. Canvas manipulation and keyboard history stay in the editor; shared hit-target/reaction/text surfaces are inventoried design-system extensions.
 
-## 3. React view transitions
+## Full-story verification
 
-- src/components/editor/FontPicker.tsx:1 - disclosure enter/exit, asynchronous catalog reveal and keyed result identity use React transitions.
-- Route audit: `/` only, logo links to `/`; no detail route, shared-element pair or Suspense boundary. Those patterns do not apply. Root snapshots are disabled so persistent chrome and canvas remain live.
-- src/styles/tailwind.css:1 - opacity transitions, short timing, pointer pass-through and reduced-motion override.
+This is a browser-only product; there is no application backend, persistence, credential or database setup. The meaningful story is edit independent text/image layers → load local/Google fonts → style/reorder/undo → shared preview renderer → actual GIF download and decode. Aside CLI is the only browser driver. AST checks separately verify every original export/part, local closure file, current component consumer and direct UI bypass.
 
-## 4. Writing guidelines
+Source integrity, negative controls, local verification, browser findings and deployment evidence are recorded on [#94](https://github.com/hakilee/slackmoji/issues/94) and its PR. `yarn verify` runs the AST gate and 91 meaningful renderer/history/font/date tests. Browser fixtures and recordings are ignored artifacts, not a production test surface. The production bundle warning is preserved rather than hidden by configuration changes.
 
-- README.md:1 - descriptive links replace bare URLs; feature/navigation lists gain introductions; units and paragraph structure clarified.
-- documentation/design-system.md:1 - reference purpose, font-loading behavior, motion behavior and technical terms clarified.
-- Docs-site metadata, Vercel-team pings and MDX Steps are not applicable to this Markdown project. User authorization to complete work governs delivery; no new approval flow is introduced.
-
-## 5. Web design guidelines
-
-- src/pages/EditorPage.tsx:1 - skip link, main focus target, input name/autocomplete, hidden decorative symbols and functional reaction update.
-- src/components/editor/FontPicker.tsx:1 - disclosure relationship, search example/name/autocomplete/spellcheck, busy and empty/loading feedback.
-- src/styles/tailwind.css:1 - touch manipulation, contained result scrolling, tabular numbers and balanced headings.
-- Explicit user requirements take precedence: do not restore playback controls or put private editor content in URLs. Existing invalid-input download blocking remains the product contract. No speculative navigation guard or theme added. Headless primitives now back the explicitly requested controls (#50).
-
-Verification evidence and remaining gaps belong to the issue-linked pull request. Existing renderer tests cover GIF behavior; browser checks cover catalog loading, transitions, search, export and responsive layout.
-
-## Browser-driven correction
-
-Full-button ViewTransition boundaries made font-result clicks unreliable in Aside after filtering. Boundaries now animate the result labels while the buttons remain live. The corrected flow passed: catalog requests 0 before opening and 1 after opening, Gaegu selected, gradient GIF downloaded, and mobile layout retained. The renderer suite still has 34 passing tests. Unsupported-browser and actual OS preference toggling are not claimed as tested.
-
-## Headless-control review (#50)
-
-- Library dependencies use direct accordion/radio/radio-group entry points, not the package-wide barrel. The explicitly requested small application public export remains unchanged.
-- One uncontrolled accordion root owns disclosure state; no mirrored state/effect or custom key handler. The controlled color value remains derived from editor settings.
-- Closed panels retain children to preserve font-search state. Catalog loading remains user-triggered and search remains deferred; closing/reopening does not fetch again.
-- Keep native textarea/color/select behavior and decorative spinner/icons. Do not introduce unnecessary generic wrappers, context or memoization.
-- Existing effect cleanup, functional reaction updater and asynchronous font/export error handling remain intact.
+Browser checks are Chromium through Aside; Safari/Firefox and real hardware IME/assistive technology are not claimed. No skill-imposed approval or new release approval gate was introduced; the user authorized implementation through deployment.

@@ -1,125 +1,63 @@
-# Slackmochi UI system
+# meki.gg 기반 디자인 시스템
 
-Use this reference to maintain the editor’s visual tokens, controls and font-loading behavior. It covers the app-owned visual system and its headless interaction primitives.
+GitHub [#94](https://github.com/hakilee/slackmoji/issues/94)의 계약. 소유자의 승인으로 `mekigg/meki.gg@5df8d3ee3dfc970a1057a93ccfd68c13e7ac61be`의 UI/icon 공개 진입점과 재귀 의존성을 이식했습니다. 일부 버튼을 흉내 낸 테마가 아니라 원본 컴포넌트 API·하위 파트·스타일·아이콘을 포함하는 로컬 라이브러리입니다.
 
-## Foundations
+## 전체 목록과 누락 검사
 
-Use [color roles](colors.md) as the color layer. `src/styles/tailwind.css` contains only the Tailwind import and theme configuration (semantic colors, typography, radii and transition keyframes). Components use Tailwind utilities for layout and states, with the standard 4 px spacing scale. No handwritten component selectors or CSS modules remain.
+- [개별 컴포넌트·하위 파트·사용처 목록](design-system-inventory.md): 원본 53개 공개 export, 하위 파트 포함 103개 항목, Slackmoji 확장, 모든 앱 컴포넌트.
+- [현재 AST inventory](design-system-inventory.json): 실제 구현 모듈/컴포넌트/의존성 그래프와 JSX 위치.
+- [고정 원본 manifest](design-system-source.json): 원본 65개 파일의 SHA-256, import/export, 대상 위치. UI/style 37개, icon 27개, 날짜 포맷 유틸리티 1개. 원본의 테스트·사업 페이지·데이터·백엔드·환경설정은 이식 대상이 아닙니다.
 
-UI text uses self-hosted Pretendard for UI glyphs. It uses `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
+```sh
+yarn design-system:inventory # 현재 AST에서 목록 갱신
+yarn design-system:check     # 누락·우회·오래된 목록을 실패 처리
+yarn verify                 # 위 검사 포함 전체 로컬 게이트
+```
 
-## Control contract (#83)
+기존 Vite 의존성에 포함되어 있던 Rolldown의 Oxc parser를 명시적 개발 의존성으로 사용합니다. 정규식으로 TSX 구조를 추측하지 않습니다. 공개 barrel의 export/re-export, compound Object.assign 파트, import 별칭, 전체 구현 의존성과 JSX 사용처를 재귀적으로 추적합니다. 원본 공개 API/파트나 의존 파일이 사라지거나, 앱에서 native 입력·버튼·링크·label/직접 headless import로 우회하거나, inventory가 오래되면 실패합니다. 원본 manifest는 고정된 이식 기준이며 자동 갱신 대상이 아닙니다. upstream 갱신은 새 커밋에 대한 재귀 분석과 검토가 필요합니다.
 
-Use the public exports at `~/components/design-system` instead of copying control classes into consumers:
+## 소유권과 구조
 
-| Component      | Use                                                   | Owned behavior and appearance                                                                                                                    |
-| -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Button`       | Export, editor actions, presets and popover dismissal | Native button props/ref, `type="button"` default, black/white/neutral variants; medium/small/x-small sizes, disabled and busy attributes         |
-| `ChoiceButton` | Font specimens/results, layer list and motions        | Required boolean `selected` maps to `aria-pressed`; shared selection, hover, pressed, keyboard and disabled states; consumers own content layout |
-| `Input`        | Search, HEX and local file upload                     | Base UI input props/ref and change events; shared border, focus, invalid and disabled states, native file-selector styling                       |
-| `Select`       | Gradient direction and motion speed                   | Native select props/ref, platform keyboard behavior and the same field geometry/states                                                           |
-| `HelpBubble`   | Optional canvas, image/layer and remote-font guidance | Labelled 40px native help button, headless tooltip, hover/focus/click/tap, Escape/outside dismissal and viewport constraints                     |
+진입점은 항상 `~/components/design-system`입니다. `meki/`는 원본 API, `icons/`는 원본 아이콘, 같은 디렉터리의 파일은 편집기 전용 확장입니다. 의미 있는 section/main/header/제목·설명·출력 canvas와 문서 상태는 화면이 소유합니다. 재사용 시각/동작 primitive와 모든 실제 컨트롤은 디자인 시스템이 소유합니다. 개별 편집 컴포넌트에는 레이아웃·반응형 크기와 사용자 콘텐츠 스타일만 남깁니다.
 
-Buttons use medium (40px, 24px horizontal inset, 12px radius, semibold), small (34px, 12px inset, 7px radius, medium) and x-small (28px, 8px inset, 8px radius, 13px medium text) sizes. Medium and small labels are 14px. Input/select fields use 36px height, 12px horizontal inset and 10px radius. Choice cards use 12px all-round padding. Keep layout-only classes at call sites; variant/state styling belongs to the component. Do not replace canvas hit areas or the Slack-like reaction with generic controls: those have independent interaction and geometry contracts.
+Tabler에서 유래한 원본 아이콘의 [MIT 고지](../public/licenses/tabler-icons.txt)도 배포 자산에 포함합니다.
 
-The theme owns three neutral foreground levels (primary, secondary and muted), cool page/white workspace surfaces, neutral action states, control elevation and floating elevation. All interactive color transitions take 150ms and stop for reduced motion. Keyboard outlines are 2px with 2px offset; rounded whole-editor focus and pink canvas selection remain specialized. Selection and focus stay distinguishable. Invalid fields use critical borders/foreground, and disabled controls never gain hover/pressed feedback.
+원본의 Radix Dialog/Popover/Select/Accordion/Slider 등과 Motion/Sonner/clsx/tailwind-merge를 그대로 사용합니다. Base UI 의존성과 구형 Button/Input/Select/Spinner/Accordion 구현은 삭제했습니다. 사용하지 않는 원본 컴포넌트도 API/구현은 유지하되, 디자인 시스템 내부의 component-only 모듈과 CSS side-effect metadata로 tree-shaking을 허용합니다. CSS는 원본 CSS Modules + Tailwind이고, 토큰/전역 규칙은 `src/styles/tailwind.css`에 있습니다.
 
-Desktop keeps equal editing/settings/preview columns and the sticky preview; small viewports stack them without horizontal overflow. Workspace/surface radii remain 16/12px; action, field and inset geometry use their own named tokens. The 26px reaction pills and 16px emoji are not resized by the control system. Theme-color and manifest backgrounds track the page surface.
+## 원본에서 유지한 것
 
-## Components and states
+Pretendard Variable, 15px 본문, neutral-950/700/500 텍스트, neutral-900 검정 액션, `rgb(246,247,249)` 배경, neutral-200 구분선, 420px 작은 모달 토큰 및 헤더/오버레이 z-index 토큰을 이식했습니다. Button은 원본 medium(40px/12px radius), small(34px/7px), x-small(28px/8px), black/white/neutral, asChild/suffix/svgOnly를 지원합니다. Input과 Select는 medium(36px/10px), small(34px/7px), x-small(28px/8px)를 유지합니다. Flex/Grid, Card, FormField, Table, Pagination, Time, ClientOnly와 전체 메뉴/오버레이 계열도 공개됩니다. 미사용은 미구현을 의미하지 않습니다.
 
-Compose the following controls using semantic HTML and headless primitives:
+## 명시적 적응과 보완
 
-- **Composition editor**: square work canvas with text/image layer selection, pointer dragging, arrow-key nudging (Shift for 10 px), Escape deselection and selected-layer Backspace/Delete. A compact native textarea below provides text entry with a persistent family/count footer, focus outline and invalid message. Native textarea editing/selection/undo are preserved; composed input is committed at composition end. Paste/typing is constrained to 9 graphemes and three lines, with a live limit announcement.
-- **Font picker**: three bundled specimen cards, optional searchable Google Fonts modal with Korean filter, loading/disabled/error state. External fonts apply only after successful load; existing font remains on failure. Requests time out instead of leaving download disabled indefinitely.
-- **Controls**: labelled radio segments, composed color pickers, shared checkboxes, native select and motion choices. Individual colors and gradient mode are mutually exclusive.
-- **Preview**: compact author/message, 16 px emoji reaction initially unselected with one existing reaction and a reversible 1↔2 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
-- **Action**: primary download button with busy/disabled states; functional status announcements only.
+- Fast Refresh: compound assembly를 `.ts` barrel, 실제 JSX를 component-only `parts.tsx`로 분리했습니다. Input 크기 값은 두 실제 소비자가 공유하는 `input-sizes.ts`에 있습니다. 외부 API는 동일합니다.
+- 클래스 병합: 원본 cn에 실제 theme spacing/radius/shadow/font-size 이름을 등록해 원본 px-6와 편집기의 p-inset이 중첩되거나, text-md/label과 텍스트 색상 클래스가 서로 제거되지 않게 했습니다. 좁은 모션 선택은 8px 수평 패딩으로 라벨을 보존합니다.
+- 접근성: Button/Input의 focus-visible·disabled·invalid, Select의 키보드 highlight/checked·스크롤 가능한 viewport와 포털 z-index를 보완했습니다. Slider의 label/id/valuetext는 실제 thumb에 전달합니다.
+- 모션: 모든 원본 CSS Modules에 reduced-motion 처리를 추가하고 Tabs의 공유 layout indicator도 설정을 존중합니다. Tooltip은 원본에 있던 미설치 animation utility 대신 이식된 Popover의 실제 CSS animation을 사용합니다.
+- Spinner는 원본 12-blade와 크기 API를 유지하면서 currentColor를 상속하고 reduced-motion에서 정지합니다. label이 없으면 장식이며, label이 있으면 loading output입니다.
+- Popover에 실제 편집기에 필요한 Anchor/Close를 같은 Radix primitive에서 추가했습니다. 별도 팝오버 구현을 만들지 않습니다.
+- Time은 UI에 실제 필요한 원본 dayjs formatTime만 재귀 이식합니다. shared 패키지의 서버 의존성을 끌어오지 않습니다.
 
-Desktop uses one white workspace with editing, settings and vertically stacked, independently centered previews with download below them. The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 16px, nested surfaces use 12px, actions use their size-specific radii and fields use 10px. Keyboard focus, labels and selection state are retained without decorative metadata.
+## Slackmoji 확장
 
-## Google Fonts source
+| 확장                | 역할                                                                                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EditorAccordionItem | 원본 Accordion 조합. 키보드 disclosure, 상태를 보존하는 forceMount + closed hidden.                                                                   |
+| ChoiceButton        | 원본 Button white와 aria-pressed 선택 상태 조합.                                                                                                      |
+| Checkbox            | native checkbox의 기본 label/키보드/disabled 동작과 원본 CheckIcon/중립 토큰.                                                                         |
+| SegmentedControl    | native radio 그룹, 한 개의 흰색 배경이 200ms ease-out 이동. 화살표 탐색과 reduced-motion 지원.                                                        |
+| RangeField          | FormField/Slider 조합과 thumb label/값 출력.                                                                                                          |
+| ColorPicker         | 원본 Popover/Input/Button과 native radio 팔레트. 6자리 HEX 검증·색상 선택.                                                                            |
+| FloatingPanel       | 원본 Popover Anchor/Content/Close 조합. 캔버스 참조 기반 위치·충돌·높이 제한·명시적 focus 복원.                                                       |
+| HelpBubble          | 이전 요청의 SEED-inspired click bubble 유지. 24px ? trigger, 제목과 4px 간격, 어두운 표면·화살표·닫기, 외부 클릭/Escape·중첩 모달. 원본 Popover 사용. |
+| ContentTextArea     | 콘텐츠 폰트/IME/줄/입력 제한을 화면이 관리하는 native textarea 표면.                                                                                  |
+| CanvasHitTarget     | 드래그·선택·키보드 편집용 native hit button과 선택 가이드. geometry/편집 상태는 CanvasEditor 소유.                                                    |
+| ReactionButton      | 기존 Slack 26px pill·16px emoji·선택 파랑 상태 유지.                                                                                                  |
+| Link                | 공통 focus-visible/touch 처리의 native 링크.                                                                                                          |
+| MotionIcon          | 기존 24px 그리드 모션 아이콘.                                                                                                                         |
 
-`src/data/google-fonts.json` contains family names and Korean support flags from the [official public catalog](https://fonts.google.com/metadata/fonts), retrieved 2026-11-03. Opening Google Fonts loads this snapshot as a separate application chunk; search does not call Google. Refresh from `familyMetadataList` when updating the catalog. Font binary files are not redistributed or installed.
+## 편집기 계약과 검증
 
-After explicit selection, a stylesheet is requested through the [Google Fonts CSS2 API](https://developers.google.com/fonts/docs/css2); no `text` parameter or editor contents are sent. Browser font loading uses the stylesheet's unicode ranges. No API key, backend or undocumented live search endpoint is required. Search lists at most 40 matches and prompts further filtering. The catalog's names are used as returned by Google (usually English family names). Fonts without Korean coverage may fall back for Korean glyphs; the default Korean filter avoids this.
+기본 최고야! 레이어, 임의 혼합 스택과 독립 폰트/색상/위치, 텍스트 인풋 아래가 아닌 선택 레이어의 컨텍스트 오버레이, 중첩 Google Fonts 모달, 업로드·실패 복구·자원 수명, native IME, Backspace/Delete와 bounded undo/redo를 유지합니다. 사용자 폰트·콘텐츠 HEX와 브랜드 자산은 UI 토큰으로 바꾸지 않습니다. 미리보기와 실제 GIF는 같은 renderer를 사용하며 디자인 시스템은 이미지 산출물을 변경하지 않습니다.
 
-## Effects
-
-Available motions: static, scale, bounce, slide, shake, roll, orbit, swing, jelly. Every effect shares the static tight glyph fit; no extra translation/rotation clearance shrinks the text. Transformed glyphs can intentionally clip at the canvas edge. Jelly scales both axes below 1. Horizontal/vertical gradients span measured glyph bounds and survive GIF palette quantization. Single-color and per-character rendering remain available. GIF dimensions, timings and size limit are unchanged.
-
-Verification: `src/lib/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export and full-size fitting behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
-
-## Google Fonts modal and interaction (#83)
-
-`FontPicker` uses the installed Base UI Dialog instead of an inline font-search disclosure. The modal shares action/input/choice/help controls, neutral surfaces, workspace corners and a semantic overlay. Its opacity transition respects reduced motion; superseded font-panel ViewTransition code and animation tokens are removed. Deferred search and keyed results keep typing immediate without document-wide snapshots.
-
-The catalog loads only on first open, and search/Korean-filter state survives dismissal and accordion collapse. Fetch its bundled JSON asset with a 15-second deadline so a failed module import cannot permanently cache a temporary catalog outage; the modal provides an in-place retry. Desktop opening focuses search; touch opening keeps the primitive's keyboard-avoiding behavior. Base UI traps Tab/Shift+Tab, locks page scrolling, dismisses on Escape/outside/close, and restores trigger focus. The current font, result counts, loading, empty and retryable error states remain accessible inside the modal. A constrained flex layout scrolls results within narrow/short viewports.
-
-Successful font selection applies the loaded family and closes the modal. Failure preserves the prior selection and permits another attempt. Closing during a request aborts its selection and removes its pending stylesheet; completion checks its lifetime before changing font, error or loading state. Local upload keeps its separate feedback and existing face lifetime. Aside verifies these paths together with segmented color/image switching, disclosure focus and actual GIF output.
-
-## Loading indicator (#31)
-
-`src/components/design-system/Spinner.tsx` renders a radial SVG indicator with inherited color, compact sizes and accessible loading labels. It uses Tailwind rotation and stops for reduced motion. A label exposes a standalone status; omit it beside existing loading text to keep the graphic decorative. GIF export, font catalog loading and selected-font loading use it.
-
-## Icon grid
-
-Motion icons use a 24×24 viewBox, 2px optical inset, 2px rounded strokes and currentColor. Keep stroked bounds inside the grid, compensate curved shapes optically, and avoid font glyphs as UI icons. [Construction grid](icons/grid.svg) shows the 1px grid, 20px safe area, center lines and circular keyline. Controls retain labels and expose icons as decorative; standalone icon buttons need at least a 40px touch target.
-
-UI text uses at most semibold (600). Settings use divider-separated headless accordion triggers/panels with semantic fieldsets; effects start expanded. Disclosures support keyboard interaction and retain their controls and values while collapsed. The textarea's containing editor draws one rounded focus border/ring instead of an inset rectangle. Color mode is a labelled headless radio group: arrow keys change selection and keyboard focus remains visible.
-
-## Module boundary (#48)
-
-Shared components live in `src/components/design-system/`. Import their public exports with `import { Accordion, Spinner } from "~/components/design-system"`. The `~` alias maps to `src` in TypeScript, Vite and Vitest. Keep editor-specific components in `src/components/editor/`; the old `components/ui` path is removed.
-
-## Headless controls (#50)
-
-`Accordion` exposes the primitive root and `AccordionItem` composes the app-styled header, trigger and panel. The editor supplies `multiple`, `keepMounted` and controlled disclosure state starting at `["motion"]`, so the image-add action can reveal its upload field. Panels preserve font-search state when closed but their contents are not focusable. `SegmentedControl` delegates radio semantics and keyboard selection to primitives; its selected value remains owned by the editor.
-
-Accordion panels use the primitive's measured height and transition-state attributes for a reversible 200 ms collapse transition. Chevrons rotate with the same timing. Both transitions are disabled by the user's reduced-motion preference; panel padding stays on the inner fieldset so the collapsed height is zero.
-
-The effects panel uses a labelled native select for speed and a native range input for repeat delay, with a seconds output and spoken value. Static effects disable these controls without resetting them. The font panel accepts local font files through the browser font API; its latest uploaded-font slot can be reselected and survives disclosure. Each successful upload has a unique internal family and a friendly file label, so same-name replacements remain distinct during undo/redo. Keep faces referenced by history or the latest-upload slot, release unreferenced replacements and remove all uploaded faces on unmount. Failed uploads preserve the current selection. Neither control adds a runtime dependency.
-
-Library imports use individual component subpaths. The small app-owned public export module remains available at `~/components/design-system`. Spinner and motion artwork have no interactive behavior to replace. Native textarea and select retain platform behavior. The color picker retains a native full-color input alongside its presets and HEX field.
-
-## Help and render recovery (#83)
-
-`HelpBubble` puts optional guidance beside its heading or control, instead of permanently showing helper paragraphs. The tooltip retains neutral surfaces, 6px corners, 12px medium text, 12/6px insets and a 4px anchor offset. Base UI owns positioning, focus/hover behavior and dismissal; explicit activation opens it for touch users as well. Bubbles stay inside the viewport and respect reduced motion. Error messages, progress, result counts and selected-font state are not optional help and remain visible.
-
-`src/lib/font-loading.ts` shares a 15-second font-load deadline between the work canvas, animated previews, GIF export and remote-font selection. Whitespace-only/image-only compositions skip unused font loading. Font failures retain their cause for diagnosis but show localized guidance; no automatic font substitution changes the composition. Work-canvas errors distinguish font loading from drawing, provide a redraw action for both canvases and a direct font-settings action when relevant, and disappear after a successful render. The renderer and high-resolution editor restore saved canvas state even when painting throws, so a retry cannot compound transforms. Renderer tests compare recovered output pixels and Aside verifies visible failure/recovery and download.
-
-## Three-column workspace (#52)
-
-Desktop separates editing, settings and preview into three equal columns; widths at or below 1000px stack. Primary UI actions use neutral charcoal, with pale gray selected surfaces. Content colors and logo artwork remain independent. Shared Tailwind tokens define control gaps (8px), text gaps (6px), panel/section spacing (24px), page gutter (32px), and caption/label/body/title type pairs (12/16, 14/20, 15/24, 20/28px).
-
-## Selection controls (#63)
-
-`Checkbox` delegates checked state, keyboard interaction and hidden form input semantics to its headless primitive. The transparency setting and Korean-font filter use the same labelled 20px indicator in a minimum 40px row.
-
-`ColorPicker` composes popover, radio-group and input primitives. Every color setting, including per-character overrides, offers twelve presets, a native full-color chooser and six-digit HEX input. Incomplete HEX is local draft state, never renderer input; blur or dismissal restores the last valid value. The primitive owns dismissal and focus restoration. Transparent backgrounds disable the background trigger without discarding its color. The popup fits the available viewport and scrolls vertically when needed.
-
-`SegmentedControl` has no external layout margin. It uses neutral surfaces, an inset selected border/shadow, 12px outer and 8px inner radii, and the shared minimum control height. Selection and keyboard focus are distinct; radio arrow-key behavior remains primitive-owned. Control height (40px) and inset radius (8px) are shared theme tokens. All three controls keep reduced-motion support.
-
-## Spacing and surface hierarchy (#67)
-
-Use 16px workspace and 12px panel/editor-surface radii. Medium actions use 12px, small actions 7px, x-small actions 8px, fields 10px and segmented insets 8px. Reaction pills retain their independent geometry. Spacing roles are control 8px, inset 12px, group 16px, section/panel 24px and page 32px. Compact page/workspace insets are 16px. Accordion headers and bodies share group insets; title slots share a 40px height with the settings offset. Font options use two columns and caption labels for comfortable readable cards. No component state or rendering behavior changes.
-
-Preview chrome (#69): no decorative header, inter-preview or download dividers. Both example reactions start neutral; only user activation adds the blue selected state to the generated reaction. Structural borders on editing and settings controls remain.
-
-## Image composition and layout (#71)
-
-`LayerEditor` owns transient upload/error state; the page owns images, text layout and selected layer. The list reflects front-to-back composition, including the text layer. Images keep aspect ratio or center-crop to a square; background fill is a preset, not a separate implementation. Sibling stacking applies within the chosen text front/behind plane. Uploads never select a hidden panel's layer automatically.
-
-`RangeField` provides labelled native keyboard-operable position/size/rotation controls using shared tokens. The left work canvas renders the composition in a static editing pose; the right inspection canvas continues animating and is read-only. Layers are selected directly on the work canvas or in the layer list, with contextual floating controls available on selection. Pointer capture supports dragging; text double-click focuses the native text field. Selection outlines are DOM-only and never exported. Magnetic alignment guides use the pink stroke-guide token, with a thin pink layer selection outline and a subtler hover outline; keyboard focus uses a stronger 2px pink treatment. No dark hover fill obscures artwork. Pointer dragging starts after 3 CSS pixels to avoid accidental movement on clicks. Layer selection is independent of accordion disclosure. Contextual layer controls open automatically in a viewport-constrained Base UI FloatingPanel beneath the selected canvas text/image, without a separate edit trigger. The actual layer hit area is the positioning anchor, so the panel follows drag and keyboard movement. Opening does not steal canvas or textarea focus; keyboard activation can enter the panel. Escape/close restore the layer focus, while outside clicks keep focus on the clicked control. Dismissal clears the current selection; switching layers must retain the newly selected layer. Layer settings/list interactions do not count as outside dismissal, so collapsing that accordion preserves selection and clicking a selected list item still toggles it off. The panel can flip only when needed to stay within the viewport and its content scrolls vertically. The upload/layer list stays in settings; position/size/rotation/order controls are not duplicated there. Desktop preview stays sticky during long settings edits; mobile remains stacked.
-
-Files decode locally to bounded canvas sources and temporary bitmaps close after decoding; no object URLs or network uploads are retained. GIF input is deliberately a static first-frame image, disclosed beside the upload. The selected motion applies to text and every image about its own placement center, preserving the image’s rotation and text-front/behind plane. Image-only compositions animate too. Editing remains static; reduced-motion previews remain still. Preview and export share the same image/text composition, and image-only export is allowed. Existing output dimensions and 128KiB limit remain.
-
-## Document history and keyboard editing (#83)
-
-The workspace header exposes labelled 40px undo/redo icon buttons with disabled states and shortcut metadata. Cmd/Ctrl+Z undoes a document action; Cmd/Ctrl+Shift+Z and Ctrl+Y redo it. Canvas help includes these shortcuts and layer deletion. Text, search, HEX and contenteditable fields keep native deletion/undo. Document shortcuts do not pass through modal dialogs, IME composition or pending font selection.
-
-Backspace/Delete removes the selected text or image while focus is on the work canvas, layer list or non-input layer controls. The same delete action powers both contextual delete buttons. Removing text clears its textarea, list entry, placement and per-character colors. The empty canvas remains focusable for undo; restoring an action focuses its valid selected layer, or the canvas if none is selected. Selection/disclosure/search are UI state, not document edits. Old panel dismissal must not clear a newer selection, and history toolbar interaction must not dismiss selection before applying an action.
-
-`src/lib/editor-history.ts` owns a bounded, immutable history of the latest 100 document actions. It records content, image order/transforms, fonts, colors and motion together. Pointer dragging, range gestures, held arrow keys and text-field focus sessions are single actions; release, cancellation and blur end the appropriate transaction. No-op changes do not consume history or clear redo. Returning a gesture to its starting settings leaves no empty checkpoint and preserves the oldest action even at capacity. A new document edit after undo clears redo. Snapshots retain image-source references without copying pixels; the font picker retains uploaded faces while any snapshot still needs them. Nothing is persisted or uploaded.
-
-Colocated reducer tests verify deletion/restoration, grouping, branching, selection, history bounds and exact recovered image pixels. Aside checks native shortcuts and focus, real drag/range grouping, same-name uploaded-font restoration, modal/input isolation, narrow-screen controls and decoded GIF output separately from the unit tests.
+Vitest는 기존 렌더러/폰트/히스토리 계약을 검사하고 Aside는 실제 브라우저의 포커스·팝오버 중첩·선택 이동·반응형·GIF 다운로드를 확인합니다. 완료 결과와 제한은 #94 및 연결 PR이 소유합니다.

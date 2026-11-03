@@ -1,0 +1,129 @@
+.content {
+  box-shadow:
+    0 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0 10px 20px -15px rgba(22, 23, 24, 0.2);
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.content[data-state="open"][data-side="top"] {
+  animation-name: slideDownAndFade;
+}
+.content[data-state="open"][data-side="right"] {
+  animation-name: slideLeftAndFade;
+}
+.content[data-state="open"][data-side="bottom"] {
+  animation-name: slideUpAndFade;
+}
+.content[data-state="open"][data-side="left"] {
+  animation-name: slideRightAndFade;
+}
+
+.content[data-state="closed"][data-side="top"] {
+  animation-name: slideUpAndFadeOut;
+}
+.content[data-state="closed"][data-side="right"] {
+  animation-name: slideRightAndFadeOut;
+}
+.content[data-state="closed"][data-side="bottom"] {
+  animation-name: slideDownAndFadeOut;
+}
+.content[data-state="closed"][data-side="left"] {
+  animation-name: slideLeftAndFadeOut;
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUpAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes slideRightAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+}
+
+@keyframes slideDownAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+
+@keyframes slideLeftAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+    transition: none;
+  }
+}

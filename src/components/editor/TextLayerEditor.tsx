@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Accordion,
-  AccordionItem,
+  EditorAccordionItem,
   ColorPicker,
   SegmentedControl,
   Select,
+  FormField,
+  ContentTextArea,
 } from "~/components/design-system";
 import { constrainText, maxTextCharacters, textCharacters, validateText } from "~/lib/emoji";
 import type { TextLayer } from "~/lib/emoji";
@@ -32,10 +34,10 @@ export function TextLayerEditor({
   const value = draft ?? layer.text;
   useEffect(() => () => onComposingChange(false), [onComposingChange]);
   return (
-    <Accordion multiple keepMounted defaultValue={["content"]}>
-      <AccordionItem value="content" title="텍스트">
+    <Accordion type="multiple" defaultValue={["content"]}>
+      <EditorAccordionItem value="content" title="텍스트">
         <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak transition-colors duration-150 hover:not-focus-within:border-stroke-neutral-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-stroke-brand has-aria-invalid:border-fg-critical has-aria-invalid:outline-fg-critical motion-reduce:transition-none">
-          <textarea
+          <ContentTextArea
             id="layer-text"
             name="emoji-text"
             aria-label="레이어 텍스트"
@@ -43,7 +45,6 @@ export function TextLayerEditor({
             aria-invalid={!!invalid}
             autoComplete="off"
             spellCheck={false}
-            className="block min-h-24 w-full resize-none overflow-auto border-0 bg-transparent p-inset text-center text-xl leading-[1.5] outline-none"
             style={{ fontFamily: `"${layer.font}"` }}
             value={value}
             rows={Math.max(1, value.split("\n").length)}
@@ -99,8 +100,8 @@ export function TextLayerEditor({
         <p role="status" className="mt-control text-caption text-fg-neutral-muted empty:hidden">
           {notice}
         </p>
-      </AccordionItem>
-      <AccordionItem id="layer-font-settings" value="font" title="글꼴">
+      </EditorAccordionItem>
+      <EditorAccordionItem id="layer-font-settings" value="font" title="글꼴">
         <FontPicker
           font={layer.font}
           fontLabel={layer.fontLabel}
@@ -109,8 +110,8 @@ export function TextLayerEditor({
           onChange={(font, fontLabel) => onChange({ font, fontLabel })}
           onLoading={onLoading}
         />
-      </AccordionItem>
-      <AccordionItem value="color" title="색상">
+      </EditorAccordionItem>
+      <EditorAccordionItem value="color" title="색상">
         <div className="mb-group">
           <SegmentedControl
             label="색상 방식"
@@ -146,24 +147,28 @@ export function TextLayerEditor({
           )}
         </div>
         {layer.gradient && (
-          <label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
+          <FormField.Label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
             방향
             <Select
-              className="flex-1"
               value={layer.gradient.direction}
-              onChange={(event) =>
+              onValueChange={(direction) =>
                 onChange({
                   gradient: {
                     ...layer.gradient!,
-                    direction: event.target.value as "horizontal" | "vertical",
+                    direction: direction as "horizontal" | "vertical",
                   },
                 })
               }
             >
-              <option value="horizontal">가로 →</option>
-              <option value="vertical">세로 ↓</option>
+              <Select.Trigger aria-label="그라데이션 방향" className="flex-1">
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="horizontal">가로 →</Select.Item>
+                <Select.Item value="vertical">세로 ↓</Select.Item>
+              </Select.Content>
             </Select>
-          </label>
+          </FormField.Label>
         )}
         {!layer.gradient && (
           <div className="mt-group flex flex-wrap gap-control" aria-label="글자별 색상">
@@ -183,7 +188,7 @@ export function TextLayerEditor({
             )}
           </div>
         )}
-      </AccordionItem>
+      </EditorAccordionItem>
     </Accordion>
   );
 }

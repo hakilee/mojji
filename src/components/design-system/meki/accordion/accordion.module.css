@@ -1,0 +1,44 @@
+.content {
+  overflow: hidden;
+}
+
+.content[data-state="open"] {
+  animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content[data-state="closed"] {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+    opacity: 0;
+    transform: perspective(800px) rotateX(-4deg) translateZ(-20px);
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+    transform: perspective(800px) rotateX(0deg) translateZ(0px);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+    transform: perspective(800px) rotateX(0deg) translateZ(0px);
+  }
+  to {
+    height: 0;
+    opacity: 0;
+    transform: perspective(800px) rotateX(-4deg) translateZ(-20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+    transition: none;
+  }
+}

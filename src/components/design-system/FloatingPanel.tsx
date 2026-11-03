@@ -1,7 +1,7 @@
-import { Popover } from "@base-ui/react/popover";
 import { useRef } from "react";
 import type { ReactNode, RefObject } from "react";
-import { Button } from "./Button";
+import { Popover } from "./meki/popover";
+import { Button } from "./meki/button";
 
 export function FloatingPanel({
   id,
@@ -13,58 +13,60 @@ export function FloatingPanel({
   id: string;
   label: string;
   anchor: RefObject<HTMLElement | null>;
-  onClose: (details: Popover.Root.ChangeEventDetails) => void;
+  onClose: () => void;
   children: ReactNode;
 }) {
   const restoreFocus = useRef(true);
   return (
-    <Popover.Root
+    <Popover
       open
-      onOpenChange={(open, details) => {
-        if (open || details.reason === "focus-out") return;
-        if (
-          details.event.target instanceof Node &&
-          anchor.current?.contains(details.event.target)
-        ) {
-          details.cancel();
-          return;
-        }
-        restoreFocus.current = details.reason !== "outside-press";
-        onClose(details);
+      onOpenChange={(open) => {
+        if (!open) onClose();
       }}
     >
-      <Popover.Portal>
-        <Popover.Positioner
-          anchor={anchor}
+      <Popover.Anchor virtualRef={anchor} />
+      <Popover.Provider>
+        <Popover.Content
+          id={id}
+          aria-label={label}
           side="bottom"
           align="center"
           sideOffset={8}
           collisionPadding={12}
-          collisionAvoidance={{ side: "flip", align: "shift", fallbackAxisSide: "none" }}
-          positionMethod="fixed"
-          className="z-50"
-        >
-          <Popover.Popup
-            id={id}
-            initialFocus={false}
-            finalFocus={() =>
-              restoreFocus.current && anchor.current?.isConnected ? anchor.current : false
+          onOpenAutoFocus={(event) => event.preventDefault()}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            if (restoreFocus.current && anchor.current?.isConnected) anchor.current.focus();
+          }}
+          onFocusOutside={(event) => event.preventDefault()}
+          onEscapeKeyDown={() => {
+            restoreFocus.current = true;
+          }}
+          onPointerDownOutside={(event) => {
+            const target = event.detail.originalEvent.target;
+            if (
+              target instanceof Element &&
+              (anchor.current?.contains(target) ||
+                target.closest('#layer-stack, #editor-history, [aria-modal="true"]'))
+            ) {
+              event.preventDefault();
+              return;
             }
-            className="w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--available-height))] overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-layer-default p-inset text-fg-neutral shadow-floating outline-none transition-opacity duration-150 data-starting-style:opacity-0 motion-reduce:transition-none"
-          >
-            <div className="mb-inset flex items-center justify-between gap-control">
-              <Popover.Title className="text-label font-medium">{label}</Popover.Title>
-              <Popover.Close
-                aria-label="레이어 편집 닫기"
-                render={<Button variant="neutral" size="x-small" />}
-              >
+            restoreFocus.current = false;
+          }}
+          className="w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--radix-popover-content-available-height))] overflow-y-auto overscroll-contain rounded-xl border-neutral-200 p-3 text-sm shadow-floating outline-none"
+        >
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h2 className="font-medium">{label}</h2>
+            <Popover.Close asChild>
+              <Button variant="neutral" size="x-small" aria-label="레이어 편집 닫기">
                 닫기
-              </Popover.Close>
-            </div>
-            {children}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+              </Button>
+            </Popover.Close>
+          </div>
+          {children}
+        </Popover.Content>
+      </Popover.Provider>
+    </Popover>
   );
 }
