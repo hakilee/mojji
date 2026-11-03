@@ -50,9 +50,13 @@ Available motions: static, scale, bounce, slide, shake, roll, orbit, swing, jell
 
 Verification: `src/lib/emoji.test.ts` covers grapheme constraints, decoded gradient output and every motion's export and full-size fitting behavior; Aside covers font search/load, editing, reactions and responsive presentation. OS-level Korean input method editor (IME) and actual Slack upload still require manual acceptance.
 
-## Font-panel transitions
+## Google Fonts modal and interaction (#83)
 
-React ViewTransition fades the font panel in and out and preserves result identity during deferred searches. The app has one route, no detail navigation and no Suspense boundary, so route, shared-element and Suspense transitions do not apply. The page root stays live to keep text editing and canvas previews interactive. Unsupported browsers skip these effects; reduced-motion styles disable them.
+`FontPicker` uses the installed Base UI Dialog instead of an inline font-search disclosure. The modal shares action/input/choice/help controls, neutral surfaces, workspace corners and a semantic overlay. Its opacity transition respects reduced motion; superseded font-panel ViewTransition code and animation tokens are removed. Deferred search and keyed results keep typing immediate without document-wide snapshots.
+
+The catalog loads only on first open, and search/Korean-filter state survives dismissal and accordion collapse. Fetch its bundled JSON asset with a 15-second deadline so a failed module import cannot permanently cache a temporary catalog outage; the modal provides an in-place retry. Desktop opening focuses search; touch opening keeps the primitive's keyboard-avoiding behavior. Base UI traps Tab/Shift+Tab, locks page scrolling, dismisses on Escape/outside/close, and restores trigger focus. The current font, result counts, loading, empty and retryable error states remain accessible inside the modal. A constrained flex layout scrolls results within narrow/short viewports.
+
+Successful font selection applies the loaded family and closes the modal. Failure preserves the prior selection and permits another attempt. Closing during a request aborts its selection and removes its pending stylesheet; completion checks its lifetime before changing font, error or loading state. Local upload keeps its separate feedback and existing face lifetime. Aside verifies these paths together with segmented color/image switching, disclosure focus and actual GIF output.
 
 ## Loading indicator (#31)
 

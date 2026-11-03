@@ -5,6 +5,7 @@
 ## Roles
 
 - Layers: white workspace/panels on the cool `#f6f7f9` page.
+- Overlay: `bg-overlay` dims the editor behind a modal without changing its content colors.
 - Neutral foreground: `fg-neutral` for primary text, `fg-neutral-secondary` for supporting labels, `fg-neutral-muted` for captions. Muted text remains readable on white and neutral surfaces.
 - Neutral surfaces: `bg-neutral-weak` and its hover/pressed roles support secondary controls. `stroke-neutral` defines structure; `stroke-neutral-strong` clarifies field boundaries and hover.
 - Brand: charcoal primary actions, pale neutral selected surfaces and dark keyboard focus. Solid and weak actions have separate hover/pressed roles; disabled controls do not react to pointer states.

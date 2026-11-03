@@ -49,6 +49,7 @@
   --color-fg-disabled: var(--color-neutral-300);
   --color-fg-on-disabled-brand: var(--color-neutral-400);
   --color-bg-brand-disabled: var(--color-neutral-200);
+  --color-bg-overlay: rgb(10 10 10 / 0.32);
   --color-stroke-neutral: #e5e5e5;
   --color-stroke-neutral-strong: var(--color-neutral-300);
   --color-stroke-brand: #171717;
@@ -66,14 +67,4 @@
   --radius-workspace: 16px;
   --shadow-control: 0 1px 0 rgb(0 0 0 / 0.05);
   --shadow-floating: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --animate-font-reveal: font-reveal 160ms ease-out;
-  --animate-font-hide: font-reveal 120ms ease-in reverse;
-  @keyframes font-reveal {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
 }

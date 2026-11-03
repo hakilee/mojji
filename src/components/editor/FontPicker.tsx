@@ -1,3 +1,4 @@
+import { Dialog } from "@base-ui/react/dialog";
 import {
   Button,
   Checkbox,
@@ -6,15 +7,9 @@ import {
   Input,
   Spinner,
 } from "~/components/design-system";
-import {
-  startTransition,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-  ViewTransition,
-} from "react";
+import { startTransition, useDeferredValue, useEffect, useId, useRef, useState } from "react";
 import { fonts } from "../../lib/emoji";
+import fontCatalogUrl from "../../data/google-fonts.json?url";
 import { loadFont } from "~/lib/font-loading";
 
 export function FontPicker({
@@ -32,8 +27,12 @@ export function FontPicker({
   const [koreanOnly, setKoreanOnly] = useState(true);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
-  const [expanded, setExpanded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [remoteError, setRemoteError] = useState("");
   const [uploadedFamily, setUploadedFamily] = useState("");
+  const triggerId = useId();
+  const searchInput = useRef<HTMLInputElement>(null);
+  const pendingFont = useRef<AbortController | null>(null);
   const uploadedFace = useRef<FontFace | null>(null);
   const mounted = useRef(true);
   const search = useDeferredValue(query.trim().toLowerCase());
@@ -45,44 +44,77 @@ export function FontPicker({
     mounted.current = true;
     return () => {
       mounted.current = false;
+      pendingFont.current?.abort();
       if (uploadedFace.current) document.fonts.delete(uploadedFace.current);
     };
   }, []);
 
+  async function loadCatalog() {
+    if (catalog || catalogLoading) return;
+    setCatalogLoading(true);
+    setRemoteError("");
+    try {
+      const response = await fetch(fontCatalogUrl, { signal: AbortSignal.timeout(15000) });
+      if (!response.ok) throw new Error("font catalog unavailable");
+      const families: { family: string; korean: boolean }[] = await response.json();
+      if (mounted.current) startTransition(() => setCatalog(families));
+    } catch {
+      if (mounted.current) setRemoteError("글꼴 목록을 불러오지 못했어요. 다시 시도해 주세요.");
+    } finally {
+      if (mounted.current) setCatalogLoading(false);
+    }
+  }
+
   async function selectFont(family: string) {
+    const request = new AbortController();
+    pendingFont.current = request;
     setLoading(family);
-    setError("");
+    setRemoteError("");
     onLoading(true);
     const link = document.createElement("link");
+    request.signal.addEventListener("abort", () => link.remove(), { once: true });
+    let applied = false;
     try {
       if (!fonts.includes(family)) {
         link.rel = "stylesheet";
         link.href = `https://fonts.googleapis.com/css2?${new URLSearchParams({ family, display: "swap" })}`;
-        await new Promise<void>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            link.remove();
-            reject(new Error("timeout"));
-          }, 15000);
-          link.onload = () => {
-            clearTimeout(timeout);
-            resolve();
-          };
-          link.onerror = () => {
-            clearTimeout(timeout);
-            reject(new Error("network"));
-          };
-          document.head.append(link);
-        });
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        try {
+          await new Promise<void>((resolve, reject) => {
+            timeout = setTimeout(() => reject(new Error("timeout")), 15000);
+            request.signal.addEventListener("abort", () => reject(request.signal.reason), {
+              once: true,
+            });
+            link.onload = () => resolve();
+            link.onerror = () => reject(new Error("network"));
+            document.head.append(link);
+          });
+        } finally {
+          clearTimeout(timeout);
+          link.onload = null;
+          link.onerror = null;
+        }
       }
+      request.signal.throwIfAborted();
       const loaded = await loadFont(family, "가나다Aa");
+      request.signal.throwIfAborted();
       if (!loaded.length) throw new Error("font unavailable");
+      if (!mounted.current) return;
       onChange(family);
+      applied = true;
+      setOpen(false);
     } catch {
-      link.remove();
-      setError("글꼴을 불러오지 못했어요. 연결을 확인하거나 기본 글꼴을 선택해 주세요.");
+      if (mounted.current && !request.signal.aborted)
+        setRemoteError("글꼴을 불러오지 못했어요. 연결을 확인하고 다시 선택해 주세요.");
     } finally {
-      setLoading("");
-      onLoading(false);
+      if (!applied) link.remove();
+      if (pendingFont.current === request) {
+        pendingFont.current = null;
+        if (mounted.current) {
+          setLoading("");
+          onLoading(false);
+        }
+      }
     }
   }
 
@@ -171,94 +203,132 @@ export function FontPicker({
           </ChoiceButton>
         )}
       </div>
-      <div className="mt-inset flex items-center gap-text">
-        <Button
-          variant="neutral"
-          className="min-w-0 flex-1"
-          aria-expanded={expanded}
-          aria-controls="font-search-panel"
-          onClick={async () => {
-            startTransition(() => setExpanded((value) => !value));
-            if (catalog || catalogLoading || expanded) return;
-            setCatalogLoading(true);
+      <Dialog.Root
+        open={open}
+        triggerId={triggerId}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen);
+          if (nextOpen) {
             setError("");
-            try {
-              const { default: families } = await import("../../data/google-fonts.json");
-              startTransition(() => setCatalog(families));
-            } catch {
-              setError("글꼴 목록을 불러오지 못했어요. Google Fonts를 닫았다가 다시 열어 주세요.");
-            } finally {
-              setCatalogLoading(false);
-            }
-          }}
+            setRemoteError("");
+            void loadCatalog();
+          } else if (pendingFont.current) {
+            pendingFont.current.abort();
+            pendingFont.current = null;
+            setLoading("");
+            onLoading(false);
+          }
+        }}
+      >
+        <Dialog.Trigger
+          id={triggerId}
+          disabled={!!loading}
+          render={<Button variant="neutral" className="mt-inset w-full" />}
         >
-          <span className="flex w-full items-center justify-between gap-control">
-            Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
-          </span>
-        </Button>
-        <HelpBubble label="Google Fonts">선택한 글꼴만 Google에서 불러옵니다.</HelpBubble>
-      </div>
-      {expanded && (
-        <ViewTransition default="none" enter="font-reveal" exit="font-hide">
-          <div className="mt-inset" id="font-search-panel" aria-busy={catalogLoading}>
-            <label className="sr-only" htmlFor="font-search">
-              Google Fonts 검색
-            </label>
-            <Input
-              id="font-search"
-              type="search"
-              name="font-search"
-              autoComplete="off"
-              spellCheck={false}
-              placeholder="예: Gaegu…"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            <div className="mt-inset">
-              <Checkbox
-                label="한글 지원"
-                checked={koreanOnly}
-                onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
-              />
-            </div>
-            <div
-              className="mt-inset max-h-60 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
-              aria-label="검색 결과"
+          Google Fonts
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <Dialog.Backdrop className="fixed inset-0 z-50 bg-bg-overlay transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none" />
+          <Dialog.Viewport className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-group">
+            <Dialog.Popup
+              aria-modal="true"
+              initialFocus={(type) => (type === "touch" ? true : searchInput.current)}
+              className="flex h-160 max-h-[calc(100dvh-32px)] w-full max-w-xl min-w-0 flex-col gap-inset overflow-y-auto overscroll-contain rounded-workspace border border-stroke-neutral bg-bg-layer-default p-panel text-fg-neutral shadow-floating outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none max-[480px]:p-group"
             >
-              {results.slice(0, 40).map(({ family }) => (
-                <ChoiceButton
-                  className="flex w-full items-center justify-between gap-control text-left wrap-anywhere"
-                  key={family}
-                  disabled={!!loading}
-                  selected={font === family}
-                  onClick={() => void selectFont(family)}
+              <div className="flex shrink-0 items-center justify-between gap-control">
+                <div className="flex min-w-0 items-center gap-text">
+                  <Dialog.Title className="text-body font-semibold">Google Fonts</Dialog.Title>
+                  <HelpBubble label="Google Fonts">선택한 글꼴만 Google에서 불러옵니다.</HelpBubble>
+                </div>
+                <Dialog.Close
+                  aria-label="Google Fonts 닫기"
+                  render={<Button variant="neutral" size="small" />}
                 >
-                  <ViewTransition default="none" update="auto">
-                    <span className="text-caption">{family}</span>
-                  </ViewTransition>
-                  <span className="inline-flex shrink-0 items-center gap-control text-caption">
-                    {loading === family && <Spinner />}
-                    {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
-                  </span>
-                </ChoiceButton>
-              ))}
-              {catalog && !results.length && (
-                <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
+                  닫기
+                </Dialog.Close>
+              </div>
+              <Dialog.Description className="shrink-0 text-caption text-fg-neutral-muted wrap-anywhere">
+                현재 글꼴 · {font}
+              </Dialog.Description>
+              <label className="sr-only" htmlFor="font-search">
+                Google Fonts 검색
+              </label>
+              <Input
+                id="font-search"
+                ref={searchInput}
+                className="shrink-0"
+                type="search"
+                name="font-search"
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="예: Gaegu…"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              <div className="shrink-0">
+                <Checkbox
+                  label="한글 지원"
+                  checked={koreanOnly}
+                  onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
+                />
+              </div>
+              <div
+                className="min-h-24 flex-1 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
+                role="group"
+                aria-label="검색 결과"
+                aria-busy={catalogLoading}
+              >
+                {results.slice(0, 40).map(({ family }) => (
+                  <ChoiceButton
+                    className="flex w-full items-center justify-between gap-control text-left wrap-anywhere"
+                    key={family}
+                    disabled={!!loading}
+                    aria-busy={loading === family}
+                    selected={font === family}
+                    onClick={() => void selectFont(family)}
+                  >
+                    <span className="text-label">{family}</span>
+                    <span className="inline-flex shrink-0 items-center gap-control text-caption">
+                      {loading === family && <Spinner />}
+                      {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
+                    </span>
+                  </ChoiceButton>
+                ))}
+                {catalog && !results.length && (
+                  <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
+                )}
+              </div>
+              <p
+                className="flex shrink-0 items-center gap-control text-caption text-fg-neutral-muted"
+                role="status"
+              >
+                {(catalogLoading || loading) && <Spinner />}
+                {loading
+                  ? `${loading} 불러오는 중…`
+                  : catalogLoading
+                    ? "글꼴 목록 불러오는 중…"
+                    : !catalog
+                      ? ""
+                      : results.length > 40
+                        ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
+                        : `${results.length}개 글꼴`}
+              </p>
+              {remoteError && (
+                <div className="shrink-0 space-y-control">
+                  <p role="alert" className="text-caption text-fg-critical">
+                    {remoteError}
+                  </p>
+                  {!catalog && (
+                    <Button variant="white" size="small" onClick={() => void loadCatalog()}>
+                      목록 다시 불러오기
+                    </Button>
+                  )}
+                </div>
               )}
-            </div>
-            <p className="mt-2 flex items-center gap-2 text-xs text-fg-neutral-muted" role="status">
-              {catalogLoading && <Spinner />}
-              {catalogLoading
-                ? "글꼴 목록 불러오는 중…"
-                : !catalog
-                  ? ""
-                  : results.length > 40
-                    ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
-                    : `${results.length}개 글꼴`}
-            </p>
-          </div>
-        </ViewTransition>
-      )}
+            </Dialog.Popup>
+          </Dialog.Viewport>
+        </Dialog.Portal>
+      </Dialog.Root>
       {!fonts.includes(font) && (
         <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {font}</p>
       )}
