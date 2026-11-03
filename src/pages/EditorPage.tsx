@@ -369,11 +369,11 @@ export function EditorPage() {
               }}
             />
             <div className="mt-group min-w-0">
-              <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak shadow-control transition-[border-color,box-shadow] duration-150 hover:border-stroke-neutral-strong focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 has-aria-invalid:border-fg-critical has-aria-invalid:ring-fg-critical/20 motion-reduce:transition-none">
+              <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak transition-colors duration-150 hover:not-focus-within:border-stroke-neutral-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-stroke-brand has-aria-invalid:border-fg-critical has-aria-invalid:outline-fg-critical motion-reduce:transition-none">
                 <div className="relative">
                   <textarea
                     ref={textInput}
-                    className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] block min-h-24 w-full resize-none overflow-auto border-0 bg-transparent p-inset text-center text-xl leading-[1.5]"
+                    className="outline-none [-webkit-tap-highlight-color:transparent] block min-h-24 w-full resize-none overflow-auto border-0 bg-transparent p-inset text-center text-xl leading-[1.5]"
                     id="text"
                     name="emoji-text"
                     autoComplete="off"
