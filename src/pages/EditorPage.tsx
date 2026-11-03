@@ -169,16 +169,16 @@ export function EditorPage() {
                     spellCheck={false}
                   />
                 </div>
-                <div
-                  className="flex justify-between gap-2 px-4 py-3 text-caption text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
-                  id="text-count"
-                >
-                  <span>{settings.font}</span>
-                  <span>
-                    {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
-                    {settings.text.split("\n").length}/3줄
-                  </span>
-                </div>
+              </div>
+              <div
+                className="mt-control flex justify-between gap-control px-1 text-caption text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
+                id="text-count"
+              >
+                <span>{settings.font}</span>
+                <span>
+                  {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
+                  {settings.text.split("\n").length}/3줄
+                </span>
               </div>
               {invalid && (
                 <p id="text-error" className="mt-2 text-caption text-fg-critical">
