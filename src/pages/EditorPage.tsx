@@ -20,6 +20,7 @@ import {
   validateText,
 } from "../lib/emoji";
 import type { Settings } from "../lib/emoji";
+import { LayerEditor } from "~/components/editor/LayerEditor";
 import { FontPicker } from "~/components/editor/FontPicker";
 
 export function EditorPage() {
@@ -30,12 +31,21 @@ export function EditorPage() {
   const [fontLoading, setFontLoading] = useState(false);
   const [draft, setDraft] = useState(initialSettings.text);
   const [reacted, setReacted] = useState(false);
+  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
+  const dragging = useRef<{
+    id: string;
+    clientX: number;
+    clientY: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const canvas = useRef<HTMLCanvasElement>(null);
   const smallCanvas = useRef<HTMLCanvasElement>(null);
-  const invalid = validateText(settings.text);
+  const invalid =
+    settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
   function update(patch: Partial<Settings>) {
     setSettings((current) => ({ ...current, ...patch }));
     setStatus("");
@@ -200,12 +210,40 @@ export function EditorPage() {
             </div>
           </section>
           <section aria-label="이모지 설정" className="min-w-0 pt-heading-slot max-[1000px]:pt-0">
-            <Accordion className="space-y-control" multiple keepMounted defaultValue={["motion"]}>
+            <Accordion
+              className="space-y-control"
+              multiple
+              keepMounted
+              defaultValue={["motion"]}
+              onValueChange={(values) => {
+                if (!values.includes("layout")) {
+                  setSelectedLayer(null);
+                  dragging.current = null;
+                }
+              }}
+            >
               <AccordionItem value="font" title="글꼴">
                 <FontPicker
                   font={settings.font}
                   onChange={(font) => update({ font })}
                   onLoading={setFontLoading}
+                />
+              </AccordionItem>
+              <AccordionItem value="layout" title="이미지 · 배치">
+                <LayerEditor
+                  images={settings.images ?? []}
+                  textLayout={settings.textLayout}
+                  selectedId={selectedLayer}
+                  onSelect={setSelectedLayer}
+                  onImagesChange={(images) => update({ images })}
+                  onAdd={(images) => {
+                    setSettings((current) => ({
+                      ...current,
+                      images: [...(current.images ?? []), ...images].slice(0, 12),
+                    }));
+                    setStatus("");
+                  }}
+                  onTextLayoutChange={(textLayout) => update({ textLayout })}
                 />
               </AccordionItem>
               <AccordionItem value="color" title="색상">
@@ -358,7 +396,10 @@ export function EditorPage() {
               </AccordionItem>
             </Accordion>
           </section>
-          <section className="flex min-w-0 flex-col" aria-label="미리보기">
+          <section
+            className="flex min-w-0 flex-col min-[1001px]:sticky min-[1001px]:top-section"
+            aria-label="미리보기"
+          >
             <h2 className="min-h-heading-slot text-body font-semibold">미리보기</h2>
             <div className="grid flex-1 grid-rows-2">
               <section
@@ -434,7 +475,78 @@ export function EditorPage() {
                 className="flex min-h-48 items-center justify-center py-page"
               >
                 <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
-                  <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
+                  <canvas
+                    ref={canvas}
+                    width={128}
+                    height={128}
+                    aria-label="이모지 확대 미리보기"
+                    className={
+                      selectedLayer
+                        ? "touch-none cursor-move rounded-control ring-2 ring-stroke-focus/30"
+                        : undefined
+                    }
+                    onPointerDown={(event) => {
+                      if (!selectedLayer || event.button !== 0) return;
+                      const layer =
+                        selectedLayer === "text"
+                          ? (settings.textLayout ?? { x: 64, y: 64 })
+                          : settings.images?.find((image) => image.id === selectedLayer);
+                      if (!layer) return;
+                      dragging.current = {
+                        id: selectedLayer,
+                        clientX: event.clientX,
+                        clientY: event.clientY,
+                        x: layer.x,
+                        y: layer.y,
+                      };
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                    }}
+                    onPointerMove={(event) => {
+                      if (!dragging.current || !selectedLayer) return;
+                      const drag = dragging.current;
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const x = Math.round(
+                        Math.max(
+                          0,
+                          Math.min(
+                            128,
+                            drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
+                          ),
+                        ),
+                      );
+                      const y = Math.round(
+                        Math.max(
+                          0,
+                          Math.min(
+                            128,
+                            drag.y + ((event.clientY - drag.clientY) * 128) / rect.height,
+                          ),
+                        ),
+                      );
+                      setSettings((current) =>
+                        drag.id === "text"
+                          ? {
+                              ...current,
+                              textLayout: { ...(current.textLayout ?? { scale: 1 }), x, y },
+                            }
+                          : {
+                              ...current,
+                              images: current.images?.map((image) =>
+                                image.id === drag.id ? { ...image, x, y } : image,
+                              ),
+                            },
+                      );
+                      setStatus("");
+                    }}
+                    onPointerUp={(event) => {
+                      dragging.current = null;
+                      if (event.currentTarget.hasPointerCapture(event.pointerId))
+                        event.currentTarget.releasePointerCapture(event.pointerId);
+                    }}
+                    onLostPointerCapture={() => {
+                      dragging.current = null;
+                    }}
+                  />
                 </div>
               </section>
             </div>
