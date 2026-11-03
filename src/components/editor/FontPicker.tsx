@@ -14,11 +14,15 @@ import { loadFont } from "~/lib/font-loading";
 
 export function FontPicker({
   font,
+  fontLabel,
+  retainedFonts,
   onChange,
   onLoading,
 }: {
   font: string;
-  onChange: (font: string) => void;
+  fontLabel?: string;
+  retainedFonts: ReadonlySet<string>;
+  onChange: (font: string, label?: string) => void;
   onLoading: (loading: boolean) => void;
 }) {
   const [catalog, setCatalog] = useState<{ family: string; korean: boolean }[] | null>(null);
@@ -29,11 +33,11 @@ export function FontPicker({
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [remoteError, setRemoteError] = useState("");
-  const [uploadedFamily, setUploadedFamily] = useState("");
+  const [uploadedFont, setUploadedFont] = useState<{ family: string; label: string } | null>(null);
   const triggerId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
   const pendingFont = useRef<AbortController | null>(null);
-  const uploadedFace = useRef<FontFace | null>(null);
+  const uploadedFaces = useRef(new Map<string, FontFace>());
   const mounted = useRef(true);
   const search = useDeferredValue(query.trim().toLowerCase());
   const results = (catalog ?? []).filter(
@@ -42,12 +46,23 @@ export function FontPicker({
 
   useEffect(() => {
     mounted.current = true;
+    const faces = uploadedFaces.current;
     return () => {
       mounted.current = false;
       pendingFont.current?.abort();
-      if (uploadedFace.current) document.fonts.delete(uploadedFace.current);
+      for (const face of faces.values()) document.fonts.delete(face);
+      faces.clear();
     };
   }, []);
+
+  useEffect(() => {
+    for (const [family, face] of uploadedFaces.current) {
+      if (family !== uploadedFont?.family && !retainedFonts.has(family)) {
+        document.fonts.delete(face);
+        uploadedFaces.current.delete(family);
+      }
+    }
+  }, [retainedFonts, uploadedFont]);
 
   async function loadCatalog() {
     if (catalog || catalogLoading) return;
@@ -160,14 +175,14 @@ export function FontPicker({
             onLoading(true);
             try {
               if (!/\.(?:otf|ttf|woff2?)$/i.test(file.name)) throw new Error("format");
-              const family = `${file.name.replace(/["\\\r\n]/g, "")} (업로드)`;
-              const face = await new FontFace(`"${family}"`, await file.arrayBuffer()).load();
+              const family = `slackmoji-upload-${crypto.randomUUID()}`;
+              const label = `${file.name} (업로드)`;
+              const face = await new FontFace(family, await file.arrayBuffer()).load();
               if (!mounted.current) return;
               document.fonts.add(face);
-              if (uploadedFace.current) document.fonts.delete(uploadedFace.current);
-              uploadedFace.current = face;
-              setUploadedFamily(family);
-              onChange(family);
+              uploadedFaces.current.set(family, face);
+              setUploadedFont({ family, label });
+              onChange(family, label);
             } catch {
               if (mounted.current)
                 setError(
@@ -189,17 +204,17 @@ export function FontPicker({
             <Spinner /> 폰트 불러오는 중…
           </p>
         )}
-        {uploadedFamily && (
+        {uploadedFont && (
           <ChoiceButton
             disabled={!!loading}
-            selected={font === uploadedFamily}
+            selected={font === uploadedFont.family}
             className="w-full text-left wrap-anywhere"
             onClick={() => {
               setError("");
-              onChange(uploadedFamily);
+              onChange(uploadedFont.family, uploadedFont.label);
             }}
           >
-            {uploadedFamily}
+            {uploadedFont.label}
           </ChoiceButton>
         )}
       </div>
@@ -248,7 +263,7 @@ export function FontPicker({
                 </Dialog.Close>
               </div>
               <Dialog.Description className="shrink-0 text-caption text-fg-neutral-muted wrap-anywhere">
-                현재 글꼴 · {font}
+                현재 글꼴 · {fontLabel ?? font}
               </Dialog.Description>
               <label className="sr-only" htmlFor="font-search">
                 Google Fonts 검색
@@ -330,7 +345,7 @@ export function FontPicker({
         </Dialog.Portal>
       </Dialog.Root>
       {!fonts.includes(font) && (
-        <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {font}</p>
+        <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {fontLabel ?? font}</p>
       )}
       {error && (
         <p role="alert" className="mt-2 text-xs text-fg-critical">

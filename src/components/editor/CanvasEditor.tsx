@@ -115,9 +115,11 @@ export function CanvasEditor({
     <div className="space-y-inset">
       <div
         role="group"
+        id="work-canvas"
+        tabIndex={0}
         aria-label="작업 캔버스"
         aria-busy={rendering}
-        className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px]"
+        className="relative aspect-square overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           const button = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]");
@@ -233,11 +235,6 @@ export function CanvasEditor({
           const id = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-layer]")
             ?.dataset.layer;
           if (!id) return;
-          if (event.key === "Delete" && id !== "text") {
-            event.preventDefault();
-            onDelete(id);
-            return;
-          }
           const layer =
             id === "text"
               ? (settings.textLayout ?? { x: 64, y: 64 })
@@ -331,6 +328,7 @@ export function CanvasEditor({
           textLayout={settings.textLayout}
           selectedId={selectedId}
           onClose={() => onDismiss(selectedId)}
+          onDelete={onDelete}
           onImagesChange={onImagesChange}
           onTextLayoutChange={onTextLayoutChange}
         />

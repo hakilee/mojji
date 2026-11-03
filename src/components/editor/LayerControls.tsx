@@ -7,6 +7,7 @@ export function LayerControls({
   selectedId,
   anchor,
   onClose,
+  onDelete,
   onImagesChange,
   onTextLayoutChange,
 }: {
@@ -15,6 +16,7 @@ export function LayerControls({
   selectedId: string | null;
   anchor: RefObject<HTMLElement | null>;
   onClose: () => void;
+  onDelete: (id: string) => void;
   onImagesChange: (images: ImageLayer[]) => void;
   onTextLayoutChange: (layout: Settings["textLayout"]) => void;
 }) {
@@ -35,7 +37,7 @@ export function LayerControls({
         if (
           details.reason === "outside-press" &&
           details.event.target instanceof Element &&
-          details.event.target.closest("#layer-settings")
+          details.event.target.closest("#layer-settings, #editor-history")
         ) {
           details.cancel();
           return;
@@ -162,10 +164,7 @@ export function LayerControls({
               variant="white"
               size="small"
               className="w-full"
-              onClick={() => {
-                onImagesChange(images.filter((image) => image.id !== selectedId));
-                onClose();
-              }}
+              onClick={() => onDelete(selected.id)}
             >
               <span className="text-fg-critical">선택 이미지 삭제</span>
             </Button>
@@ -187,6 +186,14 @@ export function LayerControls({
               onClick={() => onTextLayoutChange(undefined)}
             >
               텍스트 배치 초기화
+            </Button>
+            <Button
+              variant="white"
+              size="small"
+              className="w-full"
+              onClick={() => onDelete("text")}
+            >
+              <span className="text-fg-critical">선택 텍스트 삭제</span>
             </Button>
           </>
         )}

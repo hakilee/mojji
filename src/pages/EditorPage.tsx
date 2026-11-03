@@ -11,12 +11,11 @@ import {
   Select,
   Spinner,
 } from "~/components/design-system";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
   constrainText,
-  initialSettings,
   motions,
   motionFrameDelays,
   maxTextCharacters,
@@ -28,16 +27,17 @@ import { CanvasEditor } from "~/components/editor/CanvasEditor";
 import { LayerEditor } from "~/components/editor/LayerEditor";
 import { FontPicker } from "~/components/editor/FontPicker";
 import { loadFont } from "~/lib/font-loading";
+import { editorHistoryReducer, initialEditorHistory } from "~/lib/editor-history";
 
 export function EditorPage() {
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
-  const [settings, setSettings] = useState(initialSettings);
+  const [history, dispatch] = useReducer(editorHistoryReducer, initialEditorHistory);
+  const { settings, selectedLayer } = history.present;
   const [fontLoading, setFontLoading] = useState(false);
-  const [draft, setDraft] = useState(initialSettings.text);
+  const [draft, setDraft] = useState<string | null>(null);
   const [reacted, setReacted] = useState(false);
-  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
   const [openPanels, setOpenPanels] = useState<string[]>(["motion"]);
   const textInput = useRef<HTMLTextAreaElement>(null);
   const composing = useRef(false);
@@ -46,16 +46,65 @@ export function EditorPage() {
   const [renderAttempt, setRenderAttempt] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const smallCanvas = useRef<HTMLCanvasElement>(null);
+  const textValue = draft ?? settings.text;
+  const retainedFonts = new Set(
+    [...history.past, history.present, ...history.future].map((snapshot) => snapshot.settings.font),
+  );
   const invalid =
     settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
   function update(patch: Partial<Settings>) {
-    setSettings((current) => ({ ...current, ...patch }));
+    dispatch({ type: "change", patch });
     setStatus("");
   }
 
   function selectLayer(id: string | null) {
-    setSelectedLayer(id);
+    dispatch({ type: "select", id });
   }
+
+  function deleteLayer(id: string) {
+    dispatch({ type: "delete", id });
+    setStatus(
+      id === "text"
+        ? "텍스트를 삭제했어요. 실행 취소로 복구할 수 있어요."
+        : "이미지를 삭제했어요. 실행 취소로 복구할 수 있어요.",
+    );
+    requestAnimationFrame(() => document.getElementById("work-canvas")?.focus());
+  }
+
+  function restore(type: "undo" | "redo") {
+    if (
+      fontLoading ||
+      composing.current ||
+      !(type === "undo" ? history.past : history.future).length
+    )
+      return;
+    dispatch({ type });
+    setStatus(type === "undo" ? "실행을 취소했어요." : "다시 실행했어요.");
+    requestAnimationFrame(() => {
+      const surface = document.getElementById("work-canvas");
+      (
+        surface?.querySelector<HTMLElement>('[data-layer][aria-pressed="true"]') ?? surface
+      )?.focus();
+    });
+  }
+
+  useEffect(() => {
+    const endPointer = () => dispatch({ type: "end-group", group: "pointer" });
+    const endKeyboard = (event: KeyboardEvent) => {
+      if (event.key.startsWith("Arrow")) dispatch({ type: "end-group", group: "keyboard" });
+    };
+    const endAll = () => dispatch({ type: "end-group" });
+    window.addEventListener("pointerup", endPointer);
+    window.addEventListener("pointercancel", endPointer);
+    window.addEventListener("keyup", endKeyboard);
+    window.addEventListener("blur", endAll);
+    return () => {
+      window.removeEventListener("pointerup", endPointer);
+      window.removeEventListener("pointercancel", endPointer);
+      window.removeEventListener("keyup", endKeyboard);
+      window.removeEventListener("blur", endAll);
+    };
+  }, []);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -150,6 +199,69 @@ export function EditorPage() {
         id="editor-main"
         tabIndex={-1}
         className="rounded-workspace border border-stroke-neutral bg-bg-layer-default shadow-control"
+        onPointerDownCapture={(event) => {
+          if (
+            event.button === 0 &&
+            (event.target as HTMLElement).closest('#work-canvas [data-layer], input[type="range"]')
+          )
+            dispatch({ type: "begin-group", group: "pointer" });
+        }}
+        onKeyDownCapture={(event) => {
+          if (
+            !event.metaKey &&
+            !event.ctrlKey &&
+            event.key.startsWith("Arrow") &&
+            (event.target as HTMLElement).closest(
+              '#work-canvas [data-layer], input[type="range"], [role="radio"]',
+            )
+          )
+            dispatch({ type: "begin-group", group: "keyboard" });
+        }}
+        onFocusCapture={(event) => {
+          if (
+            event.target.matches(
+              'textarea, input:not([type="range"]):not([type="file"]):not([type="checkbox"]):not([type="radio"])',
+            )
+          )
+            dispatch({ type: "begin-group", group: "input" });
+        }}
+        onBlurCapture={() => {
+          dispatch({ type: "end-group", group: "input" });
+          dispatch({ type: "end-group", group: "keyboard" });
+        }}
+        onKeyDown={(event) => {
+          const target = event.target as HTMLElement;
+          if (
+            event.defaultPrevented ||
+            event.nativeEvent.isComposing ||
+            composing.current ||
+            fontLoading ||
+            target.closest(
+              '[aria-modal="true"], textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"], input:not([type="range"]):not([type="color"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"])',
+            )
+          )
+            return;
+          const key = event.key.toLowerCase();
+          if (
+            !event.altKey &&
+            (event.metaKey || event.ctrlKey) &&
+            (key === "z" || (event.ctrlKey && key === "y"))
+          ) {
+            event.preventDefault();
+            restore(key === "y" || event.shiftKey ? "redo" : "undo");
+          } else if (
+            !event.metaKey &&
+            !event.ctrlKey &&
+            !event.altKey &&
+            selectedLayer &&
+            (event.key === "Backspace" || event.key === "Delete") &&
+            !target.closest("input, select") &&
+            target.closest('#work-canvas, [aria-label="레이어 선택"], #layer-controls')
+          ) {
+            event.preventDefault();
+            deleteLayer(selectedLayer);
+          }
+        }}
       >
         <header className="flex items-center gap-control p-panel max-[760px]:p-group">
           <a
@@ -160,6 +272,57 @@ export function EditorPage() {
             <img src="/logo.svg" width="48" height="42" alt="" />
           </a>
           <h1 className="text-title font-semibold tracking-[-0.5px]">슬랙모찌</h1>
+          <div
+            id="editor-history"
+            className="ml-auto flex gap-control"
+            role="group"
+            aria-label="편집 기록"
+          >
+            <Button
+              variant="white"
+              svgOnly
+              aria-label="실행 취소"
+              aria-keyshortcuts="Meta+Z Control+Z"
+              title="실행 취소 (⌘/Ctrl+Z)"
+              disabled={!history.past.length || fontLoading || draft !== null}
+              onClick={() => restore("undo")}
+            >
+              <svg
+                aria-hidden="true"
+                className="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m9 5-5 5 5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)" />
+              </svg>
+            </Button>
+            <Button
+              variant="white"
+              svgOnly
+              aria-label="다시 실행"
+              aria-keyshortcuts="Meta+Shift+Z Control+Shift+Z Control+Y"
+              title="다시 실행 (⌘/Ctrl+Shift+Z, Ctrl+Y)"
+              disabled={!history.future.length || fontLoading || draft !== null}
+              onClick={() => restore("redo")}
+            >
+              <svg
+                aria-hidden="true"
+                className="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(0 -2)" />
+              </svg>
+            </Button>
+          </div>
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
@@ -167,7 +330,8 @@ export function EditorPage() {
               <h2 className="text-body font-semibold">캔버스</h2>
               <HelpBubble label="캔버스 조작">
                 클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
-                해제하세요.
+                해제하세요. 선택한 레이어는 Backspace나 Delete로 삭제할 수 있어요. ⌘/Ctrl+Z로 실행
+                취소, ⌘/Ctrl+Shift+Z로 다시 실행하세요.
               </HelpBubble>
             </div>
             <CanvasEditor
@@ -185,30 +349,14 @@ export function EditorPage() {
               }}
               selectedId={selectedLayer}
               onSelect={selectLayer}
-              onDismiss={(id) => setSelectedLayer((current) => (current === id ? null : current))}
+              onDismiss={(id) => dispatch({ type: "deselect", id })}
               onImagesChange={(images) => update({ images })}
               onTextLayoutChange={(textLayout) => update({ textLayout })}
               onMove={(id, x, y) => {
-                setSettings((current) =>
-                  id === "text"
-                    ? { ...current, textLayout: { ...(current.textLayout ?? { scale: 1 }), x, y } }
-                    : {
-                        ...current,
-                        images: current.images?.map((image) =>
-                          image.id === id ? { ...image, x, y } : image,
-                        ),
-                      },
-                );
+                dispatch({ type: "move", id, x, y });
                 setStatus("");
               }}
-              onDelete={(id) => {
-                setSettings((current) => ({
-                  ...current,
-                  images: current.images?.filter((image) => image.id !== id),
-                }));
-                setSelectedLayer(null);
-                setStatus("");
-              }}
+              onDelete={deleteLayer}
               onEditText={() => {
                 selectLayer("text");
                 textInput.current?.focus();
@@ -232,17 +380,18 @@ export function EditorPage() {
                     aria-label="이모지 텍스트"
                     aria-describedby={invalid ? "text-error text-count" : "text-count"}
                     aria-invalid={!!invalid}
-                    value={draft}
+                    value={textValue}
                     style={{
                       fontFamily: `"${settings.font}"`,
                     }}
                     onCompositionStart={() => {
                       composing.current = true;
+                      setDraft(settings.text);
                     }}
                     onCompositionEnd={(event) => {
                       composing.current = false;
                       const text = constrainText(event.currentTarget.value);
-                      setDraft(text);
+                      setDraft(null);
                       update({ text, characterColors: undefined });
                       if (text !== event.currentTarget.value)
                         setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
@@ -253,12 +402,12 @@ export function EditorPage() {
                         return;
                       }
                       const text = constrainText(event.target.value);
-                      setDraft(text);
+                      setDraft(null);
                       update({ text, characterColors: undefined });
                       if (text !== event.target.value)
                         setStatus(`최대 ${maxTextCharacters}자, 3줄까지 입력할 수 있어요.`);
                     }}
-                    rows={Math.max(1, draft.split("\n").length)}
+                    rows={Math.max(1, textValue.split("\n").length)}
                     wrap="off"
                     spellCheck={false}
                   />
@@ -268,7 +417,7 @@ export function EditorPage() {
                 className="mt-control flex justify-between gap-control px-1 text-caption text-fg-neutral-muted tabular-nums [&>span:first-child]:truncate [&>span:last-child]:shrink-0"
                 id="text-count"
               >
-                <span>{settings.font}</span>
+                <span>{settings.fontLabel ?? settings.font}</span>
                 <span>
                   {textCharacters(settings.text).length}/{maxTextCharacters} ·{" "}
                   {settings.text.split("\n").length}/3줄
@@ -294,20 +443,20 @@ export function EditorPage() {
               <AccordionItem id="font-settings" value="font" title="글꼴">
                 <FontPicker
                   font={settings.font}
-                  onChange={(font) => update({ font })}
+                  fontLabel={settings.fontLabel}
+                  retainedFonts={retainedFonts}
+                  onChange={(font, fontLabel) => update({ font, fontLabel })}
                   onLoading={setFontLoading}
                 />
               </AccordionItem>
               <AccordionItem id="layer-settings" value="layout" title="이미지 · 배치">
                 <LayerEditor
                   images={settings.images ?? []}
+                  hasText={!!settings.text.trim()}
                   selectedId={selectedLayer}
                   onSelect={selectLayer}
                   onAdd={(images) => {
-                    setSettings((current) => ({
-                      ...current,
-                      images: [...(current.images ?? []), ...images].slice(0, 12),
-                    }));
+                    dispatch({ type: "add-images", images });
                     setStatus("");
                   }}
                 />

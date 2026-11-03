@@ -5,11 +5,13 @@ import { loadImage } from "~/lib/image-upload";
 
 export function LayerEditor({
   images,
+  hasText,
   selectedId,
   onSelect,
   onAdd,
 }: {
   images: ImageLayer[];
+  hasText: boolean;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onAdd: (images: ImageLayer[]) => void;
@@ -79,7 +81,7 @@ export function LayerEditor({
       <div className="space-y-control" role="group" aria-label="레이어 선택">
         {[
           ...images.filter((image) => !image.behindText).toReversed(),
-          "text" as const,
+          ...(hasText ? ["text" as const] : []),
           ...images.filter((image) => image.behindText).toReversed(),
         ].map((image) =>
           image === "text" ? (

@@ -32,6 +32,7 @@ export type Settings = {
   images?: ImageLayer[];
   textLayout?: { x: number; y: number; scale: number };
   font: string;
+  fontLabel?: string;
   color: string;
   gradient?: { end: string; direction: "horizontal" | "vertical" };
   characterColors?: Record<number, string>;
