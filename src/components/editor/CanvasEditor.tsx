@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
 import type { ImageLayer, Settings } from "~/lib/emoji";
+import { Button } from "~/components/design-system";
 
 export function CanvasEditor({
   settings,
@@ -286,21 +287,10 @@ export function CanvasEditor({
         </p>
       )}
       <div className="grid grid-cols-2 gap-control">
-        <button
-          type="button"
-          onClick={onEditText}
-          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
-        >
-          텍스트 편집
-        </button>
-        <button
-          type="button"
-          onClick={onAddImage}
-          disabled={(settings.images?.length ?? 0) >= 12}
-          className="min-h-control-size cursor-pointer rounded-control border border-stroke-neutral text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed disabled:text-fg-disabled"
-        >
+        <Button onClick={onEditText}>텍스트 편집</Button>
+        <Button onClick={onAddImage} disabled={(settings.images?.length ?? 0) >= 12}>
           이미지 추가
-        </button>
+        </Button>
       </div>
     </div>
   );

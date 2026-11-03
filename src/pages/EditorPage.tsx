@@ -2,10 +2,13 @@ import { LayerControls } from "~/components/editor/LayerControls";
 import {
   Accordion,
   AccordionItem,
+  Button,
   Checkbox,
+  ChoiceButton,
   ColorPicker,
   MotionIcon,
   SegmentedControl,
+  Select,
   Spinner,
 } from "~/components/design-system";
 import { useEffect, useRef, useState } from "react";
@@ -126,7 +129,7 @@ export function EditorPage() {
   return (
     <div className="mx-auto max-w-[1200px] px-page py-section max-[760px]:px-group max-[760px]:py-group">
       <a
-        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
+        className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
         href="#editor-main"
       >
         편집기로 건너뛰기
@@ -134,11 +137,11 @@ export function EditorPage() {
       <main
         id="editor-main"
         tabIndex={-1}
-        className="rounded-workspace border border-stroke-neutral bg-bg-layer-default"
+        className="rounded-workspace border border-stroke-neutral bg-bg-layer-default shadow-control"
       >
         <header className="flex items-center gap-control p-panel max-[760px]:p-group">
           <a
-            className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stroke-focus"
+            className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"
             aria-label="슬랙모찌 홈"
           >
@@ -196,7 +199,7 @@ export function EditorPage() {
               />
             </div>
             <div className="mt-group min-w-0">
-              <div className="overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
+              <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak shadow-control transition-[border-color,box-shadow] duration-150 hover:border-stroke-neutral-strong focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 has-aria-invalid:border-fg-critical has-aria-invalid:ring-fg-critical/20 motion-reduce:transition-none">
                 <div className="relative">
                   <textarea
                     ref={textInput}
@@ -329,10 +332,10 @@ export function EditorPage() {
                   />
                 </div>
                 {settings.gradient && (
-                  <label className="mt-group flex items-center gap-3 text-caption [&>select]:w-auto [&>select]:flex-1">
+                  <label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
                     방향
-                    <select
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
+                    <Select
+                      className="flex-1"
                       value={settings.gradient.direction}
                       onChange={(event) =>
                         update({
@@ -345,7 +348,7 @@ export function EditorPage() {
                     >
                       <option value="horizontal">가로 →</option>
                       <option value="vertical">세로 ↓</option>
-                    </select>
+                    </Select>
                   </label>
                 )}
                 {!settings.gradient && (
@@ -377,29 +380,27 @@ export function EditorPage() {
                 </div>
               </AccordionItem>
               <AccordionItem value="motion" title="효과">
-                <div className="grid grid-cols-3 gap-control [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-control [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-control [&>button]:min-h-20 [&>button]:py-group [&>button]:text-caption [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
+                <div className="grid grid-cols-3 gap-control">
                   {Object.entries(motions).map(([motion, label]) => (
-                    <button
-                      className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
+                    <ChoiceButton
+                      className="flex flex-col items-center gap-control"
                       key={motion}
-                      type="button"
-                      aria-pressed={settings.motion === motion}
+                      selected={settings.motion === motion}
                       onClick={() => update({ motion: motion as Settings["motion"] })}
                     >
                       <MotionIcon motion={motion as Settings["motion"]} />
-                      {label}
-                    </button>
+                      <span className="text-caption">{label}</span>
+                    </ChoiceButton>
                   ))}
                 </div>
                 <fieldset
                   disabled={settings.motion === "none"}
-                  className="mt-group space-y-4 border-0 p-0 disabled:opacity-50"
+                  className="mt-group space-y-group border-0 p-0 disabled:text-fg-disabled"
                 >
                   <legend className="sr-only">모션 타이밍</legend>
-                  <label className="flex items-center justify-between gap-control text-label">
+                  <label className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
                     속도
-                    <select
-                      className="min-h-10 rounded-control border border-stroke-neutral bg-bg-layer-default px-3 text-label focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+                    <Select
                       value={settings.speed}
                       onChange={(event) =>
                         update({ speed: Number(event.target.value) as Settings["speed"] })
@@ -412,10 +413,10 @@ export function EditorPage() {
                             {speed}×
                           </option>
                         ))}
-                    </select>
+                    </Select>
                   </label>
                   <div className="space-y-control">
-                    <div className="flex items-center justify-between gap-control text-label">
+                    <div className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
                       <label htmlFor="motion-delay">반복 딜레이</label>
                       <output htmlFor="motion-delay" className="tabular-nums text-fg-neutral-muted">
                         {(settings.delay / 1000).toFixed(1)}초
@@ -474,7 +475,7 @@ export function EditorPage() {
                         <span>1</span>
                       </span>
                       <button
-                        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
+                        className="focus-visible:outline-2 focus-visible:outline-stroke-focus focus-visible:outline-offset-2 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
                         type="button"
                         aria-label={`내 이모지 반응 ${reacted ? 2 : 1}개`}
                         aria-pressed={reacted}
@@ -524,15 +525,16 @@ export function EditorPage() {
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status}
               </p>
-              <button
-                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-group py-control text-label font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
+              <Button
+                variant="primary"
+                className="w-full"
                 aria-busy={busy}
                 disabled={!!invalid || busy || fontLoading}
                 onClick={() => void download()}
               >
                 {busy && <Spinner />}
                 {busy ? "만드는 중…" : "GIF 다운로드"}
-              </button>
+              </Button>
             </footer>
           </section>
         </div>

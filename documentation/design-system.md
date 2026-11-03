@@ -8,6 +8,23 @@ Use [color roles](colors.md) as the color layer. `src/styles/tailwind.css` conta
 
 UI text uses self-hosted Pretendard for UI glyphs. It uses `font-display: swap` and Unicode subsets. Font licenses ship under `public/licenses/`. The textarea, font specimens and GIF renderer keep their selected fonts independently.
 
+## Control contract (#83)
+
+Use the public exports at `~/components/design-system` instead of copying control classes into consumers:
+
+| Component      | Use                                                   | Owned behavior and appearance                                                                                                                    |
+| -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Button`       | Export, editor actions, presets and popover dismissal | Native button props/ref, `type="button"` default, primary/secondary/subtle/critical variants, disabled and busy attributes                       |
+| `ChoiceButton` | Font specimens/results, layer list and motions        | Required boolean `selected` maps to `aria-pressed`; shared selection, hover, pressed, keyboard and disabled states; consumers own content layout |
+| `Input`        | Search, HEX and local file upload                     | Base UI input props/ref and change events; shared border, focus, invalid and disabled states, native file-selector styling                       |
+| `Select`       | Gradient direction and motion speed                   | Native select props/ref, platform keyboard behavior and the same field geometry/states                                                           |
+
+Controls have a minimum 40px height, 8px radius, 12px horizontal inset and 14/20px labels. Choice cards use 12px all-round padding. Keep layout-only classes at call sites; variant/state styling belongs to the component. Do not replace canvas hit areas or the Slack-like reaction with generic controls: those have independent interaction and geometry contracts.
+
+The theme owns three neutral foreground levels (primary, secondary and muted), cool page/white workspace surfaces, neutral action states, control elevation and floating elevation. All interactive color transitions take 150ms and stop for reduced motion. Keyboard outlines are 2px with 2px offset; rounded whole-editor focus and pink canvas selection remain specialized. Selection and focus stay distinguishable. Invalid fields use critical borders/foreground, and disabled controls never gain hover/pressed feedback.
+
+Desktop keeps equal editing/settings/preview columns and the sticky preview; small viewports stack them without horizontal overflow. Workspace/surface/control/inset radii stay 16/12/8/4px. The 26px reaction pills and 16px emoji are not resized by the control system. Theme-color and manifest backgrounds track the page surface.
+
 ## Components and states
 
 Compose the following controls using semantic HTML and headless primitives:
@@ -52,7 +69,7 @@ Shared components live in `src/components/design-system/`. Import their public e
 
 ## Headless controls (#50)
 
-`Accordion` exposes the primitive root and `AccordionItem` composes the app-styled header, trigger and panel. The editor supplies `multiple`, `keepMounted` and `defaultValue={["motion"]}`; no duplicate React disclosure state is maintained. Panels preserve font-search state when closed but their contents are not focusable. `SegmentedControl` delegates radio semantics and keyboard selection to primitives; its selected value remains owned by the editor.
+`Accordion` exposes the primitive root and `AccordionItem` composes the app-styled header, trigger and panel. The editor supplies `multiple`, `keepMounted` and controlled disclosure state starting at `["motion"]`, so the image-add action can reveal its upload field. Panels preserve font-search state when closed but their contents are not focusable. `SegmentedControl` delegates radio semantics and keyboard selection to primitives; its selected value remains owned by the editor.
 
 Accordion panels use the primitive's measured height and transition-state attributes for a reversible 200 ms collapse transition. Chevrons rotate with the same timing. Both transitions are disabled by the user's reduced-motion preference; panel padding stays on the inner fieldset so the collapsed height is zero.
 
@@ -62,7 +79,7 @@ Library imports use individual component subpaths. The small app-owned public ex
 
 ## Three-column workspace (#52)
 
-Desktop separates editing, settings and preview into three equal columns; widths at or below 1000px stack. Primary UI actions use neutral charcoal, with pale gray selected surfaces. Content colors and logo artwork remain independent. Shared Tailwind tokens define control gaps (8px), text gaps (6px), panel/section spacing (24px), page gutter (32px), and caption/label/body/title type pairs (12/16, 14/19, 16/22, 20/27px).
+Desktop separates editing, settings and preview into three equal columns; widths at or below 1000px stack. Primary UI actions use neutral charcoal, with pale gray selected surfaces. Content colors and logo artwork remain independent. Shared Tailwind tokens define control gaps (8px), text gaps (6px), panel/section spacing (24px), page gutter (32px), and caption/label/body/title type pairs (12/16, 14/20, 16/24, 20/28px).
 
 ## Selection controls (#63)
 

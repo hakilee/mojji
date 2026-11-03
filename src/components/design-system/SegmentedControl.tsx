@@ -25,7 +25,7 @@ export function SegmentedControl<T extends string>({
           value={option.value}
           nativeButton
           render={<button type="button" />}
-          className="flex min-h-8 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-control-inset border border-transparent px-3 py-1 text-label font-semibold text-fg-neutral-muted transition-colors hover:bg-bg-neutral-weak-pressed hover:text-fg-neutral data-checked:border-stroke-neutral data-checked:bg-bg-layer-default data-checked:text-fg-neutral data-checked:shadow-xs focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus motion-reduce:transition-none"
+          className="flex min-h-8 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-control-inset border border-transparent px-inset py-1 text-label font-medium text-fg-neutral-muted transition-colors duration-150 hover:bg-bg-neutral-weak-hover hover:text-fg-neutral data-checked:border-stroke-neutral data-checked:bg-bg-layer-default data-checked:text-fg-neutral data-checked:shadow-control focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus motion-reduce:transition-none"
         >
           {option.label}
         </Radio.Root>

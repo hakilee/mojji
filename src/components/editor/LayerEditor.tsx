@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Spinner } from "~/components/design-system";
+import { ChoiceButton, Input, Spinner } from "~/components/design-system";
 import type { ImageLayer } from "~/lib/emoji";
 import { loadImage } from "~/lib/image-upload";
-
-const actionClass =
-  "min-h-control-size cursor-pointer rounded-control border border-stroke-neutral px-inset text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed disabled:text-fg-disabled";
 
 export function LayerEditor({
   images,
@@ -32,13 +29,12 @@ export function LayerEditor({
         <label htmlFor="image-upload" className="block text-label font-semibold">
           이미지 업로드
         </label>
-        <input
+        <Input
           id="image-upload"
           type="file"
           accept="image/png,image/jpeg,image/webp,image/gif"
           multiple
           disabled={loading || images.length >= 12}
-          className="block w-full min-w-0 rounded-control border border-stroke-neutral p-inset text-caption file:mr-control file:rounded-control file:border-0 file:bg-bg-neutral-weak file:p-control file:font-semibold disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-stroke-focus"
           onChange={async (event) => {
             const files = Array.from(event.target.files ?? []);
             event.target.value = "";
@@ -85,22 +81,20 @@ export function LayerEditor({
           ...images.filter((image) => image.behindText).toReversed(),
         ].map((image) =>
           image === "text" ? (
-            <button
+            <ChoiceButton
               key="text"
-              type="button"
-              className={`${actionClass} w-full text-left aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak`}
-              aria-pressed={selectedId === "text"}
+              className="w-full text-left"
+              selected={selectedId === "text"}
               onClick={() => onSelect(selectedId === "text" ? null : "text")}
             >
               텍스트
-            </button>
+            </ChoiceButton>
           ) : (
-            <button
+            <ChoiceButton
               key={image.id}
-              type="button"
               title={image.name}
-              className={`${actionClass} flex w-full items-center justify-between gap-control text-left aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak`}
-              aria-pressed={selectedId === image.id}
+              className="flex w-full items-center justify-between gap-control text-left"
+              selected={selectedId === image.id}
               onClick={() => onSelect(selectedId === image.id ? null : image.id)}
             >
               <span className="min-w-0 truncate">
@@ -109,7 +103,7 @@ export function LayerEditor({
               <span className="shrink-0 text-caption text-fg-neutral-muted">
                 {image.behindText ? "텍스트 뒤" : "텍스트 앞"}
               </span>
-            </button>
+            </ChoiceButton>
           ),
         )}
       </div>

@@ -1,8 +1,9 @@
-import { Input } from "@base-ui/react/input";
 import { Popover } from "@base-ui/react/popover";
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup } from "@base-ui/react/radio-group";
 import { useId, useState } from "react";
+import { Button } from "./Button";
+import { Input } from "./Input";
 
 const colors = [
   { value: "#1a1c20", label: "차콜" },
@@ -45,7 +46,7 @@ export function ColorPicker({
       <Popover.Trigger
         disabled={disabled}
         aria-label={`${label} 선택`}
-        className="flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset text-label transition-colors hover:border-stroke-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-popup-open:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
+        className="flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-popup-open:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
       >
         <span>{displayLabel}</span>
         <span
@@ -56,12 +57,12 @@ export function ColorPicker({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner sideOffset={8} collisionPadding={12} align="start" className="z-50">
-          <Popover.Popup className="max-h-[var(--available-height)] overflow-y-auto overscroll-contain w-64 max-w-[calc(100vw-24px)] space-y-inset rounded-panel border border-stroke-neutral bg-bg-layer-default p-inset text-fg-neutral shadow-lg outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none">
+          <Popover.Popup className="max-h-[var(--available-height)] overflow-y-auto overscroll-contain w-64 max-w-[calc(100vw-24px)] space-y-inset rounded-panel border border-stroke-neutral bg-bg-layer-default p-inset text-fg-neutral shadow-floating outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none">
             <div className="flex items-center justify-between gap-control">
               <Popover.Title className="text-label font-semibold">{label}</Popover.Title>
               <Popover.Close
                 aria-label="색상 선택 닫기"
-                className="flex size-control-size shrink-0 cursor-pointer items-center justify-center rounded-control text-fg-neutral-muted hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
+                render={<Button variant="subtle" className="shrink-0" />}
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -92,7 +93,7 @@ export function ColorPicker({
                   aria-label={`${color.label} ${color.value}`}
                   nativeButton
                   render={<button type="button" />}
-                  className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset border border-transparent p-0.5 hover:border-stroke-neutral-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-checked:border-stroke-brand"
+                  className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset border border-transparent p-0.5 transition-colors duration-150 hover:border-stroke-neutral-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-checked:border-stroke-brand motion-reduce:transition-none"
                 >
                   <span
                     className="flex size-8 items-center justify-center rounded-control-inset border border-stroke-neutral-strong"
@@ -108,13 +109,13 @@ export function ColorPicker({
                 HEX
               </label>
               <div className="flex gap-control">
-                <Input
+                <input
                   type="color"
                   aria-label={`${label} 직접 선택`}
                   value={value}
-                  onValueChange={(color) => {
+                  onChange={(event) => {
                     setDraft(null);
-                    onChange(color);
+                    onChange(event.target.value);
                   }}
                   className="size-control-size shrink-0 cursor-pointer rounded-control border border-stroke-neutral bg-bg-layer-default p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
                 />
@@ -133,7 +134,7 @@ export function ColorPicker({
                       onChange(`#${text.replace(/^#/, "").toLowerCase()}`);
                   }}
                   onBlur={() => setDraft(null)}
-                  className="min-h-control-size min-w-0 flex-1 rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-inset text-label tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus aria-invalid:border-fg-critical"
+                  className="flex-1 tabular-nums"
                 />
               </div>
               {invalid && (

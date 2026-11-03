@@ -1,7 +1,5 @@
-import { FloatingPanel, RangeField, SegmentedControl } from "~/components/design-system";
+import { Button, FloatingPanel, RangeField, SegmentedControl } from "~/components/design-system";
 import type { ImageLayer, Settings } from "~/lib/emoji";
-const actionClass =
-  "min-h-control-size cursor-pointer rounded-control border border-stroke-neutral px-inset text-label hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed disabled:text-fg-disabled";
 export function LayerControls({
   images,
   textLayout,
@@ -37,10 +35,8 @@ export function LayerControls({
             { label: "중앙", y: 64 },
             { label: "하단", y: 104 },
           ].map((preset) => (
-            <button
+            <Button
               key={preset.label}
-              type="button"
-              className={actionClass}
               onClick={() =>
                 selected
                   ? changeImage({ x: 64, y: preset.y })
@@ -48,7 +44,7 @@ export function LayerControls({
               }
             >
               {preset.label}
-            </button>
+            </Button>
           ))}
         </div>
         <RangeField
@@ -110,10 +106,8 @@ export function LayerControls({
                 const index = siblings.indexOf(selected);
                 const target = siblings[index + direction];
                 return (
-                  <button
+                  <Button
                     key={label}
-                    type="button"
-                    className={actionClass}
                     disabled={!target}
                     onClick={() => {
                       const reordered = [...images];
@@ -124,13 +118,12 @@ export function LayerControls({
                     }}
                   >
                     {label}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
-            <button
-              type="button"
-              className={`${actionClass} w-full`}
+            <Button
+              className="w-full"
               onClick={() =>
                 changeImage({
                   x: 64,
@@ -143,17 +136,17 @@ export function LayerControls({
               }
             >
               배경 채우기
-            </button>
-            <button
-              type="button"
-              className={`${actionClass} w-full text-fg-critical`}
+            </Button>
+            <Button
+              variant="critical"
+              className="w-full"
               onClick={() => {
                 onImagesChange(images.filter((image) => image.id !== selectedId));
                 onSelect(null);
               }}
             >
               선택 이미지 삭제
-            </button>
+            </Button>
           </>
         ) : (
           <>
@@ -165,13 +158,9 @@ export function LayerControls({
               value={Math.round(layout.scale * 100)}
               onChange={(scale) => onTextLayoutChange({ ...layout, scale: scale / 100 })}
             />
-            <button
-              type="button"
-              className={`${actionClass} w-full`}
-              onClick={() => onTextLayoutChange(undefined)}
-            >
+            <Button className="w-full" onClick={() => onTextLayoutChange(undefined)}>
               텍스트 배치 초기화
-            </button>
+            </Button>
           </>
         )}
       </div>

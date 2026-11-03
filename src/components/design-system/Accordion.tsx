@@ -18,7 +18,7 @@ export function AccordionItem({
       className="min-w-0 overflow-hidden rounded-panel border border-stroke-neutral bg-bg-layer-default"
     >
       <AccordionPrimitive.Header>
-        <AccordionPrimitive.Trigger className="group flex w-full min-h-12 cursor-pointer text-left items-center justify-between gap-control px-group py-inset text-label font-semibold select-none hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus data-panel-open:bg-bg-brand-weak">
+        <AccordionPrimitive.Trigger className="group flex w-full min-h-12 cursor-pointer text-left items-center justify-between gap-control px-group py-inset text-label font-semibold text-fg-neutral-secondary select-none transition-colors duration-150 hover:bg-bg-neutral-weak-hover focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus data-panel-open:bg-bg-neutral-weak motion-reduce:transition-none">
           {title}
           <svg
             className="size-4 shrink-0 text-fg-neutral-muted transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none"

@@ -1,4 +1,4 @@
-import { Checkbox, Spinner } from "~/components/design-system";
+import { Button, Checkbox, ChoiceButton, Input, Spinner } from "~/components/design-system";
 import {
   startTransition,
   useDeferredValue,
@@ -88,37 +88,35 @@ export function FontPicker({
     <>
       <div className="grid grid-cols-2 gap-control">
         {fonts.map((family) => (
-          <button
-            className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed flex flex-col items-start gap-1 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default p-inset text-left enabled:hover:border-stroke-brand [&_small]:text-caption [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
+          <ChoiceButton
+            className="flex flex-col items-start gap-control overflow-hidden text-left [&_small]:text-caption [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
             key={family}
-            type="button"
             disabled={!!loading}
-            aria-pressed={font === family}
+            selected={font === family}
             onClick={() => {
               setError("");
               onChange(family);
             }}
           >
             <span
-              className="mb-2 text-[22px] whitespace-nowrap max-[760px]:text-lg"
+              className="text-[22px] whitespace-nowrap max-[760px]:text-lg"
               style={{ fontFamily: family }}
             >
               가나다 Aa
             </span>
             <small>{family}</small>
-          </button>
+          </ChoiceButton>
         ))}
       </div>
       <div className="mt-inset space-y-control">
         <label htmlFor="font-upload" className="block text-label font-semibold">
           폰트 파일 업로드
         </label>
-        <input
+        <Input
           id="font-upload"
           type="file"
           accept=".otf,.ttf,.woff,.woff2"
           disabled={!!loading}
-          className="block w-full min-w-0 rounded-control border border-stroke-neutral bg-bg-layer-default p-2 text-caption text-fg-neutral-muted file:mr-2 file:cursor-pointer file:rounded-control file:border-0 file:bg-bg-neutral-weak file:px-3 file:py-2 file:text-caption file:font-semibold file:text-fg-neutral focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:opacity-50"
           onChange={async (event) => {
             const file = event.target.files?.[0];
             event.target.value = "";
@@ -158,23 +156,22 @@ export function FontPicker({
           </p>
         )}
         {uploadedFamily && (
-          <button
-            type="button"
+          <ChoiceButton
             disabled={!!loading}
-            aria-pressed={font === uploadedFamily}
-            className="w-full cursor-pointer rounded-control border border-stroke-neutral p-3 text-left text-label wrap-anywhere aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:opacity-50"
+            selected={font === uploadedFamily}
+            className="w-full text-left wrap-anywhere"
             onClick={() => {
               setError("");
               onChange(uploadedFamily);
             }}
           >
             {uploadedFamily}
-          </button>
+          </ChoiceButton>
         )}
       </div>
-      <button
-        type="button"
-        className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed mt-inset flex min-h-[42px] w-full items-center justify-between rounded-control border border-stroke-neutral bg-bg-neutral-weak px-4 py-2 font-semibold hover:border-stroke-brand"
+      <Button
+        variant="subtle"
+        className="mt-inset w-full"
         aria-expanded={expanded}
         aria-controls="font-search-panel"
         onClick={async () => {
@@ -192,16 +189,17 @@ export function FontPicker({
           }
         }}
       >
-        Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
-      </button>
+        <span className="flex w-full items-center justify-between gap-control">
+          Google Fonts <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+        </span>
+      </Button>
       {expanded && (
         <ViewTransition default="none" enter="font-reveal" exit="font-hide">
           <div className="mt-inset" id="font-search-panel" aria-busy={catalogLoading}>
             <label className="sr-only" htmlFor="font-search">
               Google Fonts 검색
             </label>
-            <input
-              className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation disabled:cursor-not-allowed disabled:opacity-40 min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
+            <Input
               id="font-search"
               type="search"
               name="font-search"
@@ -222,26 +220,25 @@ export function FontPicker({
               선택한 글꼴만 Google에서 불러옵니다.
             </p>
             <div
-              className="mt-inset max-h-60 overflow-y-auto overscroll-contain rounded-control border border-stroke-neutral [&>button]:flex [&>button]:min-h-[42px] [&>button]:w-full [&>button]:items-center [&>button]:justify-between [&>button]:gap-inset [&>button]:border [&>button]:border-transparent [&>button]:bg-bg-layer-default [&>button]:p-3 [&>button]:text-left [&>button]:wrap-anywhere [&>button]:enabled:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak [&>button>span]:text-xs"
+              className="mt-inset max-h-60 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
               aria-label="검색 결과"
             >
               {results.slice(0, 40).map(({ family }) => (
-                <button
-                  className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
+                <ChoiceButton
+                  className="flex w-full items-center justify-between gap-control text-left wrap-anywhere"
                   key={family}
-                  type="button"
                   disabled={!!loading}
-                  aria-pressed={font === family}
+                  selected={font === family}
                   onClick={() => void selectFont(family)}
                 >
                   <ViewTransition default="none" update="auto">
-                    <span>{family}</span>
+                    <span className="text-caption">{family}</span>
                   </ViewTransition>
-                  <span className="inline-flex shrink-0 items-center gap-2">
+                  <span className="inline-flex shrink-0 items-center gap-control text-caption">
                     {loading === family && <Spinner />}
                     {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
                   </span>
-                </button>
+                </ChoiceButton>
               ))}
               {catalog && !results.length && (
                 <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
