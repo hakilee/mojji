@@ -29,6 +29,7 @@ export function CanvasEditor({
     y: number;
   } | null>(null);
   const [geometry, setGeometry] = useState({ width: 0, height: 0 });
+  const [guides, setGuides] = useState<{ x?: number; y?: number }>({});
   const [error, setError] = useState("");
   useEffect(() => {
     let active = true;
@@ -37,7 +38,10 @@ export function CanvasEditor({
       if (!active) return;
       const ctx = canvas.current?.getContext("2d");
       if (!ctx) return;
+      ctx.save();
+      ctx.scale(6, 6);
       drawEmoji(ctx, { ...settings, motion: "none" }, 0);
+      ctx.restore();
       if (settings.text.trim()) {
         const { width, height } = measureEmojiText(ctx, settings);
         const fit = Math.min(126 / width, 126 / height) * (settings.textLayout?.scale ?? 1);
@@ -103,23 +107,82 @@ export function CanvasEditor({
           const rect = canvas.current?.getBoundingClientRect();
           if (!rect) return;
           const drag = dragging.current;
-          move(
-            drag.id,
-            drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
-            drag.y + ((event.clientY - drag.clientY) * 128) / rect.height,
-          );
+          const bounds = (id: string) => {
+            const image = settings.images?.find((item) => item.id === id);
+            if (id === "text")
+              return {
+                x: settings.textLayout?.x ?? 64,
+                y: settings.textLayout?.y ?? 64,
+                width: geometry.width,
+                height: geometry.height,
+              };
+            if (!image) return { x: 64, y: 64, width: 0, height: 0 };
+            const width = image.size * (image.fit === "cover" ? 1 : Math.min(1, image.aspectRatio));
+            const height =
+              image.size * (image.fit === "cover" ? 1 : Math.min(1, 1 / image.aspectRatio));
+            const angle = (image.rotation * Math.PI) / 180;
+            return {
+              x: image.x,
+              y: image.y,
+              width: Math.abs(width * Math.cos(angle)) + Math.abs(height * Math.sin(angle)),
+              height: Math.abs(width * Math.sin(angle)) + Math.abs(height * Math.cos(angle)),
+            };
+          };
+          const moving = bounds(drag.id);
+          const targets = [
+            { x: 64, y: 64, width: 128, height: 128 },
+            ...layers
+              .filter((layer) => (layer === "text" ? "text" : layer.id) !== drag.id)
+              .map((layer) => bounds(layer === "text" ? "text" : layer.id)),
+          ];
+          const next = {
+            x: drag.x + ((event.clientX - drag.clientX) * 128) / rect.width,
+            y: drag.y + ((event.clientY - drag.clientY) * 128) / rect.height,
+          };
+          const lines: { x?: number; y?: number } = {};
+          if (!event.altKey)
+            for (const axis of ["x", "y"] as const) {
+              const size = axis === "x" ? "width" : "height";
+              let distance = (5 * 128) / rect.width;
+              for (const target of targets) {
+                if (Math.abs(target[axis] - next[axis]) < distance) {
+                  distance = Math.abs(target[axis] - next[axis]);
+                  lines[axis] = target[axis];
+                  moving[axis] = target[axis];
+                }
+              }
+              if (lines[axis] === undefined)
+                for (const target of targets)
+                  for (const anchor of [-0.5, 0, 0.5])
+                    for (const offset of [-0.5, 0, 0.5]) {
+                      const line = target[axis] + target[size] * anchor;
+                      const correction = line - (next[axis] + moving[size] * offset);
+                      const position = next[axis] + correction;
+                      if (Math.abs(correction) < distance && position >= 0 && position <= 128) {
+                        distance = Math.abs(correction);
+                        lines[axis] = line;
+                        moving[axis] = position;
+                      }
+                    }
+              if (lines[axis] !== undefined) next[axis] = moving[axis];
+            }
+          setGuides(lines);
+          move(drag.id, next.x, next.y);
         }}
         onPointerUp={(event) => {
           dragging.current = null;
+          setGuides({});
           if ((event.target as HTMLElement).hasPointerCapture(event.pointerId))
             (event.target as HTMLElement).releasePointerCapture(event.pointerId);
         }}
         onLostPointerCapture={() => {
           dragging.current = null;
+          setGuides({});
         }}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             dragging.current = null;
+            setGuides({});
             onSelect(null);
             return;
           }
@@ -149,11 +212,25 @@ export function CanvasEditor({
       >
         <canvas
           ref={canvas}
-          width={128}
-          height={128}
+          width={768}
+          height={768}
           aria-label="이모지 작업 캔버스"
           className="absolute inset-0 size-full"
         />
+        {guides.x !== undefined && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 z-10 border-l border-stroke-focus"
+            style={{ left: `${(guides.x / 128) * 100}%` }}
+          />
+        )}
+        {guides.y !== undefined && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 z-10 border-t border-stroke-focus"
+            style={{ top: `${(guides.y / 128) * 100}%` }}
+          />
+        )}
         {layers.map((layer) => {
           const text = layer === "text";
           const id = text ? "text" : layer.id;
@@ -192,7 +269,8 @@ export function CanvasEditor({
         })}
       </div>
       <p id="canvas-instructions" className="text-caption text-fg-neutral-muted">
-        클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절할 수 있어요.
+        클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
+        해제하세요.
       </p>
       {error && (
         <p role="alert" className="text-caption text-fg-critical">

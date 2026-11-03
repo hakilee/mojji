@@ -249,7 +249,7 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
       disposal: 2 as const,
     });
   }
-  const blob = await encode({
+  let blob = await encode({
     width: 128,
     height: 128,
     frames,
@@ -257,6 +257,19 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
     loopCount: 0,
     format: "blob",
   });
+  for (const maxColors of [128, 64, 32]) {
+    if (blob.size <= 128 * 1024) break;
+    const candidate = await encode({
+      width: 128,
+      height: 128,
+      frames,
+      looped: true,
+      loopCount: 0,
+      format: "blob",
+      maxColors,
+    });
+    if (candidate.size < blob.size) blob = candidate;
+  }
   if (blob.size > 128 * 1024)
     throw new Error("파일이 128KB를 넘었어요. 텍스트·이미지를 줄이거나 모션을 바꿔 주세요.");
   return blob;
