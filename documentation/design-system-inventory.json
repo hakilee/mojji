@@ -1,0 +1,2089 @@
+{
+  "source": {
+    "repository": "mekigg/meki.gg",
+    "commit": "5df8d3ee3dfc970a1057a93ccfd68c13e7ac61be"
+  },
+  "counts": {
+    "sourceFiles": 65,
+    "publicReferenceExports": 53,
+    "referenceComponentsAndParts": 103,
+    "extensions": 15,
+    "applicationComponents": 6
+  },
+  "ports": [
+    {
+      "component": "Accordion",
+      "source": "packages/ui/src/accordion/index.tsx",
+      "target": "src/components/design-system/meki/accordion/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 57
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 37
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 439
+        }
+      ]
+    },
+    {
+      "component": "Accordion.Content",
+      "source": "packages/ui/src/accordion/index.tsx",
+      "target": "src/components/design-system/meki/accordion/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/EditorAccordionItem.tsx",
+          "line": 25
+        }
+      ]
+    },
+    {
+      "component": "Accordion.Item",
+      "source": "packages/ui/src/accordion/index.tsx",
+      "target": "src/components/design-system/meki/accordion/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/EditorAccordionItem.tsx",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "component": "Accordion.Trigger",
+      "source": "packages/ui/src/accordion/index.tsx",
+      "target": "src/components/design-system/meki/accordion/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/EditorAccordionItem.tsx",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "component": "ArrowDownIcon",
+      "source": "packages/icon/src/components/arrow-down-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-down-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "ArrowLeftIcon",
+      "source": "packages/icon/src/components/arrow-left-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-left-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "ArrowRightIcon",
+      "source": "packages/icon/src/components/arrow-right-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-right-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "ArrowUpIcon",
+      "source": "packages/icon/src/components/arrow-up-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-up-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "BackButton",
+      "source": "packages/ui/src/back-button.tsx",
+      "target": "src/components/design-system/meki/back-button.tsx",
+      "usages": []
+    },
+    {
+      "component": "Button",
+      "source": "packages/ui/src/button.tsx",
+      "target": "src/components/design-system/meki/button.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/ChoiceButton.tsx",
+          "line": 11
+        },
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 69
+        },
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 62
+        },
+        {
+          "file": "src/components/editor/CanvasEditor.tsx",
+          "line": 316
+        },
+        {
+          "file": "src/components/editor/CanvasEditor.tsx",
+          "line": 327
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 226
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 246
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 323
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 66
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 104
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 140
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 156
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 164
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 173
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 32
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 35
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 300
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 322
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 605
+        }
+      ]
+    },
+    {
+      "component": "Card",
+      "source": "packages/ui/src/card/index.tsx",
+      "target": "src/components/design-system/meki/card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Card.Title",
+      "source": "packages/ui/src/card/index.tsx",
+      "target": "src/components/design-system/meki/card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "CheckIcon",
+      "source": "packages/icon/src/components/check-icon.tsx",
+      "target": "src/components/design-system/icons/components/check-icon.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/Checkbox.tsx",
+          "line": 24
+        }
+      ]
+    },
+    {
+      "component": "ChevronDownIcon",
+      "source": "packages/icon/src/components/chevron-down-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-down-icon.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/EditorAccordionItem.tsx",
+          "line": 20
+        },
+        {
+          "file": "src/components/design-system/meki/select/parts.tsx",
+          "line": 61
+        }
+      ]
+    },
+    {
+      "component": "ChevronLeftIcon",
+      "source": "packages/icon/src/components/chevron-left-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-left-icon.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/meki/back-button.tsx",
+          "line": 21
+        },
+        {
+          "file": "src/components/design-system/meki/pagination.tsx",
+          "line": 69
+        }
+      ]
+    },
+    {
+      "component": "ChevronRightIcon",
+      "source": "packages/icon/src/components/chevron-right-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-right-icon.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/meki/pagination.tsx",
+          "line": 111
+        }
+      ]
+    },
+    {
+      "component": "ChevronUpIcon",
+      "source": "packages/icon/src/components/chevron-up-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-up-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "ClientOnly",
+      "source": "packages/ui/src/client-only.tsx",
+      "target": "src/components/design-system/meki/client-only.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/meki/time/index.tsx",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "component": "ClockIcon",
+      "source": "packages/icon/src/components/clock-icon.tsx",
+      "target": "src/components/design-system/icons/components/clock-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "cn",
+      "source": "packages/ui/src/cn.ts",
+      "target": "src/components/design-system/meki/cn.ts",
+      "usages": []
+    },
+    {
+      "component": "Collapsible",
+      "source": "packages/ui/src/collapsible/index.tsx",
+      "target": "src/components/design-system/meki/collapsible/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Collapsible.Content",
+      "source": "packages/ui/src/collapsible/index.tsx",
+      "target": "src/components/design-system/meki/collapsible/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Collapsible.Trigger",
+      "source": "packages/ui/src/collapsible/index.tsx",
+      "target": "src/components/design-system/meki/collapsible/index.ts",
+      "usages": []
+    },
+    {
+      "component": "CopyIcon",
+      "source": "packages/icon/src/components/copy-icon.tsx",
+      "target": "src/components/design-system/icons/components/copy-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "CrossIcon",
+      "source": "packages/icon/src/components/cross-icon.tsx",
+      "target": "src/components/design-system/icons/components/cross-icon.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 52
+        }
+      ]
+    },
+    {
+      "component": "DiamondIcon",
+      "source": "packages/icon/src/components/diamond-icon.tsx",
+      "target": "src/components/design-system/icons/components/diamond-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Divider",
+      "source": "packages/ui/src/divider.tsx",
+      "target": "src/components/design-system/meki/divider.tsx",
+      "usages": []
+    },
+    {
+      "component": "Dropdown",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Content",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Item",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Label",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Portal",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Separator",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Dropdown.Trigger",
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "usages": []
+    },
+    {
+      "component": "FaceSadIcon",
+      "source": "packages/icon/src/components/face-sad-icon.tsx",
+      "target": "src/components/design-system/icons/components/face-sad-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Flex",
+      "source": "packages/ui/src/flex.tsx",
+      "target": "src/components/design-system/meki/flex.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/meki/form-field/parts.tsx",
+          "line": 9
+        },
+        {
+          "file": "src/components/design-system/meki/pagination.tsx",
+          "line": 66
+        },
+        {
+          "file": "src/components/design-system/meki/pagination.tsx",
+          "line": 77
+        },
+        {
+          "file": "src/components/design-system/meki/pagination.tsx",
+          "line": 81
+        }
+      ]
+    },
+    {
+      "component": "FormattedNumberInput",
+      "source": "packages/ui/src/formatted-number-input/index.tsx",
+      "target": "src/components/design-system/meki/formatted-number-input/index.tsx",
+      "usages": []
+    },
+    {
+      "component": "FormField",
+      "source": "packages/ui/src/form-field/index.tsx",
+      "target": "src/components/design-system/meki/form-field/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/RangeField.tsx",
+          "line": 30
+        }
+      ]
+    },
+    {
+      "component": "FormField.Error",
+      "source": "packages/ui/src/form-field/index.tsx",
+      "target": "src/components/design-system/meki/form-field/index.ts",
+      "usages": []
+    },
+    {
+      "component": "FormField.Input",
+      "source": "packages/ui/src/form-field/index.tsx",
+      "target": "src/components/design-system/meki/form-field/index.ts",
+      "usages": []
+    },
+    {
+      "component": "FormField.Label",
+      "source": "packages/ui/src/form-field/index.tsx",
+      "target": "src/components/design-system/meki/form-field/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/RangeField.tsx",
+          "line": 32
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 151
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 254
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 150
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 481
+        }
+      ]
+    },
+    {
+      "component": "GamepadIcon",
+      "source": "packages/icon/src/components/gamepad-icon.tsx",
+      "target": "src/components/design-system/icons/components/gamepad-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Grid",
+      "source": "packages/ui/src/grid.tsx",
+      "target": "src/components/design-system/meki/grid.tsx",
+      "usages": []
+    },
+    {
+      "component": "HoverCard",
+      "source": "packages/ui/src/hover-card/index.tsx",
+      "target": "src/components/design-system/meki/hover-card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "HoverCard.Content",
+      "source": "packages/ui/src/hover-card/index.tsx",
+      "target": "src/components/design-system/meki/hover-card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "HoverCard.Portal",
+      "source": "packages/ui/src/hover-card/index.tsx",
+      "target": "src/components/design-system/meki/hover-card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "HoverCard.Trigger",
+      "source": "packages/ui/src/hover-card/index.tsx",
+      "target": "src/components/design-system/meki/hover-card/index.ts",
+      "usages": []
+    },
+    {
+      "component": "InfoIcon",
+      "source": "packages/icon/src/components/info-icon.tsx",
+      "target": "src/components/design-system/icons/components/info-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Input",
+      "source": "packages/ui/src/input.tsx",
+      "target": "src/components/design-system/meki/input.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 122
+        },
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 132
+        },
+        {
+          "file": "src/components/design-system/meki/form-field/parts.tsx",
+          "line": 33
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 154
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 257
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 56
+        }
+      ]
+    },
+    {
+      "component": "MekiggMark",
+      "source": "packages/icon/src/components/mekigg-mark.tsx",
+      "target": "src/components/design-system/icons/components/mekigg-mark.tsx",
+      "usages": []
+    },
+    {
+      "component": "MekiggWordmark",
+      "source": "packages/icon/src/components/mekigg-wordmark.tsx",
+      "target": "src/components/design-system/icons/components/mekigg-wordmark.tsx",
+      "usages": []
+    },
+    {
+      "component": "MenuIcon",
+      "source": "packages/icon/src/components/menu-icon.tsx",
+      "target": "src/components/design-system/icons/components/menu-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Modal",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 209
+        }
+      ]
+    },
+    {
+      "component": "Modal.Close",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 245
+        }
+      ]
+    },
+    {
+      "component": "Modal.Content",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 230
+        }
+      ]
+    },
+    {
+      "component": "Modal.Description",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 251
+        }
+      ]
+    },
+    {
+      "component": "Modal.Title",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 242
+        }
+      ]
+    },
+    {
+      "component": "Modal.Trigger",
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 225
+        }
+      ]
+    },
+    {
+      "component": "NavigationMenu",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.Content",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.Item",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.Link",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.List",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.Trigger",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "NavigationMenu.Viewport",
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Pagination",
+      "source": "packages/ui/src/pagination.tsx",
+      "target": "src/components/design-system/meki/pagination.tsx",
+      "usages": []
+    },
+    {
+      "component": "PlusIcon",
+      "source": "packages/icon/src/components/plus-icon.tsx",
+      "target": "src/components/design-system/icons/components/plus-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Popover",
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 39
+        },
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 21
+        },
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "component": "Popover.Arrow",
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 38
+        }
+      ]
+    },
+    {
+      "component": "Popover.Content",
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 57
+        },
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 29
+        },
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "component": "Popover.Provider",
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 56
+        },
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 28
+        },
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 28
+        }
+      ]
+    },
+    {
+      "component": "Popover.Trigger",
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 44
+        },
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "component": "Select",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 152
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 483
+        }
+      ]
+    },
+    {
+      "component": "Select.Content",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 166
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 493
+        }
+      ]
+    },
+    {
+      "component": "Select.Item",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 167
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 168
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 497
+        }
+      ]
+    },
+    {
+      "component": "Select.ItemIndicator",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Select.ItemText",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Select.Trigger",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 163
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 490
+        }
+      ]
+    },
+    {
+      "component": "Select.Value",
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 164
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 491
+        }
+      ]
+    },
+    {
+      "component": "ShareIcon",
+      "source": "packages/icon/src/components/share-icon.tsx",
+      "target": "src/components/design-system/icons/components/share-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Slider",
+      "source": "packages/ui/src/slider/index.tsx",
+      "target": "src/components/design-system/meki/slider/index.tsx",
+      "usages": [
+        {
+          "file": "src/components/design-system/RangeField.tsx",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "component": "SparklesIcon",
+      "source": "packages/icon/src/components/sparkles-icon.tsx",
+      "target": "src/components/design-system/icons/components/sparkles-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Spinner",
+      "source": "packages/ui/src/spinner/index.tsx",
+      "target": "src/components/design-system/meki/spinner/index.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/CanvasEditor.tsx",
+          "line": 323
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 192
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 293
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 306
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 89
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 612
+        }
+      ]
+    },
+    {
+      "component": "Table",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Table.Body",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Table.Cell",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Table.Head",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Table.Header",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Table.Row",
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "usages": []
+    },
+    {
+      "component": "Tabs",
+      "source": "packages/ui/src/tabs/index.tsx",
+      "target": "src/components/design-system/meki/tabs/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tabs.Content",
+      "source": "packages/ui/src/tabs/index.tsx",
+      "target": "src/components/design-system/meki/tabs/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tabs.List",
+      "source": "packages/ui/src/tabs/index.tsx",
+      "target": "src/components/design-system/meki/tabs/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tabs.Trigger",
+      "source": "packages/ui/src/tabs/index.tsx",
+      "target": "src/components/design-system/meki/tabs/index.ts",
+      "usages": []
+    },
+    {
+      "component": "TicketIcon",
+      "source": "packages/icon/src/components/ticket-icon.tsx",
+      "target": "src/components/design-system/icons/components/ticket-icon.tsx",
+      "usages": []
+    },
+    {
+      "component": "Time",
+      "source": "packages/ui/src/time/index.tsx",
+      "target": "src/components/design-system/meki/time/index.tsx",
+      "usages": []
+    },
+    {
+      "component": "toast",
+      "source": "npm:sonner",
+      "target": "npm:sonner",
+      "usages": []
+    },
+    {
+      "component": "Toaster",
+      "source": "npm:sonner",
+      "target": "npm:sonner",
+      "usages": []
+    },
+    {
+      "component": "Tooltip",
+      "source": "packages/ui/src/tooltip/index.tsx",
+      "target": "src/components/design-system/meki/tooltip/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tooltip.Content",
+      "source": "packages/ui/src/tooltip/index.tsx",
+      "target": "src/components/design-system/meki/tooltip/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tooltip.Provider",
+      "source": "packages/ui/src/tooltip/index.tsx",
+      "target": "src/components/design-system/meki/tooltip/index.ts",
+      "usages": []
+    },
+    {
+      "component": "Tooltip.Trigger",
+      "source": "packages/ui/src/tooltip/index.tsx",
+      "target": "src/components/design-system/meki/tooltip/index.ts",
+      "usages": []
+    },
+    {
+      "component": "useIsClient",
+      "source": "packages/ui/src/use-is-client.ts",
+      "target": "src/components/design-system/meki/use-is-client.ts",
+      "usages": []
+    },
+    {
+      "component": "WorldIcon",
+      "source": "packages/icon/src/components/world-icon.tsx",
+      "target": "src/components/design-system/icons/components/world-icon.tsx",
+      "usages": []
+    }
+  ],
+  "extensions": [
+    {
+      "component": "Popover.Anchor",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 27
+        }
+      ]
+    },
+    {
+      "component": "Popover.Close",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "usages": [
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 68
+        },
+        {
+          "file": "src/components/design-system/FloatingPanel.tsx",
+          "line": 61
+        },
+        {
+          "file": "src/components/design-system/HelpBubble.tsx",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "component": "EditorAccordionItem",
+      "target": "src/components/design-system/EditorAccordionItem.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 58
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 38
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 104
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 114
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 447
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 462
+        }
+      ]
+    },
+    {
+      "component": "ChoiceButton",
+      "target": "src/components/design-system/ChoiceButton.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 130
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 196
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 283
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 101
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 465
+        }
+      ]
+    },
+    {
+      "component": "Checkbox",
+      "target": "src/components/design-system/Checkbox.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 270
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 455
+        }
+      ]
+    },
+    {
+      "component": "ColorPicker",
+      "target": "src/components/design-system/ColorPicker.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 136
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 142
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 178
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 448
+        }
+      ]
+    },
+    {
+      "component": "MotionIcon",
+      "target": "src/components/design-system/MotionIcon.tsx",
+      "usages": [
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 471
+        }
+      ]
+    },
+    {
+      "component": "SegmentedControl",
+      "target": "src/components/design-system/SegmentedControl.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 131
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 116
+        }
+      ]
+    },
+    {
+      "component": "RangeField",
+      "target": "src/components/design-system/RangeField.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 80
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 87
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 96
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 115
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 123
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 504
+        }
+      ]
+    },
+    {
+      "component": "FloatingPanel",
+      "target": "src/components/design-system/FloatingPanel.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 41
+        }
+      ]
+    },
+    {
+      "component": "HelpBubble",
+      "target": "src/components/design-system/HelpBubble.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 243
+        },
+        {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 47
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 350
+        }
+      ]
+    },
+    {
+      "component": "Link",
+      "target": "src/components/design-system/Link.tsx",
+      "usages": [
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 210
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 286
+        }
+      ]
+    },
+    {
+      "component": "ContentTextArea",
+      "target": "src/components/design-system/ContentTextArea.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "component": "CanvasHitTarget",
+      "target": "src/components/design-system/CanvasHitTarget.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/CanvasEditor.tsx",
+          "line": 283
+        }
+      ]
+    },
+    {
+      "component": "ReactionButton",
+      "target": "src/components/design-system/ReactionButton.tsx",
+      "usages": [
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 555
+        }
+      ]
+    }
+  ],
+  "consumers": [
+    {
+      "file": "src/components/editor/CanvasEditor.tsx",
+      "components": ["CanvasEditor"],
+      "designSystem": ["Button", "CanvasHitTarget", "Spinner"],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/lib/emoji.ts",
+        "src/lib/font-loading.ts"
+      ]
+    },
+    {
+      "file": "src/components/editor/FontPicker.tsx",
+      "components": ["FontPicker"],
+      "designSystem": [
+        "Button",
+        "Checkbox",
+        "ChoiceButton",
+        "FormField.Label",
+        "HelpBubble",
+        "Input",
+        "Modal",
+        "Modal.Close",
+        "Modal.Content",
+        "Modal.Description",
+        "Modal.Title",
+        "Modal.Trigger",
+        "Spinner"
+      ],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/lib/emoji.ts",
+        "src/lib/font-loading.ts"
+      ]
+    },
+    {
+      "file": "src/components/editor/LayerControls.tsx",
+      "components": ["LayerControls"],
+      "designSystem": [
+        "Accordion",
+        "Button",
+        "EditorAccordionItem",
+        "FloatingPanel",
+        "RangeField",
+        "SegmentedControl"
+      ],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/components/editor/TextLayerEditor.tsx",
+        "src/lib/emoji.ts"
+      ]
+    },
+    {
+      "file": "src/components/editor/LayerEditor.tsx",
+      "components": ["LayerEditor"],
+      "designSystem": ["Button", "ChoiceButton", "HelpBubble", "Input", "Spinner"],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/lib/emoji.ts",
+        "src/lib/image-upload.ts"
+      ]
+    },
+    {
+      "file": "src/components/editor/TextLayerEditor.tsx",
+      "components": ["TextLayerEditor"],
+      "designSystem": [
+        "Accordion",
+        "ColorPicker",
+        "ContentTextArea",
+        "EditorAccordionItem",
+        "FormField.Label",
+        "SegmentedControl",
+        "Select",
+        "Select.Content",
+        "Select.Item",
+        "Select.Trigger",
+        "Select.Value"
+      ],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/components/editor/FontPicker.tsx",
+        "src/lib/emoji.ts"
+      ]
+    },
+    {
+      "file": "src/pages/EditorPage.tsx",
+      "components": ["EditorPage"],
+      "designSystem": [
+        "Accordion",
+        "Button",
+        "Checkbox",
+        "ChoiceButton",
+        "ColorPicker",
+        "EditorAccordionItem",
+        "FormField.Label",
+        "HelpBubble",
+        "Link",
+        "MotionIcon",
+        "RangeField",
+        "ReactionButton",
+        "Select",
+        "Select.Content",
+        "Select.Item",
+        "Select.Trigger",
+        "Select.Value",
+        "Spinner"
+      ],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/components/editor/CanvasEditor.tsx",
+        "src/components/editor/LayerControls.tsx",
+        "src/components/editor/LayerEditor.tsx",
+        "src/lib/editor-history.ts",
+        "src/lib/emoji.ts",
+        "src/lib/font-loading.ts"
+      ]
+    }
+  ],
+  "implementation": [
+    {
+      "file": "src/components/design-system/CanvasHitTarget.tsx",
+      "components": ["CanvasHitTarget"],
+      "dependencies": ["npm:react"]
+    },
+    {
+      "file": "src/components/design-system/Checkbox.tsx",
+      "components": ["Checkbox"],
+      "dependencies": ["src/components/design-system/icons/index.ts"]
+    },
+    {
+      "file": "src/components/design-system/ChoiceButton.tsx",
+      "components": ["ChoiceButton"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/button.tsx",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/ColorPicker.tsx",
+      "components": ["ColorPicker"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/button.tsx",
+        "src/components/design-system/meki/input.tsx",
+        "src/components/design-system/meki/popover/index.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/ContentTextArea.tsx",
+      "components": ["ContentTextArea"],
+      "dependencies": ["npm:react", "src/components/design-system/meki/cn.ts"]
+    },
+    {
+      "file": "src/components/design-system/EditorAccordionItem.tsx",
+      "components": ["EditorAccordionItem"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/icons/index.ts",
+        "src/components/design-system/meki/accordion/index.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/FloatingPanel.tsx",
+      "components": ["FloatingPanel"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/button.tsx",
+        "src/components/design-system/meki/popover/index.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/HelpBubble.tsx",
+      "components": ["HelpBubble"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/icons/index.ts",
+        "src/components/design-system/meki/popover/index.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/arrow-down-icon.tsx",
+      "components": ["ArrowDownIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/arrow-left-icon.tsx",
+      "components": ["ArrowLeftIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/arrow-right-icon.tsx",
+      "components": ["ArrowRightIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/arrow-up-icon.tsx",
+      "components": ["ArrowUpIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/check-icon.tsx",
+      "components": ["CheckIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/chevron-down-icon.tsx",
+      "components": ["ChevronDownIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/chevron-left-icon.tsx",
+      "components": ["ChevronLeftIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/chevron-right-icon.tsx",
+      "components": ["ChevronRightIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/chevron-up-icon.tsx",
+      "components": ["ChevronUpIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/clock-icon.tsx",
+      "components": ["ClockIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/copy-icon.tsx",
+      "components": ["CopyIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/cross-icon.tsx",
+      "components": ["CrossIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/diamond-icon.tsx",
+      "components": ["DiamondIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/face-sad-icon.tsx",
+      "components": ["FaceSadIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/gamepad-icon.tsx",
+      "components": ["GamepadIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/info-icon.tsx",
+      "components": ["InfoIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/mekigg-mark.tsx",
+      "components": ["MekiggMark"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/mekigg-wordmark.tsx",
+      "components": ["MekiggWordmark"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/menu-icon.tsx",
+      "components": ["MenuIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/plus-icon.tsx",
+      "components": ["PlusIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/share-icon.tsx",
+      "components": ["ShareIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/sparkles-icon.tsx",
+      "components": ["SparklesIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/ticket-icon.tsx",
+      "components": ["TicketIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/components/world-icon.tsx",
+      "components": ["WorldIcon"],
+      "dependencies": [
+        "src/components/design-system/icons/icon.tsx",
+        "src/components/design-system/icons/types.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/icons/icon.tsx",
+      "components": [],
+      "dependencies": ["npm:react", "src/components/design-system/icons/types.ts"]
+    },
+    {
+      "file": "src/components/design-system/icons/index.ts",
+      "components": [],
+      "dependencies": []
+    },
+    {
+      "file": "src/components/design-system/icons/types.ts",
+      "components": [],
+      "dependencies": ["npm:react"]
+    },
+    {
+      "file": "src/components/design-system/index.ts",
+      "components": [],
+      "dependencies": [
+        "src/components/design-system/CanvasHitTarget.tsx",
+        "src/components/design-system/Checkbox.tsx",
+        "src/components/design-system/ChoiceButton.tsx",
+        "src/components/design-system/ColorPicker.tsx",
+        "src/components/design-system/ContentTextArea.tsx",
+        "src/components/design-system/EditorAccordionItem.tsx",
+        "src/components/design-system/FloatingPanel.tsx",
+        "src/components/design-system/HelpBubble.tsx",
+        "src/components/design-system/Link.tsx",
+        "src/components/design-system/MotionIcon.tsx",
+        "src/components/design-system/RangeField.tsx",
+        "src/components/design-system/ReactionButton.tsx",
+        "src/components/design-system/SegmentedControl.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/Link.tsx",
+      "components": ["Link"],
+      "dependencies": ["npm:react", "src/components/design-system/meki/cn.ts"]
+    },
+    {
+      "file": "src/components/design-system/meki/accordion/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-accordion",
+        "src/components/design-system/meki/accordion/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/accordion/parts.tsx",
+      "components": ["AccordionItem", "AccordionTrigger", "AccordionContent"],
+      "dependencies": [
+        "npm:@radix-ui/react-accordion",
+        "npm:react",
+        "src/components/design-system/meki/accordion/accordion.module.css",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/back-button.tsx",
+      "components": ["BackButton"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/icons/index.ts",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/button.tsx",
+      "components": ["Button"],
+      "dependencies": [
+        "npm:@radix-ui/react-slot",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/card/index.ts",
+      "components": [],
+      "dependencies": ["src/components/design-system/meki/card/parts.tsx"]
+    },
+    {
+      "file": "src/components/design-system/meki/card/parts.tsx",
+      "components": ["CardRoot", "CardTitle"],
+      "dependencies": [
+        "npm:@radix-ui/react-slot",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/client-only.tsx",
+      "components": [],
+      "dependencies": ["npm:react", "src/components/design-system/meki/use-is-client.ts"]
+    },
+    {
+      "file": "src/components/design-system/meki/cn.ts",
+      "components": [],
+      "dependencies": ["npm:clsx", "npm:tailwind-merge"]
+    },
+    {
+      "file": "src/components/design-system/meki/collapsible/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-collapsible",
+        "src/components/design-system/meki/collapsible/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/collapsible/parts.tsx",
+      "components": ["CollapsibleContent"],
+      "dependencies": [
+        "npm:@radix-ui/react-collapsible",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/collapsible/collapsible.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/divider.tsx",
+      "components": ["Divider"],
+      "dependencies": ["npm:react", "src/components/design-system/meki/cn.ts"]
+    },
+    {
+      "file": "src/components/design-system/meki/dropdown/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-dropdown-menu",
+        "src/components/design-system/meki/dropdown/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/dropdown/parts.tsx",
+      "components": ["DropdownMenuContent", "DropdownMenuItem", "DropdownMenuSeparator"],
+      "dependencies": [
+        "npm:@radix-ui/react-dropdown-menu",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/dropdown/dropdown.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/flex.tsx",
+      "components": ["Flex"],
+      "dependencies": [
+        "npm:@radix-ui/react-slot",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/form-field/index.ts",
+      "components": [],
+      "dependencies": ["src/components/design-system/meki/form-field/parts.tsx"]
+    },
+    {
+      "file": "src/components/design-system/meki/form-field/parts.tsx",
+      "components": ["FormFieldRoot", "FormFieldLabel", "FormFieldInput", "FormFieldError"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/flex.tsx",
+        "src/components/design-system/meki/input.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/formatted-number-input/index.tsx",
+      "components": ["FormattedNumberInput"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/input-sizes.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/grid.tsx",
+      "components": ["Grid"],
+      "dependencies": [
+        "npm:@radix-ui/react-slot",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/hover-card/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-hover-card",
+        "src/components/design-system/meki/hover-card/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/hover-card/parts.tsx",
+      "components": ["HoverCardContent"],
+      "dependencies": [
+        "npm:@radix-ui/react-hover-card",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/hover-card/hover-card.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:sonner",
+        "src/components/design-system/meki/accordion/index.ts",
+        "src/components/design-system/meki/back-button.tsx",
+        "src/components/design-system/meki/button.tsx",
+        "src/components/design-system/meki/card/index.ts",
+        "src/components/design-system/meki/client-only.tsx",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/collapsible/index.ts",
+        "src/components/design-system/meki/divider.tsx",
+        "src/components/design-system/meki/dropdown/index.ts",
+        "src/components/design-system/meki/flex.tsx",
+        "src/components/design-system/meki/form-field/index.ts",
+        "src/components/design-system/meki/formatted-number-input/index.tsx",
+        "src/components/design-system/meki/grid.tsx",
+        "src/components/design-system/meki/hover-card/index.ts",
+        "src/components/design-system/meki/input.tsx",
+        "src/components/design-system/meki/modal/index.ts",
+        "src/components/design-system/meki/navigation-menu/index.ts",
+        "src/components/design-system/meki/pagination.tsx",
+        "src/components/design-system/meki/popover/index.ts",
+        "src/components/design-system/meki/select/index.ts",
+        "src/components/design-system/meki/slider/index.tsx",
+        "src/components/design-system/meki/spinner/index.tsx",
+        "src/components/design-system/meki/table.ts",
+        "src/components/design-system/meki/tabs/index.ts",
+        "src/components/design-system/meki/time/index.tsx",
+        "src/components/design-system/meki/use-is-client.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/input-sizes.ts",
+      "components": [],
+      "dependencies": []
+    },
+    {
+      "file": "src/components/design-system/meki/input.tsx",
+      "components": ["Input"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/input-sizes.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/modal/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-dialog",
+        "src/components/design-system/meki/modal/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/modal/parts.tsx",
+      "components": ["ModalContent", "ModalTitle"],
+      "dependencies": [
+        "npm:@radix-ui/react-dialog",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/modal/modal.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/navigation-menu/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-navigation-menu",
+        "src/components/design-system/meki/navigation-menu/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/navigation-menu/parts.tsx",
+      "components": [
+        "NavigationMenuTrigger",
+        "NavigationMenuLink",
+        "NavigationMenuContent",
+        "NavigationMenuViewport"
+      ],
+      "dependencies": [
+        "npm:@radix-ui/react-navigation-menu",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/navigation-menu/navigation-menu.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/pagination.tsx",
+      "components": ["Pagination"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/icons/index.ts",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/flex.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/popover/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-popover",
+        "src/components/design-system/meki/popover/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/popover/parts.tsx",
+      "components": [
+        "PopoverProvider",
+        "PopoverImpl",
+        "PopoverTrigger",
+        "PopoverArrow",
+        "PopoverContent"
+      ],
+      "dependencies": [
+        "npm:@radix-ui/react-popover",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/popover/popover.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/select/index.ts",
+      "components": [],
+      "dependencies": [
+        "npm:@radix-ui/react-select",
+        "src/components/design-system/meki/select/parts.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/select/parts.tsx",
+      "components": [
+        "SelectTriggerRender",
+        "SelectItemRender",
+        "SelectTrigger",
+        "SelectContent",
+        "SelectItem",
+        "SelectRoot"
+      ],
+      "dependencies": [
+        "npm:@radix-ui/react-select",
+        "npm:react",
+        "src/components/design-system/icons/index.ts",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/select/select.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/slider/index.tsx",
+      "components": ["Slider"],
+      "dependencies": [
+        "npm:@radix-ui/react-slider",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/spinner/index.tsx",
+      "components": ["Spinner"],
+      "dependencies": [
+        "npm:react",
+        "npm:tailwind-merge",
+        "src/components/design-system/meki/spinner/Spinner.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/table.parts.tsx",
+      "components": ["TableRoot", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell"],
+      "dependencies": [
+        "npm:@radix-ui/react-slot",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/table.ts",
+      "components": [],
+      "dependencies": ["src/components/design-system/meki/table.parts.tsx"]
+    },
+    {
+      "file": "src/components/design-system/meki/tabs/index.ts",
+      "components": [],
+      "dependencies": ["src/components/design-system/meki/tabs/parts.tsx"]
+    },
+    {
+      "file": "src/components/design-system/meki/tabs/parts.tsx",
+      "components": [
+        "TabsRootRender",
+        "TabsRoot",
+        "TabsListRender",
+        "TabsList",
+        "TabsTriggerRender",
+        "TabsTrigger",
+        "TabsContentRender",
+        "TabsContent"
+      ],
+      "dependencies": [
+        "npm:@radix-ui/react-tabs",
+        "npm:motion/react",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/time/format-time.ts",
+      "components": [],
+      "dependencies": ["npm:dayjs", "npm:dayjs/plugin/utc.js"]
+    },
+    {
+      "file": "src/components/design-system/meki/time/index.tsx",
+      "components": ["Time"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/client-only.tsx",
+        "src/components/design-system/meki/time/format-time.ts"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/tooltip/index.ts",
+      "components": [],
+      "dependencies": ["src/components/design-system/meki/tooltip/parts.tsx"]
+    },
+    {
+      "file": "src/components/design-system/meki/tooltip/parts.tsx",
+      "components": ["TooltipProvider", "TooltipImpl", "TooltipTrigger", "TooltipContent"],
+      "dependencies": [
+        "npm:@radix-ui/react-tooltip",
+        "npm:react",
+        "src/components/design-system/meki/cn.ts",
+        "src/components/design-system/meki/popover/popover.module.css"
+      ]
+    },
+    {
+      "file": "src/components/design-system/meki/use-is-client.ts",
+      "components": [],
+      "dependencies": ["npm:react"]
+    },
+    {
+      "file": "src/components/design-system/MotionIcon.tsx",
+      "components": ["MotionIcon"],
+      "dependencies": ["src/lib/emoji.ts"]
+    },
+    {
+      "file": "src/components/design-system/RangeField.tsx",
+      "components": ["RangeField"],
+      "dependencies": [
+        "npm:react",
+        "src/components/design-system/meki/form-field/index.ts",
+        "src/components/design-system/meki/slider/index.tsx"
+      ]
+    },
+    {
+      "file": "src/components/design-system/ReactionButton.tsx",
+      "components": ["ReactionButton"],
+      "dependencies": ["npm:react"]
+    },
+    {
+      "file": "src/components/design-system/SegmentedControl.tsx",
+      "components": ["SegmentedControl"],
+      "dependencies": ["npm:react"]
+    }
+  ]
+}

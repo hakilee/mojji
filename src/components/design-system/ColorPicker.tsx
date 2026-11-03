@@ -1,9 +1,7 @@
-import { Popover } from "@base-ui/react/popover";
-import { Radio } from "@base-ui/react/radio";
-import { RadioGroup } from "@base-ui/react/radio-group";
+import { Popover } from "./meki/popover";
 import { useId, useState } from "react";
-import { Button } from "./Button";
-import { Input } from "./Input";
+import { Button } from "./meki/button";
+import { Input } from "./meki/input";
 
 const colors = [
   { value: "#1a1c20", label: "차콜" },
@@ -38,7 +36,7 @@ export function ColorPicker({
   const invalid = draft !== null && !/^#?[\da-f]{6}$/i.test(draft);
 
   return (
-    <Popover.Root
+    <Popover
       onOpenChange={(open) => {
         if (!open) setDraft(null);
       }}
@@ -46,7 +44,7 @@ export function ColorPicker({
       <Popover.Trigger
         disabled={disabled}
         aria-label={`${label} 선택`}
-        className="flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-popup-open:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
+        className="flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-[state=open]:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
       >
         <span>{displayLabel}</span>
         <span
@@ -55,15 +53,20 @@ export function ColorPicker({
           style={{ backgroundColor: value }}
         />
       </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner sideOffset={8} collisionPadding={12} align="start" className="z-50">
-          <Popover.Popup className="max-h-[var(--available-height)] overflow-y-auto overscroll-contain w-64 max-w-[calc(100vw-24px)] space-y-inset rounded-panel border border-stroke-neutral bg-bg-layer-default p-inset text-fg-neutral shadow-floating outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none">
-            <div className="flex items-center justify-between gap-control">
-              <Popover.Title className="text-label font-semibold">{label}</Popover.Title>
-              <Popover.Close
-                aria-label="색상 선택 닫기"
-                render={<Button variant="neutral" svgOnly className="shrink-0" />}
-              >
+      <Popover.Provider>
+        <Popover.Content
+          sideOffset={8}
+          collisionPadding={12}
+          align="start"
+          aria-labelledby={`${id}-title`}
+          className="max-h-[var(--radix-popover-content-available-height)] overflow-y-auto overscroll-contain w-64 max-w-[calc(100vw-24px)] space-y-inset rounded-panel border border-stroke-neutral bg-bg-layer-default p-inset text-fg-neutral shadow-floating outline-none"
+        >
+          <div className="flex items-center justify-between gap-control">
+            <h2 id={`${id}-title`} className="text-label font-semibold">
+              {label}
+            </h2>
+            <Popover.Close aria-label="색상 선택 닫기" asChild>
+              <Button variant="neutral" svgOnly className="shrink-0">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -75,77 +78,84 @@ export function ColorPicker({
                 >
                   <path d="m6 6 12 12M18 6 6 18" />
                 </svg>
-              </Popover.Close>
-            </div>
-            <RadioGroup
-              aria-label={`${label} 팔레트`}
-              value={value.toLowerCase()}
-              onValueChange={(color) => {
-                setDraft(null);
-                onChange(color);
-              }}
-              className="grid grid-cols-4 gap-control"
-            >
-              {colors.map((color) => (
-                <Radio.Root
-                  key={color.value}
-                  value={color.value}
-                  aria-label={`${color.label} ${color.value}`}
-                  nativeButton
-                  render={<button type="button" />}
-                  className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset border border-transparent p-0.5 transition-colors duration-150 hover:border-stroke-neutral-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-checked:border-stroke-brand motion-reduce:transition-none"
-                >
-                  <span
-                    className="flex size-8 items-center justify-center rounded-control-inset border border-stroke-neutral-strong"
-                    style={{ backgroundColor: color.value }}
-                  >
-                    <Radio.Indicator className="size-3 rounded-full border-2 border-white bg-bg-brand-solid shadow-sm" />
-                  </span>
-                </Radio.Root>
-              ))}
-            </RadioGroup>
-            <div className="space-y-control">
-              <label htmlFor={id} className="block text-caption text-fg-neutral-muted">
-                HEX
-              </label>
-              <div className="flex gap-control">
+              </Button>
+            </Popover.Close>
+          </div>
+          <div
+            role="radiogroup"
+            aria-label={`${label} 팔레트`}
+            className="grid grid-cols-4 gap-control"
+          >
+            {colors.map((color) => (
+              <label
+                key={color.value}
+                className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset border border-transparent p-0.5 transition-colors duration-150 hover:border-stroke-neutral-strong has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stroke-focus has-checked:border-stroke-brand motion-reduce:transition-none"
+              >
                 <input
-                  type="color"
-                  aria-label={`${label} 직접 선택`}
-                  value={value}
-                  onChange={(event) => {
+                  type="radio"
+                  name={`${id}-palette`}
+                  value={color.value}
+                  checked={value.toLowerCase() === color.value}
+                  aria-label={`${color.label} ${color.value}`}
+                  className="sr-only"
+                  onChange={() => {
                     setDraft(null);
-                    onChange(event.target.value);
+                    onChange(color.value);
                   }}
-                  className="size-control-size shrink-0 cursor-pointer rounded-control border border-stroke-neutral bg-bg-layer-default p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
                 />
-                <Input
-                  id={id}
-                  aria-label={`${label} HEX`}
-                  aria-invalid={invalid}
-                  aria-describedby={invalid ? `${id}-error` : undefined}
-                  value={draft ?? value}
-                  spellCheck={false}
-                  autoComplete="off"
-                  maxLength={7}
-                  onValueChange={(text) => {
-                    setDraft(text);
-                    if (/^#?[\da-f]{6}$/i.test(text))
-                      onChange(`#${text.replace(/^#/, "").toLowerCase()}`);
-                  }}
-                  onBlur={() => setDraft(null)}
-                  className="flex-1 tabular-nums"
-                />
-              </div>
-              {invalid && (
-                <p id={`${id}-error`} className="text-caption text-fg-critical">
-                  6자리 HEX 색상을 입력해 주세요.
-                </p>
-              )}
+                <span
+                  className="flex size-8 items-center justify-center rounded-control-inset border border-stroke-neutral-strong"
+                  style={{ backgroundColor: color.value }}
+                >
+                  {value.toLowerCase() === color.value && (
+                    <span className="size-3 rounded-full border-2 border-white bg-bg-brand-solid shadow-sm" />
+                  )}
+                </span>
+              </label>
+            ))}
+          </div>
+          <div className="space-y-control">
+            <label htmlFor={id} className="block text-caption text-fg-neutral-muted">
+              HEX
+            </label>
+            <div className="flex gap-control">
+              <Input
+                type="color"
+                aria-label={`${label} 직접 선택`}
+                value={value}
+                onChange={(event) => {
+                  setDraft(null);
+                  onChange(event.target.value);
+                }}
+                className="size-control-size shrink-0 cursor-pointer rounded-control border border-stroke-neutral bg-bg-layer-default p-1 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stroke-focus"
+              />
+              <Input
+                id={id}
+                aria-label={`${label} HEX`}
+                aria-invalid={invalid}
+                aria-describedby={invalid ? `${id}-error` : undefined}
+                value={draft ?? value}
+                spellCheck={false}
+                autoComplete="off"
+                maxLength={7}
+                onChange={(event) => {
+                  const text = event.target.value;
+                  setDraft(text);
+                  if (/^#?[\da-f]{6}$/i.test(text))
+                    onChange(`#${text.replace(/^#/, "").toLowerCase()}`);
+                }}
+                onBlur={() => setDraft(null)}
+                className="flex-1 tabular-nums"
+              />
             </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+            {invalid && (
+              <p id={`${id}-error`} className="text-caption text-fg-critical">
+                6자리 HEX 색상을 입력해 주세요.
+              </p>
+            )}
+          </div>
+        </Popover.Content>
+      </Popover.Provider>
+    </Popover>
   );
 }

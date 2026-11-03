@@ -1,0 +1,41 @@
+.overlay {
+  animation: overlayFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+    transition: none;
+  }
+  .overlay {
+    animation: none;
+    transition: none;
+  }
+}

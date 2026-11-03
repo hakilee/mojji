@@ -1,3 +1,4 @@
+import { CanvasHitTarget } from "~/components/design-system";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, RefObject } from "react";
 import { drawEmoji, measureEmojiText } from "~/lib/emoji";
@@ -279,12 +280,11 @@ export function CanvasEditor({
             transform: `translate(-50%, -50%) rotate(${layer.type === "text" ? 0 : layer.rotation}deg)`,
           };
           return (
-            <button
+            <CanvasHitTarget
               key={id}
               ref={(element) => {
                 if (element && selectedId === id) selectedAnchor.current = element;
               }}
-              type="button"
               data-layer={id}
               style={style}
               aria-label={
@@ -303,7 +303,6 @@ export function CanvasEditor({
                 }
               }}
               onDoubleClick={layer.type === "text" ? () => onEditText(id) : undefined}
-              className="absolute touch-none cursor-grab border-0 bg-transparent p-0 hover:outline hover:-outline-offset-1 hover:outline-stroke-guide/35 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-guide aria-pressed:outline aria-pressed:-outline-offset-1 aria-pressed:outline-stroke-guide/75 active:cursor-grabbing"
             />
           );
         })}

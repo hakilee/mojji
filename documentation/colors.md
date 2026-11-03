@@ -1,20 +1,20 @@
-# UI color tokens
+# Color ownership
 
-`src/styles/tailwind.css` owns the app theme. Tailwind utilities consume semantic `--color-{fg|bg|stroke}-*` roles rather than embedding color values in components.
+The core palette and semantic names come from the pinned meki.gg theme in [design-system-source.json](design-system-source.json). `src/styles/tailwind.css` owns the actual values; [design-system.md](design-system.md) explains component usage.
 
-## Roles
+| Role                    | Token/value                                                            |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Primary/text            | primary / text-primary = neutral-950                                   |
+| Secondary text          | text-secondary = neutral-700                                           |
+| Tertiary text           | text-tertiary = neutral-500                                            |
+| Black action            | neutral-900; hover neutral-700                                         |
+| Page background         | background = rgb(246,247,249)                                          |
+| Surface                 | white; neutral-50 weak surface                                         |
+| Border/divider          | divider = neutral-200                                                  |
+| Legacy semantic names   | fg/bg/stroke aliases resolve to these core tokens                      |
+| Error / success         | fg-critical #bb3041 / fg-positive #216b51 (editor feedback extensions) |
+| Canvas guide            | stroke-guide #ff2ba6 (editor content geometry)                         |
+| Slack selected reaction | fg/stroke-reaction #0968a8, bg-reaction #e3f5fc                        |
+| Inspection checkerboard | bg-checker-base #f7f8f9, tile #eeeff1                                  |
 
-- Layers: white workspace/panels on the cool `#f6f7f9` page.
-- Overlay: `bg-overlay` dims the editor behind a modal without changing its content colors.
-- Neutral foreground: `fg-neutral` for primary text, `fg-neutral-secondary` for supporting labels, `fg-neutral-muted` for captions. Muted text remains readable on white and neutral surfaces.
-- Neutral surfaces: `bg-neutral-weak` and its hover/pressed roles support secondary controls. `stroke-neutral` defines structure; `stroke-neutral-strong` clarifies field boundaries and hover.
-- Brand: charcoal primary actions, pale neutral selected surfaces and dark keyboard focus. Solid and weak actions have separate hover/pressed roles; disabled controls do not react to pointer states.
-- Positive and critical: success and validation feedback; destructive action labels use the critical foreground on the white button variant.
-- Disabled: muted foreground and neutral background.
-- Checker: alternating neutral tiles for transparency previews.
-- Guide: pink is reserved for canvas layer selection, hover, alignment and contextual focus.
-- Reaction: blue selected feedback is reserved for the Slack-like generated reaction.
-
-This is a light theme. Keep readable foreground contrast and distinguish selected, focused and disabled states. Update theme metadata with the page background.
-
-User-selected GIF colors and logo artwork are independent of the UI theme and must not change when UI tokens change.
+User text/gradient/character/background colors are document content, not UI tokens. Brand assets and font specimen rendering remain independent. No UI theme changes are written into exported GIF pixels.

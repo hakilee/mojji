@@ -70,3 +70,7 @@ Wrangler로 로컬에서 빌드한 결과만 Cloudflare Workers의 `haklee` 계�
 ## 브랜드 자산
 
 선택된 C 수다모찌의 텍스트 없는 로고 원본은 `public/logo.svg`입니다. 헤더·푸터에서 이 파일을 직접 사용하며, 정사각형 파비콘은 같은 원본에서 별도로 생성합니다. 원본 수정 후 `yarn icons`를 실행하면 PNG 파비콘, Apple touch 아이콘, Android 일반·maskable 아이콘이 재생성됩니다. Android 아이콘은 `public/site.webmanifest`에 선언하며, 오프라인 캐싱은 추가하지 않습니다.
+
+## Design system
+
+The complete user-owned meki.gg UI/icon dependency closure is ported locally. See the [component-by-component inventory](documentation/design-system-inventory.md) and [design-system reference](documentation/design-system.md). Run `yarn design-system:inventory` after component changes; `yarn verify` rejects missing public exports/parts, direct UI bypasses and stale inventory.

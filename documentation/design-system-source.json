@@ -1,0 +1,2031 @@
+{
+  "repository": "mekigg/meki.gg",
+  "commit": "5df8d3ee3dfc970a1057a93ccfd68c13e7ac61be",
+  "roots": ["packages/ui/src/index.ts", "packages/icon/src/index.ts"],
+  "files": [
+    {
+      "source": "packages/icon/src/components/arrow-down-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-down-icon.tsx",
+      "sha256": "6f6d8125dd7f17bcf272f11ddea179a2872f5640ad56c7066332c1991df1e04e",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ArrowDownIcon",
+          "local": "ArrowDownIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/arrow-left-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-left-icon.tsx",
+      "sha256": "dcb3478c814442599e571f42b5f8ecbeb3c76888a8ec30344bb44d7790e771b2",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ArrowLeftIcon",
+          "local": "ArrowLeftIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/arrow-right-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-right-icon.tsx",
+      "sha256": "327a7dec27472eb8e52b550bb050ae50566f1c49d12f2aa07f2153f087993a4e",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ArrowRightIcon",
+          "local": "ArrowRightIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/arrow-up-icon.tsx",
+      "target": "src/components/design-system/icons/components/arrow-up-icon.tsx",
+      "sha256": "d776fd70219db1d4dceb8d3b57682a46bac3a43e3d62152dd84fd3a9312a95a8",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ArrowUpIcon",
+          "local": "ArrowUpIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/check-icon.tsx",
+      "target": "src/components/design-system/icons/components/check-icon.tsx",
+      "sha256": "f3ff09f7e2462b9d9cd68d7a8d90b2e5a6b5311fd16c60b1002c381109860a1a",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "CheckIcon",
+          "local": "CheckIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/chevron-down-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-down-icon.tsx",
+      "sha256": "f955a540a6673af3174d7cff4998abf4f01767d935441677703fd1b36810e4fd",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ChevronDownIcon",
+          "local": "ChevronDownIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/chevron-left-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-left-icon.tsx",
+      "sha256": "5dfdb66d63a73f47d4d13053b87cecf8532ea0d5157e7607fd8841004c3a22e7",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ChevronLeftIcon",
+          "local": "ChevronLeftIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/chevron-right-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-right-icon.tsx",
+      "sha256": "1be9b8931da3fef572856863a6dcc1f09d0a79fd00abdfe75f3e99e93240a246",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ChevronRightIcon",
+          "local": "ChevronRightIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/chevron-up-icon.tsx",
+      "target": "src/components/design-system/icons/components/chevron-up-icon.tsx",
+      "sha256": "08f7cba152f0750b0dcf606b031cd0b84a456f22438844259dacc10e1a1c5f75",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ChevronUpIcon",
+          "local": "ChevronUpIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/clock-icon.tsx",
+      "target": "src/components/design-system/icons/components/clock-icon.tsx",
+      "sha256": "b976c73a3523be7d94f187c1c11af5b4503e01d14a9a26d97c4863324b444b14",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ClockIcon",
+          "local": "ClockIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/copy-icon.tsx",
+      "target": "src/components/design-system/icons/components/copy-icon.tsx",
+      "sha256": "36921f5f2fdd881aec481932ef965c4fa318579ac0278de8c4038c2b0a70ec7d",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "CopyIcon",
+          "local": "CopyIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/cross-icon.tsx",
+      "target": "src/components/design-system/icons/components/cross-icon.tsx",
+      "sha256": "b68eae84934d7e106309009245e6b87a462c25c6c3134b5b2a1ab16aef82c266",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "CrossIcon",
+          "local": "CrossIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/diamond-icon.tsx",
+      "target": "src/components/design-system/icons/components/diamond-icon.tsx",
+      "sha256": "7cff7496d3e9b323ed1a1a0a30fb452ca9c99ec6cc8561dcd5f8f23bf3131bf5",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "DiamondIcon",
+          "local": "DiamondIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/face-sad-icon.tsx",
+      "target": "src/components/design-system/icons/components/face-sad-icon.tsx",
+      "sha256": "c2700ce0c2180f28c4fa492a401af8c2b2caa83a8d3c1db526a5d530dd8014f4",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "FaceSadIcon",
+          "local": "FaceSadIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/gamepad-icon.tsx",
+      "target": "src/components/design-system/icons/components/gamepad-icon.tsx",
+      "sha256": "d29c1780e9415526ec6d1d340beb835b45b31f39aff030950d165b783e3ff1b6",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "GamepadIcon",
+          "local": "GamepadIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/info-icon.tsx",
+      "target": "src/components/design-system/icons/components/info-icon.tsx",
+      "sha256": "bf84e0cc01a347d7aa88fc6db5aa6996c6d48fc22eec3e54dc02df4112fd74e7",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "InfoIcon",
+          "local": "InfoIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/mekigg-mark.tsx",
+      "target": "src/components/design-system/icons/components/mekigg-mark.tsx",
+      "sha256": "33d1c5553f44a450c1d4e571e55b777b6b8384831ecd8ac86a2758644dd9f517",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "MekiggMark",
+          "local": "MekiggMark",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/mekigg-wordmark.tsx",
+      "target": "src/components/design-system/icons/components/mekigg-wordmark.tsx",
+      "sha256": "005b2cd53a962109f28d71223baec45b614c56c8ad65e1cd40cb50a36b64f0a2",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "MekiggWordmark",
+          "local": "MekiggWordmark",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/menu-icon.tsx",
+      "target": "src/components/design-system/icons/components/menu-icon.tsx",
+      "sha256": "3eea54676a26592c85a95e9bdfa045fea12ff78f92b78a4b71a93dbc10fa1f1a",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "MenuIcon",
+          "local": "MenuIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/plus-icon.tsx",
+      "target": "src/components/design-system/icons/components/plus-icon.tsx",
+      "sha256": "60571234367519d626ac626a975952e2f01f1428c3cff1f4864aa88d26ff2fe0",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "PlusIcon",
+          "local": "PlusIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/share-icon.tsx",
+      "target": "src/components/design-system/icons/components/share-icon.tsx",
+      "sha256": "c5889cc69824a4ddd13ba4cced33a05f71475d6012e238c9bbbd0f01bec8bd45",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ShareIcon",
+          "local": "ShareIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/sparkles-icon.tsx",
+      "target": "src/components/design-system/icons/components/sparkles-icon.tsx",
+      "sha256": "a577107a24eeec19b6ee7b75639369c924db643568afdbe2ee22ca2a86e5c28b",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "SparklesIcon",
+          "local": "SparklesIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/ticket-icon.tsx",
+      "target": "src/components/design-system/icons/components/ticket-icon.tsx",
+      "sha256": "3374333261ee5d4422c041898b26edbd067d5cb69fefc22117f532d265776cf2",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketIcon",
+          "local": "TicketIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/components/world-icon.tsx",
+      "target": "src/components/design-system/icons/components/world-icon.tsx",
+      "sha256": "07b75ada399d0f933b419dd562e20e112e9a42a5c508e9d52fa504f02f4b27bf",
+      "imports": [
+        {
+          "specifier": "../icon",
+          "source": "packages/icon/src/icon.tsx"
+        },
+        {
+          "specifier": "../types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "WorldIcon",
+          "local": "WorldIcon",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/icon.tsx",
+      "target": "src/components/design-system/icons/icon.tsx",
+      "sha256": "83b47f4a247e0ec654ad7dd2b6371c1b8d56997176d42384b1db8e2319aed876",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./types",
+          "source": "packages/icon/src/types.ts"
+        }
+      ],
+      "exports": []
+    },
+    {
+      "source": "packages/icon/src/index.ts",
+      "target": "src/components/design-system/icons/index.ts",
+      "sha256": "42ebaf3544ecdb8fd35b521445e8fae188fe78529fb0a2ed485a4fd78ad8f338",
+      "imports": [
+        {
+          "specifier": "./components/arrow-down-icon",
+          "source": "packages/icon/src/components/arrow-down-icon.tsx"
+        },
+        {
+          "specifier": "./components/arrow-left-icon",
+          "source": "packages/icon/src/components/arrow-left-icon.tsx"
+        },
+        {
+          "specifier": "./components/arrow-right-icon",
+          "source": "packages/icon/src/components/arrow-right-icon.tsx"
+        },
+        {
+          "specifier": "./components/arrow-up-icon",
+          "source": "packages/icon/src/components/arrow-up-icon.tsx"
+        },
+        {
+          "specifier": "./components/check-icon",
+          "source": "packages/icon/src/components/check-icon.tsx"
+        },
+        {
+          "specifier": "./components/chevron-down-icon",
+          "source": "packages/icon/src/components/chevron-down-icon.tsx"
+        },
+        {
+          "specifier": "./components/chevron-left-icon",
+          "source": "packages/icon/src/components/chevron-left-icon.tsx"
+        },
+        {
+          "specifier": "./components/chevron-right-icon",
+          "source": "packages/icon/src/components/chevron-right-icon.tsx"
+        },
+        {
+          "specifier": "./components/chevron-up-icon",
+          "source": "packages/icon/src/components/chevron-up-icon.tsx"
+        },
+        {
+          "specifier": "./components/clock-icon",
+          "source": "packages/icon/src/components/clock-icon.tsx"
+        },
+        {
+          "specifier": "./components/copy-icon",
+          "source": "packages/icon/src/components/copy-icon.tsx"
+        },
+        {
+          "specifier": "./components/cross-icon",
+          "source": "packages/icon/src/components/cross-icon.tsx"
+        },
+        {
+          "specifier": "./components/diamond-icon",
+          "source": "packages/icon/src/components/diamond-icon.tsx"
+        },
+        {
+          "specifier": "./components/face-sad-icon",
+          "source": "packages/icon/src/components/face-sad-icon.tsx"
+        },
+        {
+          "specifier": "./components/gamepad-icon",
+          "source": "packages/icon/src/components/gamepad-icon.tsx"
+        },
+        {
+          "specifier": "./components/info-icon",
+          "source": "packages/icon/src/components/info-icon.tsx"
+        },
+        {
+          "specifier": "./components/mekigg-mark",
+          "source": "packages/icon/src/components/mekigg-mark.tsx"
+        },
+        {
+          "specifier": "./components/mekigg-wordmark",
+          "source": "packages/icon/src/components/mekigg-wordmark.tsx"
+        },
+        {
+          "specifier": "./components/menu-icon",
+          "source": "packages/icon/src/components/menu-icon.tsx"
+        },
+        {
+          "specifier": "./components/plus-icon",
+          "source": "packages/icon/src/components/plus-icon.tsx"
+        },
+        {
+          "specifier": "./components/share-icon",
+          "source": "packages/icon/src/components/share-icon.tsx"
+        },
+        {
+          "specifier": "./components/sparkles-icon",
+          "source": "packages/icon/src/components/sparkles-icon.tsx"
+        },
+        {
+          "specifier": "./components/ticket-icon",
+          "source": "packages/icon/src/components/ticket-icon.tsx"
+        },
+        {
+          "specifier": "./components/world-icon",
+          "source": "packages/icon/src/components/world-icon.tsx"
+        }
+      ],
+      "exports": [
+        {
+          "name": "*",
+          "from": "./components/arrow-down-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/arrow-left-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/arrow-right-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/arrow-up-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/check-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/chevron-down-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/chevron-left-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/chevron-right-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/chevron-up-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/clock-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/copy-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/cross-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/diamond-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/face-sad-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/gamepad-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/info-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/mekigg-mark"
+        },
+        {
+          "name": "*",
+          "from": "./components/mekigg-wordmark"
+        },
+        {
+          "name": "*",
+          "from": "./components/menu-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/plus-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/share-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/sparkles-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/ticket-icon"
+        },
+        {
+          "name": "*",
+          "from": "./components/world-icon"
+        }
+      ]
+    },
+    {
+      "source": "packages/icon/src/types.ts",
+      "target": "src/components/design-system/icons/types.ts",
+      "sha256": "a17bc45452ddd44630f7b83855f4a7a9c7e744a2814a1f49e475ae9709916bf5",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        }
+      ],
+      "exports": []
+    },
+    {
+      "source": "packages/shared/src/utils/time.ts",
+      "target": "src/components/design-system/meki/time/format-time.ts",
+      "sha256": "0a60bf95223a99a0d9fa314b83e9cc550654b82dc6a39e8da43dee79bd004277",
+      "imports": [
+        {
+          "specifier": "dayjs",
+          "source": null
+        },
+        {
+          "specifier": "dayjs/plugin/utc.js",
+          "source": null
+        }
+      ],
+      "exports": [
+        {
+          "name": "formatTime",
+          "local": "formatTime",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/accordion/accordion.module.css",
+      "target": "src/components/design-system/meki/accordion/accordion.module.css",
+      "sha256": "7b68ac9763649b99510a4b96b978e0fd3d9e844ddacf08d079c5bc15a1cde0f3",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/accordion/index.tsx",
+      "target": "src/components/design-system/meki/accordion/index.ts",
+      "sha256": "5c57c7c5c149346c73ba62feeac8da02d33e0e2c038944df11f52248434042e2",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-accordion",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./accordion.module.css",
+          "source": "packages/ui/src/accordion/accordion.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Accordion",
+          "local": "Accordion",
+          "from": null,
+          "parts": ["Content", "Item", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/back-button.tsx",
+      "target": "src/components/design-system/meki/back-button.tsx",
+      "sha256": "38a5f6aed80d50aab9c25d8d73a778589177d7a0367d7e5de8207ca2c42efcba",
+      "imports": [
+        {
+          "specifier": "@meki/icon",
+          "source": "packages/icon/src/index.ts"
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "BackButton",
+          "local": "BackButton",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/button.tsx",
+      "target": "src/components/design-system/meki/button.tsx",
+      "sha256": "87188a5102a34403b99c84fba35400dbc99749a50c9c624d28097cb952773804",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slot",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Button",
+          "local": "Button",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/card/index.tsx",
+      "target": "src/components/design-system/meki/card/index.ts",
+      "sha256": "f14dca87db0ef281aab1cf19a1e684481538db03d554448f0274c727823a29e9",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slot",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Card",
+          "local": "Card",
+          "from": null,
+          "parts": ["Title"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/client-only.tsx",
+      "target": "src/components/design-system/meki/client-only.tsx",
+      "sha256": "20b0856b7c7ad72380709081970e0cfa19fae47b6360ba6b2d1ccd4806b08e9a",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./use-is-client",
+          "source": "packages/ui/src/use-is-client.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "ClientOnly",
+          "local": "ClientOnly",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/cn.ts",
+      "target": "src/components/design-system/meki/cn.ts",
+      "sha256": "cb0b3bf303831bb5c414fe43a6281291dc38e465e040ec7d771f88bc35f3e1fe",
+      "imports": [
+        {
+          "specifier": "clsx",
+          "source": null
+        },
+        {
+          "specifier": "clsx",
+          "source": null
+        },
+        {
+          "specifier": "tailwind-merge",
+          "source": null
+        }
+      ],
+      "exports": [
+        {
+          "name": "cn",
+          "local": "cn",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/collapsible/collapsible.module.css",
+      "target": "src/components/design-system/meki/collapsible/collapsible.module.css",
+      "sha256": "05b7f45b817d907a2e2f1b4b79f00c43f615df04e2c5b587097186377be6b58d",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/collapsible/index.tsx",
+      "target": "src/components/design-system/meki/collapsible/index.ts",
+      "sha256": "10a914981a08d756c730ccbc8a1b42563be7384a71d7fb824e6c7d81d69ba3e1",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-collapsible",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./collapsible.module.css",
+          "source": "packages/ui/src/collapsible/collapsible.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Collapsible",
+          "local": "Collapsible",
+          "from": null,
+          "parts": ["Content", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/divider.tsx",
+      "target": "src/components/design-system/meki/divider.tsx",
+      "sha256": "466f5430db8ecdfbf97314d9d02020e2eda72b43c02650b9a6f1775e37378436",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Divider",
+          "local": "Divider",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/dropdown/dropdown.module.css",
+      "target": "src/components/design-system/meki/dropdown/dropdown.module.css",
+      "sha256": "dce3338712bbbbd9beab371b747e4f6fd342edcf17d7407f4085a424afab6db2",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/dropdown/index.tsx",
+      "target": "src/components/design-system/meki/dropdown/index.ts",
+      "sha256": "8d35fc2ee6eb5fa861e03d37a8f7cb9c9b74de7b967a5456eda1e837a0c9930c",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-dropdown-menu",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./dropdown.module.css",
+          "source": "packages/ui/src/dropdown/dropdown.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Dropdown",
+          "local": "Dropdown",
+          "from": null,
+          "parts": ["Content", "Item", "Label", "Portal", "Separator", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/flex.tsx",
+      "target": "src/components/design-system/meki/flex.tsx",
+      "sha256": "b74d68f1fbbb95bba4b9f7315dbb37a566bc4e95e3336f46d055db0023864211",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slot",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Flex",
+          "local": "Flex",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/form-field/index.tsx",
+      "target": "src/components/design-system/meki/form-field/index.ts",
+      "sha256": "a8a80fe8132ea9ee99df56187182badd538aee6aa5c450955d7a9a77ae71a087",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "../flex",
+          "source": "packages/ui/src/flex.tsx"
+        },
+        {
+          "specifier": "../input",
+          "source": "packages/ui/src/input.tsx"
+        }
+      ],
+      "exports": [
+        {
+          "name": "FormField",
+          "local": "FormField",
+          "from": null,
+          "parts": ["Error", "Input", "Label"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/formatted-number-input/index.tsx",
+      "target": "src/components/design-system/meki/formatted-number-input/index.tsx",
+      "sha256": "5a62337f92e4b33db5eae23f5ddef72fde864ea832be066dfc956fa53b1da20f",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "../input",
+          "source": "packages/ui/src/input.tsx"
+        },
+        {
+          "specifier": "../input",
+          "source": "packages/ui/src/input.tsx"
+        }
+      ],
+      "exports": [
+        {
+          "name": "FormattedNumberInput",
+          "local": "FormattedNumberInput",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/grid.tsx",
+      "target": "src/components/design-system/meki/grid.tsx",
+      "sha256": "fc576d337003022608e0e0c7c831ab458bdd0157a7c2d503406370b67d7a9c6e",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slot",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Grid",
+          "local": "Grid",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/hover-card/hover-card.module.css",
+      "target": "src/components/design-system/meki/hover-card/hover-card.module.css",
+      "sha256": "bbf4db61663b5df25c97de3b6a0a7eb69f5f3900dea3605b682fa8a95d484b81",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/hover-card/index.tsx",
+      "target": "src/components/design-system/meki/hover-card/index.ts",
+      "sha256": "b757e7b8bd38b3cb2a482b9646f9678dabc825f45e31da12d6f101d7be0c053e",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-hover-card",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./hover-card.module.css",
+          "source": "packages/ui/src/hover-card/hover-card.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "HoverCard",
+          "local": "HoverCard",
+          "from": null,
+          "parts": ["Content", "Portal", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/index.ts",
+      "target": "src/components/design-system/meki/index.ts",
+      "sha256": "abbcae31e3390ce2886226693c2d034f1a44ff927c56230b8fd0d0b70cc9fe96",
+      "imports": [
+        {
+          "specifier": "sonner",
+          "source": null
+        },
+        {
+          "specifier": "./accordion",
+          "source": "packages/ui/src/accordion/index.tsx"
+        },
+        {
+          "specifier": "./back-button",
+          "source": "packages/ui/src/back-button.tsx"
+        },
+        {
+          "specifier": "./button",
+          "source": "packages/ui/src/button.tsx"
+        },
+        {
+          "specifier": "./card",
+          "source": "packages/ui/src/card/index.tsx"
+        },
+        {
+          "specifier": "./client-only",
+          "source": "packages/ui/src/client-only.tsx"
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./collapsible",
+          "source": "packages/ui/src/collapsible/index.tsx"
+        },
+        {
+          "specifier": "./divider",
+          "source": "packages/ui/src/divider.tsx"
+        },
+        {
+          "specifier": "./dropdown",
+          "source": "packages/ui/src/dropdown/index.tsx"
+        },
+        {
+          "specifier": "./flex",
+          "source": "packages/ui/src/flex.tsx"
+        },
+        {
+          "specifier": "./form-field",
+          "source": "packages/ui/src/form-field/index.tsx"
+        },
+        {
+          "specifier": "./formatted-number-input",
+          "source": "packages/ui/src/formatted-number-input/index.tsx"
+        },
+        {
+          "specifier": "./grid",
+          "source": "packages/ui/src/grid.tsx"
+        },
+        {
+          "specifier": "./hover-card",
+          "source": "packages/ui/src/hover-card/index.tsx"
+        },
+        {
+          "specifier": "./input",
+          "source": "packages/ui/src/input.tsx"
+        },
+        {
+          "specifier": "./modal",
+          "source": "packages/ui/src/modal/index.tsx"
+        },
+        {
+          "specifier": "./navigation-menu",
+          "source": "packages/ui/src/navigation-menu/index.tsx"
+        },
+        {
+          "specifier": "./pagination",
+          "source": "packages/ui/src/pagination.tsx"
+        },
+        {
+          "specifier": "./popover",
+          "source": "packages/ui/src/popover/index.tsx"
+        },
+        {
+          "specifier": "./select",
+          "source": "packages/ui/src/select/index.tsx"
+        },
+        {
+          "specifier": "./slider",
+          "source": "packages/ui/src/slider/index.tsx"
+        },
+        {
+          "specifier": "./spinner",
+          "source": "packages/ui/src/spinner/index.tsx"
+        },
+        {
+          "specifier": "./table",
+          "source": "packages/ui/src/table.tsx"
+        },
+        {
+          "specifier": "./tabs",
+          "source": "packages/ui/src/tabs/index.tsx"
+        },
+        {
+          "specifier": "./time",
+          "source": "packages/ui/src/time/index.tsx"
+        },
+        {
+          "specifier": "./tooltip",
+          "source": "packages/ui/src/tooltip/index.tsx"
+        },
+        {
+          "specifier": "./use-is-client",
+          "source": "packages/ui/src/use-is-client.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Toaster",
+          "local": "Toaster",
+          "from": "sonner",
+          "parts": []
+        },
+        {
+          "name": "toast",
+          "local": "toast",
+          "from": "sonner",
+          "parts": []
+        },
+        {
+          "name": "Accordion",
+          "local": "Accordion",
+          "from": "./accordion",
+          "parts": []
+        },
+        {
+          "name": "BackButton",
+          "local": "BackButton",
+          "from": "./back-button",
+          "parts": []
+        },
+        {
+          "name": "Button",
+          "local": "Button",
+          "from": "./button",
+          "parts": []
+        },
+        {
+          "name": "Card",
+          "local": "Card",
+          "from": "./card",
+          "parts": []
+        },
+        {
+          "name": "ClientOnly",
+          "local": "ClientOnly",
+          "from": "./client-only",
+          "parts": []
+        },
+        {
+          "name": "cn",
+          "local": "cn",
+          "from": "./cn",
+          "parts": []
+        },
+        {
+          "name": "Collapsible",
+          "local": "Collapsible",
+          "from": "./collapsible",
+          "parts": []
+        },
+        {
+          "name": "Divider",
+          "local": "Divider",
+          "from": "./divider",
+          "parts": []
+        },
+        {
+          "name": "Dropdown",
+          "local": "Dropdown",
+          "from": "./dropdown",
+          "parts": []
+        },
+        {
+          "name": "Flex",
+          "local": "Flex",
+          "from": "./flex",
+          "parts": []
+        },
+        {
+          "name": "FormField",
+          "local": "FormField",
+          "from": "./form-field",
+          "parts": []
+        },
+        {
+          "name": "FormattedNumberInput",
+          "local": "FormattedNumberInput",
+          "from": "./formatted-number-input",
+          "parts": []
+        },
+        {
+          "name": "Grid",
+          "local": "Grid",
+          "from": "./grid",
+          "parts": []
+        },
+        {
+          "name": "HoverCard",
+          "local": "HoverCard",
+          "from": "./hover-card",
+          "parts": []
+        },
+        {
+          "name": "Input",
+          "local": "Input",
+          "from": "./input",
+          "parts": []
+        },
+        {
+          "name": "Modal",
+          "local": "Modal",
+          "from": "./modal",
+          "parts": []
+        },
+        {
+          "name": "NavigationMenu",
+          "local": "NavigationMenu",
+          "from": "./navigation-menu",
+          "parts": []
+        },
+        {
+          "name": "Pagination",
+          "local": "Pagination",
+          "from": "./pagination",
+          "parts": []
+        },
+        {
+          "name": "Popover",
+          "local": "Popover",
+          "from": "./popover",
+          "parts": []
+        },
+        {
+          "name": "Select",
+          "local": "Select",
+          "from": "./select",
+          "parts": []
+        },
+        {
+          "name": "Slider",
+          "local": "Slider",
+          "from": "./slider",
+          "parts": []
+        },
+        {
+          "name": "Spinner",
+          "local": "Spinner",
+          "from": "./spinner",
+          "parts": []
+        },
+        {
+          "name": "Table",
+          "local": "Table",
+          "from": "./table",
+          "parts": []
+        },
+        {
+          "name": "Tabs",
+          "local": "Tabs",
+          "from": "./tabs",
+          "parts": []
+        },
+        {
+          "name": "Time",
+          "local": "Time",
+          "from": "./time",
+          "parts": []
+        },
+        {
+          "name": "*",
+          "from": "./tooltip"
+        },
+        {
+          "name": "useIsClient",
+          "local": "useIsClient",
+          "from": "./use-is-client",
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/input.tsx",
+      "target": "src/components/design-system/meki/input.tsx",
+      "sha256": "965e97f8d67c1d6b1d878d2bf3b3743d4f6fa4e439f092cd5697bacdea2752f8",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "sizes",
+          "local": "sizes",
+          "from": null,
+          "parts": ["medium", "small", "x-small"]
+        },
+        {
+          "name": "Input",
+          "local": "Input",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/modal/index.tsx",
+      "target": "src/components/design-system/meki/modal/index.ts",
+      "sha256": "969a98bdef805ec6d7959461b7e6670bab232baca928e509764b3d57fb93b449",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-dialog",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./modal.module.css",
+          "source": "packages/ui/src/modal/modal.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Modal",
+          "local": "Modal",
+          "from": null,
+          "parts": ["Close", "Content", "Description", "Title", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/modal/modal.module.css",
+      "target": "src/components/design-system/meki/modal/modal.module.css",
+      "sha256": "7c39def0a01d3191804dd4a8edef09f6d1f702c619c32d4974e5b05ae1a5ac72",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/navigation-menu/index.tsx",
+      "target": "src/components/design-system/meki/navigation-menu/index.ts",
+      "sha256": "d07c64e9f9dbbd311ac22b2a4cc22506e78b07d5730a170e960ee8b90b213c70",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-navigation-menu",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./navigation-menu.module.css",
+          "source": "packages/ui/src/navigation-menu/navigation-menu.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "NavigationMenu",
+          "local": "NavigationMenu",
+          "from": null,
+          "parts": ["Content", "Item", "Link", "List", "Trigger", "Viewport"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/navigation-menu/navigation-menu.module.css",
+      "target": "src/components/design-system/meki/navigation-menu/navigation-menu.module.css",
+      "sha256": "5012f9549c8a2b95ff29e90fece51487a7a6aa8b0c9bc772dd1c1f82166dbde8",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/pagination.tsx",
+      "target": "src/components/design-system/meki/pagination.tsx",
+      "sha256": "b0a34f7244dff080d3a3198916cf1b0b98ff21f5e73990d22576ca66e12073fd",
+      "imports": [
+        {
+          "specifier": "@meki/icon",
+          "source": "packages/icon/src/index.ts"
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./flex",
+          "source": "packages/ui/src/flex.tsx"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Pagination",
+          "local": "Pagination",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/popover/index.tsx",
+      "target": "src/components/design-system/meki/popover/index.ts",
+      "sha256": "702ca36e29bfc6e1fb5c8c4ed6a4120a18660e5bfa27fcd0753be598337f1401",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-popover",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./popover.module.css",
+          "source": "packages/ui/src/popover/popover.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Popover",
+          "local": "Popover",
+          "from": null,
+          "parts": ["Arrow", "Content", "Provider", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/popover/popover.module.css",
+      "target": "src/components/design-system/meki/popover/popover.module.css",
+      "sha256": "1648c06013d0e594c8d666632951e80fb93edfb07a7f391190818fd1a124903b",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/select/index.tsx",
+      "target": "src/components/design-system/meki/select/index.ts",
+      "sha256": "fe1c786b01188caad571276989c353855e0456c3d2a30f1836ae61b4c8ed5f09",
+      "imports": [
+        {
+          "specifier": "@meki/icon",
+          "source": "packages/icon/src/index.ts"
+        },
+        {
+          "specifier": "@radix-ui/react-select",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        },
+        {
+          "specifier": "./select.module.css",
+          "source": "packages/ui/src/select/select.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Select",
+          "local": "Select",
+          "from": null,
+          "parts": ["Content", "Item", "ItemIndicator", "ItemText", "Trigger", "Value"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/select/select.module.css",
+      "target": "src/components/design-system/meki/select/select.module.css",
+      "sha256": "e3e8ed10b595b8e7ca3ac9d4f1a5f0a3410ae45e001694c2cad8f9d33e643a72",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/slider/index.tsx",
+      "target": "src/components/design-system/meki/slider/index.tsx",
+      "sha256": "8f54d7e0da584746b4603da2da5e0d3573346d3b260804694d31d32df5379be8",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slider",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Slider",
+          "local": "Slider",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/spinner/index.tsx",
+      "target": "src/components/design-system/meki/spinner/index.tsx",
+      "sha256": "11756fc5ddfd76d85b7bc3d5a25c34e4f84b18ef021903de3fccb278850c84e7",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "tailwind-merge",
+          "source": null
+        },
+        {
+          "specifier": "./Spinner.module.css",
+          "source": "packages/ui/src/spinner/Spinner.module.css"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Spinner",
+          "local": "Spinner",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/spinner/Spinner.module.css",
+      "target": "src/components/design-system/meki/spinner/Spinner.module.css",
+      "sha256": "e8a5160ce640839584f5b224d2793265130b9d91414aba0be6bbc78b2f741709",
+      "imports": [],
+      "exports": []
+    },
+    {
+      "source": "packages/ui/src/table.tsx",
+      "target": "src/components/design-system/meki/table.ts",
+      "sha256": "e10c81ac8eabe4df55588fa68b92f950cc8ae422bd048aa529dae0a106cac916",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-slot",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "./cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Table",
+          "local": "Table",
+          "from": null,
+          "parts": ["Body", "Cell", "Head", "Header", "Row"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/tabs/index.tsx",
+      "target": "src/components/design-system/meki/tabs/index.ts",
+      "sha256": "1181194f4412204376c0d4a24858c89f1eb10aa4a4c2ceb1f621395e5c4a1cf0",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-tabs",
+          "source": null
+        },
+        {
+          "specifier": "motion/react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tabs",
+          "local": "Tabs",
+          "from": null,
+          "parts": ["Content", "List", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/time/index.tsx",
+      "target": "src/components/design-system/meki/time/index.tsx",
+      "sha256": "a4bd967b7007d27596bd16e5fbf983d1b231b02c2ea95f7c88f83901eeaf1f85",
+      "imports": [
+        {
+          "specifier": "@meki/shared",
+          "source": "packages/shared/src/utils/time.ts"
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../client-only",
+          "source": "packages/ui/src/client-only.tsx"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Time",
+          "local": "Time",
+          "from": null,
+          "parts": []
+        }
+      ]
+    },
+    {
+      "source": "packages/ui/src/tooltip/index.tsx",
+      "target": "src/components/design-system/meki/tooltip/index.ts",
+      "sha256": "8f58fd9c586e89cfcc6997d1b88241d34f60639f003905edaa5950fc23ec5bd6",
+      "imports": [
+        {
+          "specifier": "@radix-ui/react-tooltip",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "react",
+          "source": null
+        },
+        {
+          "specifier": "../cn",
+          "source": "packages/ui/src/cn.ts"
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tooltip",
+          "local": "Tooltip",
+          "from": null,
+          "parts": ["Content", "Provider", "Trigger"]
+        }
+      ],
+      "adaptation": "Compound assembly split into a .ts barrel and component-only parts.tsx for Fast Refresh; original public compound API retained."
+    },
+    {
+      "source": "packages/ui/src/use-is-client.ts",
+      "target": "src/components/design-system/meki/use-is-client.ts",
+      "sha256": "d0acf72d947e0cdd20142ef4643d95bcfd823c1a67e780cd0f178b6859e9f257",
+      "imports": [
+        {
+          "specifier": "react",
+          "source": null
+        }
+      ],
+      "exports": [
+        {
+          "name": "useIsClient",
+          "local": "useIsClient",
+          "from": null,
+          "parts": []
+        }
+      ]
+    }
+  ]
+}

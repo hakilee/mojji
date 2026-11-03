@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 import {
   Accordion,
-  AccordionItem,
+  EditorAccordionItem,
   Button,
   FloatingPanel,
   RangeField,
@@ -42,18 +42,7 @@ export function LayerControls({
       id="layer-controls"
       label={layer.type === "text" ? "텍스트 레이어" : "이미지 레이어"}
       anchor={anchor}
-      onClose={(details) => {
-        if (
-          document.querySelector('[aria-modal="true"]') ||
-          (details.reason === "outside-press" &&
-            details.event.target instanceof Element &&
-            details.event.target.closest("#layer-stack, #editor-history"))
-        ) {
-          details.cancel();
-          return;
-        }
-        onClose();
-      }}
+      onClose={onClose}
     >
       {layer.type === "text" && (
         <TextLayerEditor
@@ -65,8 +54,8 @@ export function LayerControls({
           onComposingChange={onComposingChange}
         />
       )}
-      <Accordion multiple keepMounted defaultValue={layer.type === "image" ? ["layout"] : []}>
-        <AccordionItem value="layout" title="배치">
+      <Accordion type="multiple" defaultValue={layer.type === "image" ? ["layout"] : []}>
+        <EditorAccordionItem value="layout" title="배치">
           <div className="space-y-group">
             <div className="grid grid-cols-3 gap-control">
               {[
@@ -161,7 +150,7 @@ export function LayerControls({
               </>
             )}
           </div>
-        </AccordionItem>
+        </EditorAccordionItem>
       </Accordion>
       <div className="mt-inset grid grid-cols-2 gap-control">
         <Button
