@@ -59,6 +59,43 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     expect(frames[0].data[3]).toBe(0);
   });
 
+  test.each(Object.keys(motions) as (keyof typeof motions)[])(
+    "animates image-only %s exports without changing layer placement",
+    async (motion) => {
+      const source = createCanvas(24, 12);
+      const sourceContext = source.getContext("2d");
+      sourceContext.fillStyle = "#ff0000";
+      sourceContext.fillRect(0, 0, 24, 12);
+      sourceContext.fillStyle = "#0000ff";
+      sourceContext.fillRect(0, 0, 6, 12);
+      const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+      const blob = await exportGif(ctx, {
+        ...initialSettings,
+        text: "",
+        motion,
+        images: [
+          {
+            id: "image",
+            name: "image",
+            source: source as unknown as HTMLCanvasElement,
+            aspectRatio: 2,
+            x: 64,
+            y: 64,
+            size: 48,
+            rotation: 15,
+            behindText: false,
+            fit: "contain",
+          },
+        ],
+      });
+      const frames = decodeFrames(await blob.arrayBuffer());
+      expect(frames).toHaveLength(motion === "none" ? 1 : 20);
+      if (motion !== "none") expect(frames[0].data).not.toEqual(frames[3].data);
+      expect(frames.every((frame) => frame.delay === 60)).toBe(true);
+      expect(frames[0].data[3]).toBe(0);
+    },
+  );
+
   test("accepts Unicode characters and three lines", () => {
     expect(validateText("안녕\n반가워\n🎉".repeat(1))).toBeNull();
     expect(validateText("🎉".repeat(9))).toBeNull();
