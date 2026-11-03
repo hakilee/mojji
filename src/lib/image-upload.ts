@@ -21,6 +21,7 @@ export async function loadImage(file: File): Promise<ImageLayer> {
     if (!ctx) throw new Error("이 브라우저에서 이미지를 불러올 수 없어요.");
     ctx.drawImage(bitmap, 0, 0, source.width, source.height);
     return {
+      type: "image",
       id: crypto.randomUUID(),
       name: file.name,
       source,
@@ -29,7 +30,6 @@ export async function loadImage(file: File): Promise<ImageLayer> {
       y: 32,
       size: 48,
       rotation: 0,
-      behindText: false,
       fit: "contain",
     };
   } finally {

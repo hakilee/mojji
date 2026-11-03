@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { ChoiceButton, HelpBubble, Input, Spinner } from "~/components/design-system";
-import type { ImageLayer } from "~/lib/emoji";
+import { Button, ChoiceButton, HelpBubble, Input, Spinner } from "~/components/design-system";
+import type { ImageLayer, Layer } from "~/lib/emoji";
 import { loadImage } from "~/lib/image-upload";
 
 export function LayerEditor({
-  images,
-  hasText,
+  layers,
+  onAddText,
   selectedId,
   onSelect,
   onAdd,
 }: {
-  images: ImageLayer[];
-  hasText: boolean;
+  layers: Layer[];
+  onAddText: () => void;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onAdd: (images: ImageLayer[]) => void;
 }) {
+  const images = layers.filter((layer) => layer.type === "image");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const mounted = useRef(true);
@@ -26,20 +27,37 @@ export function LayerEditor({
     };
   }, []);
   return (
-    <div className="space-y-group">
+    <div id="layer-stack" className="mt-group space-y-inset">
+      <div className="grid grid-cols-2 gap-control">
+        <Button variant="white" size="small" onClick={onAddText}>
+          텍스트 추가
+        </Button>
+        <Button
+          variant="white"
+          size="small"
+          disabled={loading || images.length >= 12}
+          onClick={() => document.getElementById("image-upload")?.click()}
+        >
+          이미지 추가
+        </Button>
+      </div>
       <div className="space-y-control">
         <div className="flex items-center gap-1">
-          <label htmlFor="image-upload" className="text-label font-semibold">
-            이미지 업로드
-          </label>
-          <HelpBubble label="이미지 업로드">
-            <p>PNG · JPG · WebP · GIF, 최대 12개 · 파일당 5MB. GIF는 첫 프레임을 사용해요.</p>
-            <p className="mt-control">레이어 목록은 위쪽 항목이 앞에 표시돼요.</p>
+          <h3 className="text-label font-semibold">레이어</h3>
+          <HelpBubble label="레이어">
+            <p>
+              위쪽 레이어가 앞에 표시돼요. 레이어를 선택해 내용과 스타일, 순서를 바꿀 수 있어요.
+            </p>
+            <p className="mt-control">
+              이미지는 PNG · JPG · WebP · GIF, 최대 12개 · 파일당 5MB. GIF는 첫 프레임을 사용해요.
+            </p>
           </HelpBubble>
         </div>
         <Input
           id="image-upload"
           type="file"
+          className="hidden"
+          aria-label="이미지 업로드"
           accept="image/png,image/jpeg,image/webp,image/gif"
           multiple
           disabled={loading || images.length >= 12}
@@ -79,36 +97,41 @@ export function LayerEditor({
         )}
       </div>
       <div className="space-y-control" role="group" aria-label="레이어 선택">
-        {[
-          ...images.filter((image) => !image.behindText).toReversed(),
-          ...(hasText ? ["text" as const] : []),
-          ...images.filter((image) => image.behindText).toReversed(),
-        ].map((image) =>
-          image === "text" ? (
-            <ChoiceButton
-              key="text"
-              className="w-full text-left"
-              selected={selectedId === "text"}
-              onClick={() => onSelect(selectedId === "text" ? null : "text")}
+        {layers.toReversed().map((layer) => (
+          <ChoiceButton
+            key={layer.id}
+            aria-label={`${layer.type === "text" ? "텍스트" : "이미지"} 레이어 선택: ${layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}`}
+            className="flex w-full items-center gap-inset text-left"
+            selected={selectedId === layer.id}
+            onClick={(event) => {
+              onSelect(layer.id);
+              if (event.detail === 0)
+                requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
+            }}
+          >
+            <span
+              aria-hidden="true"
+              className="flex size-8 shrink-0 items-center justify-center rounded-control-inset bg-bg-neutral-weak text-label font-semibold"
             >
-              텍스트
-            </ChoiceButton>
-          ) : (
-            <ChoiceButton
-              key={image.id}
-              title={image.name}
-              className="flex w-full items-center justify-between gap-control text-left"
-              selected={selectedId === image.id}
-              onClick={() => onSelect(selectedId === image.id ? null : image.id)}
-            >
-              <span className="min-w-0 truncate">
-                {images.indexOf(image) + 1}. {image.name}
+              {layer.type === "text" ? "T" : "▧"}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span
+                className="block truncate text-label"
+                style={layer.type === "text" ? { fontFamily: `"${layer.font}"` } : undefined}
+              >
+                {layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}
               </span>
-              <span className="shrink-0 text-caption text-fg-neutral-muted">
-                {image.behindText ? "텍스트 뒤" : "텍스트 앞"}
+              <span className="block truncate text-caption text-fg-neutral-muted">
+                {layer.type === "text" ? (layer.fontLabel ?? layer.font) : "이미지"}
               </span>
-            </ChoiceButton>
-          ),
+            </span>
+          </ChoiceButton>
+        ))}
+        {!layers.length && (
+          <p className="px-inset py-group text-caption text-fg-neutral-muted">
+            텍스트나 이미지를 추가해 주세요.
+          </p>
         )}
       </div>
     </div>
