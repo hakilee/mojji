@@ -113,7 +113,7 @@ export function EditorPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1200px] px-page py-section max-[760px]:px-3 max-[760px]:py-3">
+    <div className="mx-auto max-w-[1200px] px-page py-section max-[760px]:px-group max-[760px]:py-group">
       <a
         className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation fixed top-2 left-2 z-10 -translate-y-[200%] rounded-control bg-bg-layer-default p-3 text-fg-brand focus:translate-y-0"
         href="#editor-main"
@@ -123,9 +123,9 @@ export function EditorPage() {
       <main
         id="editor-main"
         tabIndex={-1}
-        className="rounded-panel border border-stroke-neutral bg-bg-layer-default"
+        className="rounded-workspace border border-stroke-neutral bg-bg-layer-default"
       >
-        <header className="flex items-center gap-control border-b border-stroke-neutral p-panel">
+        <header className="flex items-center gap-control border-b border-stroke-neutral p-panel max-[760px]:p-group">
           <a
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stroke-focus"
             href="/"
@@ -135,11 +135,11 @@ export function EditorPage() {
           </a>
           <h1 className="text-title font-semibold tracking-[-0.5px]">슬랙모찌</h1>
         </header>
-        <div className="grid grid-cols-3 items-start gap-section p-panel max-[1000px]:grid-cols-1">
+        <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">
           <section className="min-w-0" aria-label="이모지 편집">
-            <h2 className="mb-section text-body font-semibold">텍스트 편집</h2>
+            <h2 className="min-h-heading-slot text-body font-semibold">텍스트 편집</h2>
             <div className="min-w-0">
-              <div className="overflow-hidden rounded-control border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
+              <div className="overflow-hidden rounded-panel border border-stroke-neutral-strong bg-bg-neutral-weak transition-shadow focus-within:border-stroke-brand focus-within:ring-2 focus-within:ring-stroke-focus/20 motion-reduce:transition-none">
                 <div className="@container relative aspect-square">
                   <textarea
                     className="focus-visible:outline-none [-webkit-tap-highlight-color:transparent] absolute inset-0 size-full resize-none overflow-hidden border-0 bg-transparent px-4 text-center text-[min(30px,8cqw)] leading-[1.5]"
@@ -199,7 +199,7 @@ export function EditorPage() {
               )}
             </div>
           </section>
-          <section aria-label="이모지 설정" className="min-w-0 pt-10 max-[1000px]:pt-0">
+          <section aria-label="이모지 설정" className="min-w-0 pt-heading-slot max-[1000px]:pt-0">
             <Accordion className="space-y-control" multiple keepMounted defaultValue={["motion"]}>
               <AccordionItem value="font" title="글꼴">
                 <FontPicker
@@ -209,7 +209,7 @@ export function EditorPage() {
                 />
               </AccordionItem>
               <AccordionItem value="color" title="색상">
-                <div className="mb-4">
+                <div className="mb-group">
                   <SegmentedControl
                     label="색상 방식"
                     value={settings.gradient ? "gradient" : "solid"}
@@ -250,7 +250,7 @@ export function EditorPage() {
                   />
                 </div>
                 {settings.gradient && (
-                  <label className="mt-4 flex items-center gap-3 text-caption [&>select]:w-auto [&>select]:flex-1">
+                  <label className="mt-group flex items-center gap-3 text-caption [&>select]:w-auto [&>select]:flex-1">
                     방향
                     <select
                       className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] touch-manipulation min-h-[42px] w-full rounded-control border border-stroke-neutral-strong bg-bg-layer-default px-3 py-2"
@@ -270,7 +270,7 @@ export function EditorPage() {
                   </label>
                 )}
                 {!settings.gradient && (
-                  <div className="mt-4 flex flex-wrap gap-control" aria-label="글자별 색상">
+                  <div className="mt-group flex flex-wrap gap-control" aria-label="글자별 색상">
                     {textCharacters(settings.text).map(
                       (character, index) =>
                         character.trim() && (
@@ -289,7 +289,7 @@ export function EditorPage() {
                     )}
                   </div>
                 )}
-                <div className="mt-4 rounded-control bg-bg-neutral-weak px-3">
+                <div className="mt-group rounded-control bg-bg-neutral-weak px-3">
                   <Checkbox
                     label="투명 배경으로 만들기"
                     checked={settings.transparent}
@@ -298,7 +298,7 @@ export function EditorPage() {
                 </div>
               </AccordionItem>
               <AccordionItem value="motion" title="효과">
-                <div className="grid grid-cols-3 gap-2 [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-2 [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-1 [&>button]:min-h-20 [&>button]:py-4 [&>button]:text-caption [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
+                <div className="grid grid-cols-3 gap-control [&>button]:flex [&>button]:flex-col [&>button]:items-center [&>button]:gap-control [&>button]:rounded-control [&>button]:border [&>button]:border-stroke-neutral [&>button]:bg-bg-layer-default [&>button]:px-control [&>button]:min-h-20 [&>button]:py-group [&>button]:text-caption [&>button]:hover:border-stroke-brand [&>button]:aria-pressed:border-stroke-brand [&>button]:aria-pressed:bg-bg-brand-weak">
                   {Object.entries(motions).map(([motion, label]) => (
                     <button
                       className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand enabled:active:bg-bg-brand-weak-pressed"
@@ -314,7 +314,7 @@ export function EditorPage() {
                 </div>
                 <fieldset
                   disabled={settings.motion === "none"}
-                  className="mt-4 space-y-4 border-0 p-0 disabled:opacity-50"
+                  className="mt-group space-y-4 border-0 p-0 disabled:opacity-50"
                 >
                   <legend className="sr-only">모션 타이밍</legend>
                   <label className="flex items-center justify-between gap-control text-label">
@@ -359,11 +359,11 @@ export function EditorPage() {
             </Accordion>
           </section>
           <section className="flex min-w-0 flex-col" aria-label="미리보기">
-            <h2 className="mb-section text-body font-semibold">미리보기</h2>
+            <h2 className="min-h-heading-slot text-body font-semibold">미리보기</h2>
             <div className="grid flex-1 grid-rows-2 divide-y divide-stroke-neutral">
               <section
                 aria-label="슬랙 메시지 미리보기"
-                className="flex min-h-48 items-center justify-center py-8"
+                className="flex min-h-48 items-center justify-center py-page"
               >
                 <div className="flex items-start gap-2 text-[15px]">
                   <img
@@ -431,19 +431,19 @@ export function EditorPage() {
               </section>
               <section
                 aria-label="확대 미리보기"
-                className="flex min-h-48 items-center justify-center py-8"
+                className="flex min-h-48 items-center justify-center py-page"
               >
                 <div className="aspect-square w-32 rounded-control bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [&>canvas]:h-auto [&>canvas]:w-full">
                   <canvas ref={canvas} width={128} height={128} aria-label="이모지 확대 미리보기" />
                 </div>
               </section>
             </div>
-            <footer className="flex flex-col items-center gap-3 border-t border-stroke-neutral pt-4">
+            <footer className="flex flex-col items-center gap-inset border-t border-stroke-neutral pt-group">
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status}
               </p>
               <button
-                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-4 py-2 font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
+                className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-brand aria-pressed:bg-bg-brand-weak aria-pressed:text-fg-brand flex min-h-11 min-w-40 max-[760px]:w-full items-center justify-center gap-2 rounded-control border border-transparent bg-bg-brand-solid px-group py-control text-label font-semibold text-fg-on-brand-solid enabled:hover:bg-bg-brand-solid-pressed enabled:active:bg-bg-brand-solid-pressed disabled:bg-bg-disabled disabled:text-fg-disabled"
                 aria-busy={busy}
                 disabled={!!invalid || busy || fontLoading}
                 onClick={() => void download()}

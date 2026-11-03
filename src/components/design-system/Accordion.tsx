@@ -15,10 +15,10 @@ export function AccordionItem({
   return (
     <AccordionPrimitive.Item
       value={value}
-      className="min-w-0 overflow-hidden rounded-control border border-stroke-neutral bg-bg-layer-default"
+      className="min-w-0 overflow-hidden rounded-panel border border-stroke-neutral bg-bg-layer-default"
     >
       <AccordionPrimitive.Header>
-        <AccordionPrimitive.Trigger className="group flex w-full min-h-12 cursor-pointer text-left items-center justify-between gap-control px-4 py-3 text-label font-semibold select-none hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus data-panel-open:bg-bg-brand-weak">
+        <AccordionPrimitive.Trigger className="group flex w-full min-h-12 cursor-pointer text-left items-center justify-between gap-control px-group py-inset text-label font-semibold select-none hover:bg-bg-neutral-weak focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-stroke-focus data-panel-open:bg-bg-brand-weak">
           {title}
           <svg
             className="size-4 shrink-0 text-fg-neutral-muted transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none"
@@ -35,7 +35,7 @@ export function AccordionItem({
         </AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
       <AccordionPrimitive.Panel className="h-[var(--accordion-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 motion-reduce:transition-none">
-        <fieldset className="min-w-0 border-0 border-t border-solid border-stroke-neutral p-3">
+        <fieldset className="min-w-0 border-0 border-t border-solid border-stroke-neutral p-group">
           <legend className="sr-only">{title}</legend>
           {children}
         </fieldset>
