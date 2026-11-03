@@ -20,6 +20,45 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     await expect(exportGif(ctx, { ...initialSettings, text })).rejects.toThrow();
   });
 
+  test("reduces oversized image animation palettes without losing timing or frames", async () => {
+    const source = createCanvas(128, 128);
+    const sourceContext = source.getContext("2d");
+    const pixels = sourceContext.createImageData(128, 128);
+    let seed = 75;
+    for (let index = 0; index < pixels.data.length; index += 4) {
+      for (let channel = 0; channel < 3; channel += 1) {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        pixels.data[index + channel] = seed >>> 24;
+      }
+      pixels.data[index + 3] = 255;
+    }
+    sourceContext.putImageData(pixels, 0, 0);
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    const blob = await exportGif(ctx, {
+      ...initialSettings,
+      text: "Hi",
+      images: [
+        {
+          id: "noise",
+          name: "noise",
+          source: source as unknown as HTMLCanvasElement,
+          aspectRatio: 1,
+          x: 64,
+          y: 64,
+          size: 80,
+          rotation: 0,
+          behindText: true,
+          fit: "contain",
+        },
+      ],
+    });
+    expect(blob.size).toBeLessThanOrEqual(128 * 1024);
+    const frames = decodeFrames(await blob.arrayBuffer());
+    expect(frames).toHaveLength(20);
+    expect(frames.every((frame) => frame.delay === 60)).toBe(true);
+    expect(frames[0].data[3]).toBe(0);
+  });
+
   test("accepts Unicode characters and three lines", () => {
     expect(validateText("안녕\n반가워\n🎉".repeat(1))).toBeNull();
     expect(validateText("🎉".repeat(9))).toBeNull();
