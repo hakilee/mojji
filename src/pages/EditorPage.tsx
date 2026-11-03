@@ -29,7 +29,7 @@ export function EditorPage() {
   const [settings, setSettings] = useState(initialSettings);
   const [fontLoading, setFontLoading] = useState(false);
   const [draft, setDraft] = useState(initialSettings.text);
-  const [reacted, setReacted] = useState(true);
+  const [reacted, setReacted] = useState(false);
   const composing = useRef(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -125,7 +125,7 @@ export function EditorPage() {
         tabIndex={-1}
         className="rounded-workspace border border-stroke-neutral bg-bg-layer-default"
       >
-        <header className="flex items-center gap-control border-b border-stroke-neutral p-panel max-[760px]:p-group">
+        <header className="flex items-center gap-control p-panel max-[760px]:p-group">
           <a
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stroke-focus"
             href="/"
@@ -360,7 +360,7 @@ export function EditorPage() {
           </section>
           <section className="flex min-w-0 flex-col" aria-label="미리보기">
             <h2 className="min-h-heading-slot text-body font-semibold">미리보기</h2>
-            <div className="grid flex-1 grid-rows-2 divide-y divide-stroke-neutral">
+            <div className="grid flex-1 grid-rows-2">
               <section
                 aria-label="슬랙 메시지 미리보기"
                 className="flex min-h-48 items-center justify-center py-page"
@@ -383,7 +383,7 @@ export function EditorPage() {
                     <p className="mb-px text-base leading-[22px] wrap-anywhere">안녕하세요.</p>
                     <div className="flex flex-wrap items-center gap-0.5">
                       <span
-                        className="inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-stroke-reaction bg-bg-reaction px-2 py-0.5 text-caption font-semibold leading-none text-fg-reaction tabular-nums"
+                        className="inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none text-fg-neutral tabular-nums"
                         aria-label="엄지 반응"
                       >
                         <span className="inline-flex size-4 items-center justify-center text-base">
@@ -394,7 +394,7 @@ export function EditorPage() {
                       <button
                         className="focus-visible:outline-3 focus-visible:outline-stroke-focus focus-visible:outline-offset-3 [-webkit-tap-highlight-color:transparent] cursor-pointer touch-manipulation disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled aria-pressed:border-stroke-reaction aria-pressed:bg-bg-reaction aria-pressed:text-fg-reaction inline-flex h-[26px] items-center justify-center gap-1 rounded-full border border-transparent bg-bg-layer-basement px-2 py-0.5 text-caption font-semibold leading-none tabular-nums hover:border-stroke-reaction [&>canvas]:size-4"
                         type="button"
-                        aria-label={`내 이모지 반응 ${reacted ? 1 : 0}개`}
+                        aria-label={`내 이모지 반응 ${reacted ? 2 : 1}개`}
                         aria-pressed={reacted}
                         onClick={() => setReacted((value) => !value)}
                       >
@@ -404,7 +404,7 @@ export function EditorPage() {
                           height={128}
                           aria-label="슬랙 반응 크기 미리보기"
                         />
-                        <span>{reacted ? 1 : 0}</span>
+                        <span>{reacted ? 2 : 1}</span>
                       </button>
                       <span
                         className="inline-flex h-6 items-center justify-center rounded-full bg-bg-layer-basement px-2 text-fg-neutral"
@@ -438,7 +438,7 @@ export function EditorPage() {
                 </div>
               </section>
             </div>
-            <footer className="flex flex-col items-center gap-inset border-t border-stroke-neutral pt-group">
+            <footer className="flex flex-col items-center gap-inset pt-group">
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status}
               </p>

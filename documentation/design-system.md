@@ -15,7 +15,7 @@ Compose the following controls using semantic HTML and headless primitives:
 - **Text editor**: square font-aware textarea surface with a centered editable line block, persistent family/count footer, focus outline, invalid message. Native textarea editing/selection/undo are preserved; composed input is committed at composition end. Paste/typing is constrained to 9 graphemes and three lines, with a live limit announcement.
 - **Font picker**: three bundled specimen cards, optional searchable Google Fonts panel with Korean filter, loading/disabled/error state. External fonts apply only after successful load; existing font remains on failure. Requests time out instead of leaving download disabled indefinitely.
 - **Controls**: labelled radio segments, composed color pickers, shared checkboxes, native select and motion choices. Individual colors and gradient mode are mutually exclusive.
-- **Preview**: compact author/message, 16 px emoji reaction with a reversible 0↔1 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
+- **Preview**: compact author/message, 16 px emoji reaction initially unselected with one existing reaction and a reversible 1↔2 count, 128 px inspection canvas. Same renderer feeds both canvases and export. No Slack assets or fonts copied. Reduced-motion preferences stop preview loops and UI transitions, without changing exported GIFs.
 - **Action**: primary download button with busy/disabled states; functional status announcements only.
 
 Desktop uses one white workspace with editing, settings and vertically stacked, independently centered previews with download below them. The logo and 슬랙모찌 title sit above editing. Mobile stacks editing and preview; every grid child can shrink. Workspace radius is 16px, nested surfaces use 12px and controls use 8px. Keyboard focus, labels and selection state are retained without decorative metadata.
@@ -75,3 +75,5 @@ Desktop separates editing, settings and preview into three equal columns; widths
 ## Spacing and surface hierarchy (#67)
 
 Use 16px workspace, 12px panel/editor-surface, 8px control and 4px inset radii. Reaction pills retain their independent geometry. Spacing roles are control 8px, inset 12px, group 16px, section/panel 24px and page 32px. Compact page/workspace insets are 16px. Accordion headers and bodies share group insets; title slots share a 40px height with the settings offset. Font options use two columns and caption labels for comfortable readable cards. No component state or rendering behavior changes.
+
+Preview chrome (#69): no decorative header, inter-preview or download dividers. Both example reactions start neutral; only user activation adds the blue selected state to the generated reaction. Structural borders on editing and settings controls remain.
