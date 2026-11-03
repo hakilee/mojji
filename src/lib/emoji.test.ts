@@ -6,6 +6,7 @@ import {
   drawEmoji,
   exportGif,
   initialSettings,
+  type ImageLayer,
   motions,
   textCharacters,
   validateText,
@@ -271,5 +272,151 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     ]);
     drawEmoji(ctx, initialSettings, 0);
     expect(ctx.getImageData(0, 0, 1, 1).data[3]).toBe(0);
+  });
+
+  test("exports image-only composition and respects front-to-back image ordering", async () => {
+    const red = createCanvas(4, 2);
+    red.getContext("2d").fillStyle = "#ff0000";
+    red.getContext("2d").fillRect(0, 0, 4, 2);
+    const blue = createCanvas(4, 2);
+    blue.getContext("2d").fillStyle = "#0000ff";
+    blue.getContext("2d").fillRect(0, 0, 4, 2);
+    const first: ImageLayer = {
+      id: "red",
+      name: "red.png",
+      source: red as unknown as HTMLCanvasElement,
+      aspectRatio: 2,
+      x: 64,
+      y: 64,
+      size: 128,
+      rotation: 0,
+      behindText: true,
+      fit: "cover",
+    };
+    const second: ImageLayer = {
+      ...first,
+      id: "blue",
+      source: blue as unknown as HTMLCanvasElement,
+      behindText: false,
+      size: 32,
+    };
+    const canvas = createCanvas(128, 128);
+    const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
+    const output = decodeFrames(
+      await (
+        await exportGif(ctx, {
+          ...initialSettings,
+          text: "",
+          motion: "none",
+          images: [first, second],
+        })
+      ).arrayBuffer(),
+    );
+    expect(output).toHaveLength(1);
+    expect(Array.from(output[0].data.slice(0, 4))).toEqual([255, 0, 0, 255]);
+    expect(Array.from(output[0].data.slice((64 * 128 + 64) * 4, (64 * 128 + 64) * 4 + 4))).toEqual([
+      0, 0, 255, 255,
+    ]);
+    drawEmoji(
+      ctx,
+      { ...initialSettings, text: "", images: [{ ...second, behindText: true }, first] },
+      0,
+    );
+    expect(Array.from(ctx.getImageData(64, 64, 1, 1).data)).toEqual([255, 0, 0, 255]);
+  });
+
+  test("keeps image proportions, crops cover mode and rotates around the selected center", () => {
+    const source = createCanvas(4, 2);
+    source.getContext("2d").fillStyle = "#ff0000";
+    source.getContext("2d").fillRect(0, 0, 4, 2);
+    const image: ImageLayer = {
+      id: "image",
+      name: "image.png",
+      source: source as unknown as HTMLCanvasElement,
+      aspectRatio: 2,
+      x: 64,
+      y: 64,
+      size: 64,
+      rotation: 0,
+      behindText: false,
+      fit: "contain",
+    };
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(ctx, { ...initialSettings, text: "", images: [image] }, 0);
+    expect(ctx.getImageData(40, 40, 1, 1).data[3]).toBe(0);
+    expect(ctx.getImageData(40, 56, 1, 1).data[3]).toBe(255);
+    drawEmoji(ctx, { ...initialSettings, text: "", images: [{ ...image, fit: "cover" }] }, 0);
+    expect(ctx.getImageData(40, 40, 1, 1).data[3]).toBe(255);
+    drawEmoji(
+      ctx,
+      { ...initialSettings, text: "", images: [{ ...image, x: 80, y: 48, rotation: 90 }] },
+      0,
+    );
+    expect(ctx.getImageData(80, 24, 1, 1).data[3]).toBe(255);
+    expect(ctx.getImageData(56, 48, 1, 1).data[3]).toBe(0);
+  });
+
+  test("draws text above behind layers and below front layers", () => {
+    const source = createCanvas(128, 128);
+    source.getContext("2d").fillStyle = "#ff0000";
+    source.getContext("2d").fillRect(0, 0, 128, 128);
+    const image: ImageLayer = {
+      id: "image",
+      name: "image.png",
+      source: source as unknown as HTMLCanvasElement,
+      aspectRatio: 1,
+      x: 64,
+      y: 64,
+      size: 128,
+      rotation: 0,
+      behindText: true,
+      fit: "cover",
+    };
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(
+      ctx,
+      { ...initialSettings, color: "#0000ff", text: "HH", motion: "none", images: [image] },
+      0,
+    );
+    expect(
+      ctx
+        .getImageData(0, 0, 128, 128)
+        .data.some((value, index) => index % 4 === 2 && value === 255),
+    ).toBe(true);
+    drawEmoji(
+      ctx,
+      {
+        ...initialSettings,
+        color: "#0000ff",
+        text: "HH",
+        motion: "none",
+        images: [{ ...image, behindText: false }],
+      },
+      0,
+    );
+    expect(
+      ctx.getImageData(0, 0, 128, 128).data.some((value, index) => index % 4 === 2 && value > 0),
+    ).toBe(false);
+  });
+
+  test("positions and scales text without changing the default tight fit", () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(
+      ctx,
+      { ...initialSettings, text: "HH", motion: "none", textLayout: { x: 32, y: 96, scale: 0.4 } },
+      0,
+    );
+    const pixels = ctx.getImageData(0, 0, 128, 128).data;
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (let y = 0; y < 128; y += 1)
+      for (let x = 0; x < 128; x += 1)
+        if (pixels[(y * 128 + x) * 4 + 3]) {
+          xs.push(x);
+          ys.push(y);
+        }
+    expect(Math.abs((Math.min(...xs) + Math.max(...xs)) / 2 - 32)).toBeLessThan(2);
+    expect(Math.abs((Math.min(...ys) + Math.max(...ys)) / 2 - 96)).toBeLessThan(2);
+    expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(54);
   });
 });

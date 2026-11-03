@@ -15,8 +15,22 @@ export const motions = {
   swing: "갸우뚱",
   jelly: "말랑말랑",
 };
+export type ImageLayer = {
+  id: string;
+  name: string;
+  source: HTMLCanvasElement;
+  aspectRatio: number;
+  x: number;
+  y: number;
+  size: number;
+  rotation: number;
+  behindText: boolean;
+  fit: "contain" | "cover";
+};
 export type Settings = {
   text: string;
+  images?: ImageLayer[];
+  textLayout?: { x: number; y: number; scale: number };
   font: string;
   color: string;
   gradient?: { end: string; direction: "horizontal" | "vertical" };
@@ -59,14 +73,50 @@ export function validateText(text: string): string | null {
   return null;
 }
 
+function drawImages(ctx: CanvasRenderingContext2D, images: ImageLayer[], behindText: boolean) {
+  for (const image of images) {
+    if (image.behindText !== behindText) continue;
+    ctx.save();
+    ctx.translate(image.x, image.y);
+    ctx.rotate((image.rotation * Math.PI) / 180);
+    if (image.fit === "cover") {
+      const width = Number(image.source.width);
+      const height = Number(image.source.height);
+      const side = Math.min(width, height);
+      ctx.drawImage(
+        image.source,
+        (width - side) / 2,
+        (height - side) / 2,
+        side,
+        side,
+        -image.size / 2,
+        -image.size / 2,
+        image.size,
+        image.size,
+      );
+    } else {
+      const width = image.size * Math.min(1, image.aspectRatio);
+      const height = image.size * Math.min(1, 1 / image.aspectRatio);
+      ctx.drawImage(image.source, -width / 2, -height / 2, width, height);
+    }
+    ctx.restore();
+  }
+}
+
 export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, progress: number) {
   ctx.clearRect(0, 0, 128, 128);
   if (!settings.transparent) {
     ctx.fillStyle = settings.background;
     ctx.fillRect(0, 0, 128, 128);
   }
+  drawImages(ctx, settings.images ?? [], true);
+  if (!settings.text.trim()) {
+    drawImages(ctx, settings.images ?? [], false);
+    return;
+  }
   ctx.save();
-  ctx.translate(64, 64);
+  ctx.translate(settings.textLayout?.x ?? 64, settings.textLayout?.y ?? 64);
+  ctx.scale(settings.textLayout?.scale ?? 1, settings.textLayout?.scale ?? 1);
   const phase = progress * Math.PI * 2;
   switch (settings.motion) {
     case "scale": {
@@ -174,10 +224,12 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
     }
   });
   ctx.restore();
+  drawImages(ctx, settings.images ?? [], false);
 }
 
 export async function exportGif(ctx: CanvasRenderingContext2D, settings: Settings): Promise<Blob> {
-  const error = validateText(settings.text);
+  const error =
+    settings.images?.length && !settings.text.trim() ? null : validateText(settings.text);
   if (error) throw new Error(error);
   const frames = [];
   const count = settings.motion === "none" ? 1 : 20;
@@ -201,6 +253,6 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
     format: "blob",
   });
   if (blob.size > 128 * 1024)
-    throw new Error("파일이 128KB를 넘었어요. 텍스트를 줄이거나 모션을 바꿔 주세요.");
+    throw new Error("파일이 128KB를 넘었어요. 텍스트·이미지를 줄이거나 모션을 바꿔 주세요.");
   return blob;
 }

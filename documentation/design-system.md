@@ -77,3 +77,11 @@ Desktop separates editing, settings and preview into three equal columns; widths
 Use 16px workspace, 12px panel/editor-surface, 8px control and 4px inset radii. Reaction pills retain their independent geometry. Spacing roles are control 8px, inset 12px, group 16px, section/panel 24px and page 32px. Compact page/workspace insets are 16px. Accordion headers and bodies share group insets; title slots share a 40px height with the settings offset. Font options use two columns and caption labels for comfortable readable cards. No component state or rendering behavior changes.
 
 Preview chrome (#69): no decorative header, inter-preview or download dividers. Both example reactions start neutral; only user activation adds the blue selected state to the generated reaction. Structural borders on editing and settings controls remain.
+
+## Image composition and layout (#71)
+
+`LayerEditor` owns transient upload/error state; the page owns images, text layout and selected layer. The list reflects front-to-back composition, including the text layer. Images keep aspect ratio or center-crop to a square; background fill is a preset, not a separate implementation. Sibling stacking applies within the chosen text front/behind plane. Uploads never select a hidden panel's layer automatically.
+
+`RangeField` provides labelled native keyboard-operable position/size/rotation controls using shared tokens. The selected layer can also be dragged on the inspection canvas via pointer capture; these selection affordances are DOM-only and never exported. Closing the layout panel clears selection. Desktop preview stays sticky during long settings edits; mobile remains stacked.
+
+Files decode locally to bounded canvas sources and temporary bitmaps close after decoding; no object URLs or network uploads are retained. GIF input is deliberately a static first-frame image, disclosed beside the upload. Existing animation effects apply to text, not uploaded images. Preview and export share the same image/text composition, and image-only export is allowed. Existing output dimensions and 128KiB limit remain.
