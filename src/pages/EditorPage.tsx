@@ -220,7 +220,7 @@ export function EditorPage() {
         onPointerDownCapture={(event) => {
           if (
             event.button === 0 &&
-            (event.target as HTMLElement).closest('#work-canvas [data-layer], [role="slider"]')
+            (event.target as HTMLElement).closest("#work-canvas [data-layer], [data-slider-root]")
           )
             dispatch({ type: "begin-group", group: "pointer" });
         }}

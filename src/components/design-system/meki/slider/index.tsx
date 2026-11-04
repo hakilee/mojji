@@ -16,6 +16,7 @@ const renderSlider = function renderSlider(
 ) {
   return (
     <Root
+      data-slider-root=""
       className={cn(
         "relative flex h-5 w-full cursor-pointer touch-none select-none items-center",
         className,
