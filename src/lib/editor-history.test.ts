@@ -4,6 +4,76 @@ import { editorHistoryReducer, initialEditorHistory } from "./editor-history";
 import { drawEmoji, initialSettings, initialTextLayer, type ImageLayer } from "./emoji";
 
 describe("editor history [E2b E5v]", () => {
+  test.each(["text", "image"] as const)(
+    "undoes a complete %s resize atomically and preserves rendering/resources [E5am]",
+    (type) => {
+      const source = createCanvas(32, 16);
+      source.getContext("2d").fillRect(0, 0, 32, 16);
+      const layer =
+        type === "text"
+          ? { ...initialTextLayer, id: "resized", scale: 0.6 }
+          : {
+              type: "image" as const,
+              id: "resized",
+              name: "rectangle.png",
+              source: source as unknown as HTMLCanvasElement,
+              aspectRatio: 2,
+              x: 64,
+              y: 64,
+              size: 64,
+              rotation: 45,
+              fit: "contain" as const,
+            };
+      let history = editorHistoryReducer(initialEditorHistory, {
+        type: "change",
+        patch: { layers: [layer] },
+      });
+      history = editorHistoryReducer(history, { type: "select", id: layer.id });
+      const before = history;
+      const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+      drawEmoji(ctx, before.present.settings, 0);
+      const beforePixels = ctx.getImageData(0, 0, 128, 128).data;
+
+      history = editorHistoryReducer(history, { type: "begin-group", group: "pointer" });
+      for (const offset of [1, 5, 10])
+        history = editorHistoryReducer(
+          history,
+          type === "text"
+            ? {
+                type: "change-text",
+                id: layer.id,
+                patch: { x: 64 + offset, y: 64 + offset / 2, scale: 0.6 + offset / 100 },
+              }
+            : {
+                type: "change-image",
+                id: layer.id,
+                patch: { x: 64 + offset, y: 64 + offset / 2, size: 64 + offset },
+              },
+        );
+      history = editorHistoryReducer(history, { type: "end-group", group: "pointer" });
+      const resized = history.present;
+
+      expect(history.past).toHaveLength(before.past.length + 1);
+      expect(resized.selectedLayer).toBe(layer.id);
+      drawEmoji(ctx, resized.settings, 0);
+      const resizedPixels = ctx.getImageData(0, 0, 128, 128).data;
+      expect(resizedPixels).not.toEqual(beforePixels);
+      history = editorHistoryReducer(history, { type: "undo" });
+      expect(history.present).toEqual(before.present);
+      drawEmoji(ctx, history.present.settings, 0);
+      expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(beforePixels);
+      history = editorHistoryReducer(history, { type: "redo" });
+      expect(history.present).toEqual(resized);
+      if (type === "image")
+        expect(history.present.settings.layers[0]).toMatchObject({
+          source,
+          rotation: 45,
+          fit: "contain",
+        });
+      drawEmoji(ctx, history.present.settings, 0);
+      expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(resizedPixels);
+    },
+  );
   test("edits and deletes independent text layers with reversible selection [E5y]", () => {
     let history = editorHistoryReducer(initialEditorHistory, {
       type: "add-text",

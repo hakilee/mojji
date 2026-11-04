@@ -7,7 +7,7 @@
     "sourceFiles": 65,
     "publicReferenceExports": 53,
     "referenceComponentsAndParts": 103,
-    "extensions": 15,
+    "extensions": 16,
     "applicationComponents": 7
   },
   "ports": [
@@ -26,7 +26,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 447
+          "line": 458
         }
       ]
     },
@@ -108,15 +108,15 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 110
+          "line": 112
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 321
+          "line": 427
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 332
+          "line": 438
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -160,23 +160,23 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 108
+          "line": 110
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 144
+          "line": 146
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 160
+          "line": 162
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 168
+          "line": 170
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 177
+          "line": 179
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -188,15 +188,15 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 300
+          "line": 302
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 322
+          "line": 324
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 617
+          "line": 628
         }
       ]
     },
@@ -467,7 +467,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 493
+          "line": 504
         }
       ]
     },
@@ -808,7 +808,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 495
+          "line": 506
         }
       ]
     },
@@ -827,7 +827,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 505
+          "line": 516
         }
       ]
     },
@@ -854,7 +854,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 509
+          "line": 520
         }
       ]
     },
@@ -885,7 +885,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 502
+          "line": 513
         }
       ]
     },
@@ -904,7 +904,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 503
+          "line": 514
         }
       ]
     },
@@ -938,7 +938,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 328
+          "line": 434
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -962,7 +962,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 624
+          "line": 635
         }
       ]
     },
@@ -1108,7 +1108,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 109
+          "line": 111
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -1138,11 +1138,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 455
+          "line": 466
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 474
+          "line": 485
         }
       ]
     },
@@ -1168,7 +1168,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 477
+          "line": 488
         }
       ]
     },
@@ -1182,7 +1182,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 467
+          "line": 478
         }
       ]
     },
@@ -1204,7 +1204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 460
+          "line": 471
         }
       ]
     },
@@ -1214,7 +1214,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 483
+          "line": 494
         }
       ]
     },
@@ -1228,7 +1228,7 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 135
+          "line": 137
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1246,23 +1246,23 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 91
+          "line": 92
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 100
+          "line": 102
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 119
+          "line": 121
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 127
+          "line": 129
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 516
+          "line": 527
         }
       ]
     },
@@ -1290,7 +1290,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 350
+          "line": 352
         }
       ]
     },
@@ -1300,11 +1300,11 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 210
+          "line": 212
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 286
+          "line": 288
         }
       ]
     },
@@ -1324,7 +1324,17 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 283
+          "line": 377
+        }
+      ]
+    },
+    {
+      "component": "CanvasResizeHandles",
+      "target": "src/components/design-system/CanvasResizeHandles.tsx",
+      "usages": [
+        {
+          "file": "src/components/editor/CanvasEditor.tsx",
+          "line": 412
         }
       ]
     },
@@ -1334,7 +1344,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 567
+          "line": 578
         }
       ]
     }
@@ -1343,7 +1353,7 @@
     {
       "file": "src/components/editor/CanvasEditor.tsx",
       "components": ["CanvasEditor"],
-      "designSystem": ["Button", "CanvasHitTarget", "Spinner"],
+      "designSystem": ["Button", "CanvasHitTarget", "CanvasResizeHandles", "Spinner"],
       "dependencies": [
         "src/components/design-system/index.ts",
         "src/lib/emoji.ts",
@@ -1489,6 +1499,11 @@
     {
       "file": "src/components/design-system/CanvasHitTarget.tsx",
       "components": ["CanvasHitTarget"],
+      "dependencies": ["npm:react"]
+    },
+    {
+      "file": "src/components/design-system/CanvasResizeHandles.tsx",
+      "components": ["CanvasResizeHandles"],
       "dependencies": ["npm:react"]
     },
     {
@@ -1759,6 +1774,7 @@
       "components": [],
       "dependencies": [
         "src/components/design-system/CanvasHitTarget.tsx",
+        "src/components/design-system/CanvasResizeHandles.tsx",
         "src/components/design-system/Checkbox.tsx",
         "src/components/design-system/ChoiceButton.tsx",
         "src/components/design-system/ColorPicker.tsx",

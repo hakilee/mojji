@@ -86,6 +86,7 @@ export function LayerControls({
               min={0}
               max={128}
               value={layer.x}
+              valueLabel={String(Math.round(layer.x))}
               onChange={(x) => (layer.type === "text" ? onTextChange({ x }) : onImageChange({ x }))}
             />
             <RangeField
@@ -93,6 +94,7 @@ export function LayerControls({
               min={0}
               max={128}
               value={layer.y}
+              valueLabel={String(Math.round(layer.y))}
               onChange={(y) => (layer.type === "text" ? onTextChange({ y }) : onImageChange({ y }))}
             />
             {layer.type === "text" ? (
