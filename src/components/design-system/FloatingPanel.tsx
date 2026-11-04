@@ -54,9 +54,9 @@ export function FloatingPanel({
             }
             restoreFocus.current = false;
           }}
-          className="w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--radix-popover-content-available-height))] overflow-y-auto overscroll-contain rounded-xl border-neutral-200 p-3 text-sm shadow-floating outline-none"
+          className="flex w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--radix-popover-content-available-height))] flex-col overflow-hidden rounded-xl border-neutral-200 p-3 text-sm shadow-floating outline-none"
         >
-          <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h2 className="font-medium">{label}</h2>
             <Popover.Close asChild>
               <Button variant="neutral" size="x-small" aria-label="레이어 편집 닫기">
@@ -64,7 +64,7 @@ export function FloatingPanel({
               </Button>
             </Popover.Close>
           </div>
-          {children}
+          <div className="min-h-0 overflow-y-auto overscroll-contain">{children}</div>
         </Popover.Content>
       </Popover.Provider>
     </Popover>

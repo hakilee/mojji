@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Browser-only; input never leaves the device.
 
+- E5aa (#96): Keep the contextual layer panel title and close action outside its scrolling settings region. On narrow/short viewports, settings scroll independently while the header remains reachable. Preserve anchoring, viewport containment, native field editing, keyboard dismissal and export.
+
 ## Current design-system contract — E5z (#94)
 
 This requirement supersedes the original-UI/no-reference wording in E5b/E5g, the Base UI implementation choice, and the theme-only/no-component-CSS implementation restriction in E5e. Preserve the editor behavior and specialized requirements below.
