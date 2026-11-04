@@ -60,6 +60,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudflare/workers-types@npm:^5.20261103.1":
+  version: 5.20261103.1
+  resolution: "@cloudflare/workers-types@npm:5.20261103.1"
+  checksum: 10c0/fc5d2e9f6d1b5bb488b11c3734d730eab07cb0ef2fb1eb6cff7ffa36f09577b669524ebf15db1d66fbe17237038bb108b37106b8ee34d4c4059d981d7e8baf62
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:0.8.1":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -3685,6 +3692,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "slackmoji@workspace:."
   dependencies:
+    "@cloudflare/workers-types": "npm:^5.20261103.1"
     "@fontsource/black-han-sans": "npm:^5.3.0"
     "@fontsource/jua": "npm:^5.3.0"
     "@fontsource/noto-sans-kr": "npm:^5.3.1"

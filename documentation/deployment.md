@@ -1,6 +1,6 @@
 # Production deployment
 
-Public hostname: `slackmoji.haklee.me`. Cloudflare account: `haklee` (`93300edc910b267d9a3f0efd51bf600d`); Worker: `slackmoji`. The repository's `wrangler.json` owns assets, account and custom-domain configuration. The app uses Workers Static Assets, not Pages or a server-side application. Navigation requests use SPA fallback; assets retain their normal file responses.
+Public hostname: `slackmoji.haklee.me`. Cloudflare account: `haklee` (`93300edc910b267d9a3f0efd51bf600d`); Worker: `slackmoji`. The repository's `wrangler.json` owns assets, account and custom-domain configuration. The app remains a CSR application on Workers Static Assets; same-origin `/api/*` requests run `src/server/worker.ts` with D1/R2 bindings, not Pages or SSR. Navigation requests use SPA fallback; assets retain their normal file responses.
 
 Use the pinned Wrangler development dependency through Yarn. Authenticate with `yarn wrangler login` if needed, then confirm `yarn wrangler whoami` includes the intended account. Keep credentials, `.wrangler/`, `.dev.vars*`, `.env*` and browser state out of Git. Never log authentication tokens.
 
@@ -11,13 +11,14 @@ After the issue-linked PR is squash-merged and the working tree is clean on the 
 ```sh
 yarn install --immutable
 yarn verify
+yarn wrangler d1 migrations apply slackmoji-gallery --remote
 yarn wrangler deploy
 yarn wrangler deployments list
 ```
 
 Worker URL: `https://slackmoji.haklee.workers.dev`. A deployment updates the Worker and its custom domain immediately; there is no separate staging Worker or release-isolation environment. Validate locally before deploying. There is no Git deployment, GitHub Actions or remote build pipeline. Upload only the verified local `dist` output. Do not run an unverified build during release.
 
-Confirm public HTTP 200, TLS, custom-domain routing and exact HTML/JS/CSS/font asset bytes. Use Aside CLI to verify text/font/motion editing, local font upload and GIF download on the production hostname. Record accepted commit, Worker version and results on the owning issue/PR. Native renderer tests do not establish production browser behavior. No application server or client error monitoring is configured.
+Confirm public HTTP 200, TLS, custom-domain routing and exact HTML/JS/CSS/font asset bytes. Use Aside CLI to verify text/font/motion editing, local font upload and GIF download on the production hostname. Record accepted commit, Worker version and results on the owning issue/PR. Native renderer tests do not establish production browser behavior. API failures return generic errors without credentials; no external error monitoring is configured.
 
 ## Domain and migration boundary
 
@@ -44,3 +45,12 @@ yarn wrangler triggers deploy
 The temporary configuration is ignored and is not a second Worker or a normal release path. Remove it after cutover. After public Workers routing and browser behavior pass, remove the former `hakui/slackmoji` Vercel project and all its deployments, then verify absence through project/deployment APIs. Do not remove unrelated Vercel projects. Remove local `.vercel/` linked state after successful cleanup; retain the ignore rule to prevent old credentials from being committed.
 
 Official configuration references: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/), [SPA routing](https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/), [custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
+
+## Public gallery operations (#128)
+
+- D1 `slackmoji-gallery` (`fc865855-8f91-4986-bfcc-a7d44ae191b6`) stores metadata/counters; private R2 bucket `slackmoji-gallery` stores content-addressed GIFs. Both are new resources in haklee. No public R2 bucket URL is needed.
+- Local full stack: `yarn build`, `yarn wrangler d1 migrations apply slackmoji-gallery --local`, then `yarn wrangler dev --port 8787`. Tests use Wrangler platform proxies with isolated disposable D1/R2 state.
+- `POST /api/mochi` publishes a validated GIF; `GET /api/mochi?sort=recent|popular&offset=0` returns 24 items; `GET /api/mochi/:id/image` is an uncounted preview; `POST /api/mochi/:id/download` returns an attachment and atomically increments the counter. POST requires a matching Origin. Counts are served responses, not unique people or proof that a save completed. Private local downloads are not counted.
+- Content hashes make retries converge without duplicate rows. R2 is written before D1 so visible rows never precede their asset. A failed DB insert may leave an unlisted content-addressed object; retry repairs it. Do not delete that object blindly during concurrent publication. Operators can reconcile orphan objects against D1 after quiescing writes.
+- Rate bindings limit publication to 10/minute and counted downloads to 60/minute per connecting IP per Cloudflare location. These are abuse friction, not authentication, global hard quotas or unique-download guarantees. Raw IPs are not stored in D1. See [Cloudflare rate-limit semantics](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
+- To remove a published item, use a parameterized/admin-reviewed D1 deletion for the exact content hash, then delete only its `HASH.gif` R2 object. Preview responses may remain cached for up to a day. Preserve unrelated rows/objects. Production QA must remove only records created by that QA run.

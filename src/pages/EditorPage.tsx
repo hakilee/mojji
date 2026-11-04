@@ -1,3 +1,4 @@
+import { MochiGallery } from "~/components/MochiGallery";
 import {
   Accordion,
   EditorAccordionItem,
@@ -45,6 +46,8 @@ export function EditorPage() {
   const [openPanels, setOpenPanels] = useState<string[]>(["motion"]);
   const selectedAnchor = useRef<HTMLButtonElement | null>(null);
   const [busy, setBusy] = useState(false);
+  const [publish, setPublish] = useState(true);
+  const [galleryRevision, setGalleryRevision] = useState(0);
   const [status, setStatus] = useState("");
   const [renderAttempt, setRenderAttempt] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -200,6 +203,35 @@ export function EditorPage() {
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
       setStatus(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`);
+      if (publish) {
+        try {
+          const response = await fetch("/api/mochi", {
+            method: "POST",
+            headers: { "Content-Type": "image/gif" },
+            body: blob,
+            signal: AbortSignal.timeout(15000),
+          });
+          if (!response.ok) throw new Error("publish");
+          const { id } = (await response.json()) as { id: string };
+          setGalleryRevision((value) => value + 1);
+          setStatus("다운로드 완료 · 모두의 모찌에 공개했어요.");
+          try {
+            const counted = await fetch(`/api/mochi/${id}/download`, {
+              method: "POST",
+              signal: AbortSignal.timeout(15000),
+            });
+            await counted.body?.cancel();
+            if (!counted.ok) throw new Error("count");
+            setGalleryRevision((value) => value + 1);
+          } catch {
+            setStatus("다운로드·공개 완료 · 다운로드 횟수는 반영하지 못했어요.");
+          }
+        } catch {
+          setStatus(
+            "다운로드는 완료했지만 공개하지 못했어요. 다시 다운로드하면 공개를 재시도해요.",
+          );
+        }
+      }
     } catch (error) {
       setStatus(
         error instanceof Error ? error.message : "GIF 생성에 실패했어요. 다시 시도해 주세요.",
@@ -590,6 +622,15 @@ export function EditorPage() {
               </section>
             </div>
             <footer className="flex flex-col items-center gap-inset pt-group">
+              <Checkbox
+                label="모두의 모찌에 공개"
+                checked={publish}
+                onCheckedChange={setPublish}
+                disabled={busy}
+              />
+              <p className="text-caption text-fg-neutral-muted">
+                체크하면 완성된 GIF가 공개돼요. 해제하면 나만 다운로드해요.
+              </p>
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status || invalid}
               </p>
@@ -607,6 +648,7 @@ export function EditorPage() {
           </section>
         </div>
       </main>
+      <MochiGallery key={galleryRevision} />
     </div>
   );
 }
