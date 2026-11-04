@@ -34,7 +34,7 @@ Pretendard Variable, 15px 본문, neutral-950/700/500 텍스트, neutral-900 검
 - 클래스 병합: 원본 cn에 실제 theme spacing/radius/shadow/font-size 이름을 등록해 원본 px-6와 편집기의 p-inset이 중첩되거나, text-md/label과 텍스트 색상 클래스가 서로 제거되지 않게 했습니다. 좁은 모션 선택은 8px 수평 패딩으로 라벨을 보존합니다.
 - 접근성: Button/Input의 focus-visible·disabled·invalid, Select의 키보드 highlight/checked·스크롤 가능한 viewport와 포털 z-index를 보완했습니다. Slider의 label/id/valuetext는 실제 thumb에 전달합니다.
 - 모션: 모든 원본 CSS Modules에 reduced-motion 처리를 추가하고 Tabs의 공유 layout indicator도 설정을 존중합니다. Tooltip은 원본에 있던 미설치 animation utility 대신 이식된 Popover의 실제 CSS animation을 사용합니다.
-- Spinner는 원본 12-blade와 크기 API를 유지하면서 currentColor를 상속하고 reduced-motion에서 정지합니다. label이 없으면 장식이며, label이 있으면 loading output입니다.
+- Spinner는 원본 12-blade와 크기 API를 유지하면서 currentColor를 상속하고 reduced-motion에서 정지합니다. label이 없으면 장식이며, label이 있으면 loading output입니다. 내부 blade는 문장과 버튼 안에서도 유효한 phrasing content인 span을 사용합니다 (#106).
 - Popover에 실제 편집기에 필요한 Anchor/Close를 같은 Radix primitive에서 추가했습니다. 별도 팝오버 구현을 만들지 않습니다.
 - Time은 UI에 실제 필요한 원본 dayjs formatTime만 재귀 이식합니다. shared 패키지의 서버 의존성을 끌어오지 않습니다.
 

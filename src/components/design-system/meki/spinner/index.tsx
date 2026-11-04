@@ -58,7 +58,7 @@ const renderSpinner = (
       {...props}
     >
       {blades.map(({ rotation, delay }) => (
-        <div
+        <span
           className={twMerge("absolute bottom-0", styles["spinner-blade"])}
           key={rotation}
           style={{
