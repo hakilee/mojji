@@ -163,7 +163,7 @@ export function EmojiPicker({ onAdd }: { onAdd: (text: string) => void }) {
           role="group"
           aria-label="이모티콘 검색 결과"
           aria-busy={mode === "emoji" && loading}
-          className="min-h-24 flex-1 overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
+          className="min-h-24 flex-1 overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-1"
         >
           {mode === "emoji" && error && (
             <div className="space-y-inset p-inset">

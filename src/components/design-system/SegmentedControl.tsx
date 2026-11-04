@@ -16,13 +16,13 @@ export function SegmentedControl<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className="relative isolate flex min-h-control-size gap-1 rounded-xl bg-neutral-50 p-1 ring-1 ring-inset ring-neutral-200"
+      className="relative isolate flex min-h-control-size gap-1 rounded-xl bg-neutral-50 p-0.5 ring-1 ring-inset ring-neutral-200"
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-1 left-1 rounded-lg border border-neutral-200 bg-white shadow-control transition-transform duration-200 ease-out motion-reduce:transition-none"
+        className="pointer-events-none absolute inset-y-0.5 left-0.5 rounded-lg border border-neutral-200 bg-white shadow-control transition-transform duration-200 ease-out motion-reduce:transition-none"
         style={{
-          width: `calc((100% - var(--spacing) * ${options.length + 1}) / ${options.length})`,
+          width: `calc((100% - var(--spacing) * ${options.length}) / ${options.length})`,
           transform: `translateX(calc(${options.findIndex((option) => option.value === value)} * (100% + var(--spacing))))`,
         }}
       />
