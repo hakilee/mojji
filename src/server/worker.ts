@@ -1,0 +1,128 @@
+import type { D1Database, R2Bucket, RateLimit } from "@cloudflare/workers-types";
+import { validateGif } from "./validate-gif";
+
+interface Env {
+  DB: D1Database;
+  MOCHI: R2Bucket;
+  PUBLISH_LIMIT: RateLimit;
+  DOWNLOAD_LIMIT: RateLimit;
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
+    const error = (message: string, status: number) =>
+      Response.json({ error: message }, { status, headers });
+    try {
+      if (url.pathname === "/api/mochi" && request.method === "GET") {
+        const sort = url.searchParams.get("sort") ?? "recent";
+        const offset = Number(url.searchParams.get("offset") ?? 0);
+        if (
+          !["recent", "popular"].includes(sort) ||
+          !Number.isSafeInteger(offset) ||
+          offset < 0 ||
+          offset > 10000
+        )
+          return error("목록 요청이 올바르지 않아요.", 400);
+        const order =
+          sort === "popular"
+            ? "downloads DESC, created_at DESC, id DESC"
+            : "created_at DESC, id DESC";
+        const { results } = await env.DB.prepare(
+          `SELECT id, created_at, downloads FROM mochi ORDER BY ${order} LIMIT 25 OFFSET ?`,
+        )
+          .bind(offset)
+          .all();
+        return Response.json(
+          { items: results.slice(0, 24), nextOffset: results.length > 24 ? offset + 24 : null },
+          { headers },
+        );
+      }
+      const match = url.pathname.match(
+        /^\/api\/mochi\/(?<id>[a-f0-9]{64})\/(?<action>image|download)$/,
+      );
+      if (match?.groups && request.method === "GET" && match.groups.action === "image") {
+        const exists = await env.DB.prepare("SELECT id FROM mochi WHERE id = ?")
+          .bind(match.groups.id)
+          .first();
+        if (!exists) return error("모찌를 찾을 수 없어요.", 404);
+        const object = await env.MOCHI.get(`${match.groups.id}.gif`);
+        if (!object) return error("모찌를 찾을 수 없어요.", 404);
+        return new Response(await object.arrayBuffer(), {
+          headers: {
+            "Content-Type": "image/gif",
+            "Cache-Control": "public, max-age=86400",
+            "X-Content-Type-Options": "nosniff",
+          },
+        });
+      }
+      if (request.method !== "POST") return error("지원하지 않는 요청이에요.", 404);
+      if (request.headers.get("Origin") !== url.origin)
+        return error("허용되지 않은 요청이에요.", 403);
+      const ip = request.headers.get("CF-Connecting-IP") ?? "local";
+      if (match?.groups?.action === "download") {
+        if (!(await env.DOWNLOAD_LIMIT.limit({ key: ip })).success)
+          return error("잠시 후 다시 다운로드해 주세요.", 429);
+        const object = await env.MOCHI.get(`${match.groups.id}.gif`);
+        if (!object) return error("모찌를 찾을 수 없어요.", 404);
+        const content = await object.arrayBuffer();
+        const row = await env.DB.prepare(
+          "UPDATE mochi SET downloads = downloads + 1 WHERE id = ? RETURNING downloads",
+        )
+          .bind(match.groups.id)
+          .first();
+        if (!row) return error("모찌를 찾을 수 없어요.", 404);
+        return new Response(content, {
+          headers: {
+            ...headers,
+            "Content-Type": "image/gif",
+            "Content-Disposition": 'attachment; filename="slackmoji.gif"',
+          },
+        });
+      }
+      if (url.pathname !== "/api/mochi") return error("모찌를 찾을 수 없어요.", 404);
+      if (!(await env.PUBLISH_LIMIT.limit({ key: ip })).success)
+        return error("잠시 후 다시 공개해 주세요.", 429);
+      if (request.headers.get("Content-Type") !== "image/gif")
+        return error("GIF 파일만 공개할 수 있어요.", 415);
+      if (Number(request.headers.get("Content-Length")) > 131072)
+        return error("128KB 이하 GIF만 공개할 수 있어요.", 413);
+      const reader = request.body?.getReader();
+      if (!reader) return error("GIF가 비어 있어요.", 400);
+      const chunks: Uint8Array[] = [];
+      let size = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.length;
+        if (size > 131072) {
+          await reader.cancel();
+          return error("128KB 이하 GIF만 공개할 수 있어요.", 413);
+        }
+        chunks.push(value);
+      }
+      const bytes = new Uint8Array(size);
+      let offset = 0;
+      for (const chunk of chunks) {
+        bytes.set(chunk, offset);
+        offset += chunk.length;
+      }
+      try {
+        validateGif(bytes);
+      } catch {
+        return error("올바른 128×128 GIF만 공개할 수 있어요.", 400);
+      }
+      const id = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join("");
+      await env.MOCHI.put(`${id}.gif`, bytes, { httpMetadata: { contentType: "image/gif" } });
+      await env.DB.prepare("INSERT INTO mochi (id, bytes) VALUES (?, ?) ON CONFLICT(id) DO NOTHING")
+        .bind(id, size)
+        .run();
+      return Response.json({ id }, { status: 201, headers });
+    } catch {
+      return error("서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.", 503);
+    }
+  },
+};

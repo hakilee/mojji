@@ -1,6 +1,6 @@
 # GIF emoji editor
 
-Owner: GitHub issue #1. Browser-only; input never leaves the device.
+Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
 - E5ap (#126): When history restoration closes the layer panel, preserve focus on an active history toolbar button instead of restoring the canvas anchor, so held undo/redo continues through mixed text/font/motion snapshots. Keep genuine blur cancellation and normal panel close/Escape focus restoration. Verify mixed-history traversal through both stack ends, explicit close/Escape and GIF output with Aside.
 
@@ -33,6 +33,14 @@ Owner: GitHub issue #1. Browser-only; input never leaves the device.
 - E5aa (#96): Keep the contextual layer panel title and close action outside its scrolling settings region. On narrow/short viewports, settings scroll independently while the header remains reachable. Preserve anchoring, viewport containment, native field editing, keyboard dismissal and export.
 
 - E5ah (#110): Editor setting disclosures follow selected mockup 2 without dividers: compact title/current-value headers, a neutral rounded surface only for expanded sections, and consistent inset spacing. Summaries reflect current text, font, color mode, placement, background and motion; preserve multi-open state, keyboard semantics, mounted contents and responsive containment. This supersedes divider-based disclosure styling in E5s.
+
+## Public gallery — E6 (#128)
+
+Keep the existing CSR application and add same-origin Cloudflare Worker APIs. A new private R2 bucket stores public rendered GIF assets served through the Worker; a new D1 database owns content identity, creation timestamps and atomic download counters. Never send source layers, uploaded originals or font files. The download action clearly offers public publication versus private local download; only publication adds a gallery item. Publication failure must retain a working local download and explain that the item was not published.
+
+Below the main editor card, show a responsive grid with recent / most downloaded tabs, bounded pagination and loading, empty, retry and failure states. Clicking an item initiates a download immediately. Thumbnail requests never increment counts. Count served download responses, not unique people or guaranteed completed saves. Stable ordering uses a unique tie-breaker.
+
+Validate upload MIME, byte size, full GIF structure, dimensions and decoded frame bounds. Only accept bounded 128×128 GIFs; use content hashes for idempotent publication and parameterized SQL. Restrict mutation origins, rate-limit publication/counting and hide credentials/internal errors. D1/R2 partial failures must remain recoverable. Production verification must exercise actual bindings and UI generation → publication → listing → download → count/sort updates; no production test records remain afterward.
 
 ## Current design-system contract — E5z (#94)
 
