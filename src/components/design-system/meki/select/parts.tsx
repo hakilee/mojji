@@ -48,7 +48,7 @@ export const SelectTriggerRender = (
   return (
     <Trigger
       className={cn(
-        "flex cursor-pointer items-center justify-between border border-neutral-200 text-text-primary",
+        "flex cursor-pointer items-center justify-between border border-neutral-200 bg-white text-text-primary",
         "hover:border-neutral-300 focus:border-primary disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         triggerSizes[size],
         className,

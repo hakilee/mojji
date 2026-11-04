@@ -30,6 +30,7 @@ Pretendard Variable, 15px 본문, neutral-950/700/500 텍스트, neutral-900 검
 
 ## 명시적 적응과 보완
 
+- Select.Trigger의 기본 배경은 Input과 같은 `bg-white`로 통일합니다. 부모 표면이 비치지 않으며, disabled의 `bg-neutral-100`과 테두리/포커스/크기/메뉴 동작은 유지합니다 (#122).
 - Fast Refresh: compound assembly를 `.ts` barrel, 실제 JSX를 component-only `parts.tsx`로 분리했습니다. Input 크기 값은 두 실제 소비자가 공유하는 `input-sizes.ts`에 있습니다. 외부 API는 동일합니다.
 - 클래스 병합: 원본 cn에 실제 theme spacing/radius/shadow/font-size 이름을 등록해 원본 px-6와 편집기의 p-inset이 중첩되거나, text-md/label과 텍스트 색상 클래스가 서로 제거되지 않게 했습니다. 좁은 모션 선택은 8px 수평 패딩으로 라벨을 보존합니다.
 - 접근성: Button/Input의 focus-visible·disabled·invalid, Select의 키보드 highlight/checked·스크롤 가능한 viewport와 포털 z-index를 보완했습니다. Slider의 label/id/valuetext는 실제 thumb에 전달합니다.
