@@ -12,4 +12,5 @@ export { HelpBubble } from "./HelpBubble";
 export { Link } from "./Link";
 export { ContentTextArea } from "./ContentTextArea";
 export { CanvasHitTarget } from "./CanvasHitTarget";
+export { CanvasResizeHandles } from "./CanvasResizeHandles";
 export { ReactionButton } from "./ReactionButton";

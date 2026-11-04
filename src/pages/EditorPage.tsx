@@ -114,11 +114,13 @@ export function EditorPage() {
     const endAll = () => dispatch({ type: "end-group" });
     window.addEventListener("pointerup", endPointer);
     window.addEventListener("pointercancel", endPointer);
+    window.addEventListener("lostpointercapture", endPointer);
     window.addEventListener("keyup", endKeyboard);
     window.addEventListener("blur", endAll);
     return () => {
       window.removeEventListener("pointerup", endPointer);
       window.removeEventListener("pointercancel", endPointer);
+      window.removeEventListener("lostpointercapture", endPointer);
       window.removeEventListener("keyup", endKeyboard);
       window.removeEventListener("blur", endAll);
     };
@@ -348,9 +350,10 @@ export function EditorPage() {
             <div className="flex min-h-heading-slot items-center gap-1">
               <h2 className="text-body font-semibold">캔버스</h2>
               <HelpBubble label="캔버스 조작">
-                클릭해 선택하고 드래그로 이동하세요. 방향키로 미세 조절하고, Alt 키로 자석 정렬을
-                해제하세요. 선택한 레이어는 Backspace나 Delete로 삭제할 수 있어요. ⌘/Ctrl+Z로 실행
-                취소, ⌘/Ctrl+Shift+Z로 다시 실행하세요.
+                클릭해 선택하고 드래그로 이동하세요. 선택한 레이어의 모서리를 드래그하면 비율을
+                유지하며 크기가 바뀌어요. 키보드로는 배치의 크기 슬라이더를 사용하세요. 방향키로
+                미세 조절하고, Alt 키로 자석 정렬을 해제하세요. 선택한 레이어는 Backspace나 Delete로
+                삭제할 수 있어요. ⌘/Ctrl+Z로 실행 취소, ⌘/Ctrl+Shift+Z로 다시 실행하세요.
               </HelpBubble>
             </div>
             <CanvasEditor
@@ -375,6 +378,14 @@ export function EditorPage() {
               onSelect={selectLayer}
               onMove={(id, x, y) => {
                 dispatch({ type: "move", id, x, y });
+                setStatus("");
+              }}
+              onResize={(id, patch) => {
+                dispatch(
+                  "scale" in patch
+                    ? { type: "change-text", id, patch }
+                    : { type: "change-image", id, patch },
+                );
                 setStatus("");
               }}
               onEditText={(id) => {

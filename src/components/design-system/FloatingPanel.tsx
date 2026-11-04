@@ -95,7 +95,9 @@ export function FloatingPanel({
             if (
               target instanceof Element &&
               (anchor.current?.contains(target) ||
-                target.closest('#layer-stack, #editor-history, [aria-modal="true"]'))
+                target.closest(
+                  '#layer-stack, #editor-history, #work-canvas [data-resize-corner], [aria-modal="true"]',
+                ))
             ) {
               event.preventDefault();
               return;
