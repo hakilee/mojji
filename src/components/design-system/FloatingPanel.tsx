@@ -84,7 +84,12 @@ export function FloatingPanel({
           onOpenAutoFocus={(event) => event.preventDefault()}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            if (restoreFocus.current && anchor.current?.isConnected) anchor.current.focus();
+            if (
+              restoreFocus.current &&
+              anchor.current?.isConnected &&
+              !document.activeElement?.closest("#editor-history")
+            )
+              anchor.current.focus();
           }}
           onFocusOutside={(event) => event.preventDefault()}
           onEscapeKeyDown={() => {
