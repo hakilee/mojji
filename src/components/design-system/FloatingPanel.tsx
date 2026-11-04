@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import { Popover } from "./meki/popover";
 import { Button } from "./meki/button";
@@ -17,6 +17,47 @@ export function FloatingPanel({
   children: ReactNode;
 }) {
   const restoreFocus = useRef(true);
+  const [viewport, setViewport] = useState<{
+    x: number;
+    bottom: number;
+    height: number;
+    width: number;
+  } | null>(null);
+  useEffect(() => {
+    const visual = window.visualViewport;
+    const update = () => {
+      setViewport(
+        window.innerWidth <= 760
+          ? {
+              x: (visual?.offsetLeft ?? 0) + (visual?.width ?? window.innerWidth) / 2,
+              bottom: (visual?.offsetTop ?? 0) + (visual?.height ?? window.innerHeight) - 12,
+              height: (visual?.height ?? window.innerHeight) - 24,
+              width: (visual?.width ?? window.innerWidth) - 24,
+            }
+          : null,
+      );
+    };
+    update();
+    window.addEventListener("resize", update);
+    visual?.addEventListener("resize", update);
+    visual?.addEventListener("scroll", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      visual?.removeEventListener("resize", update);
+      visual?.removeEventListener("scroll", update);
+    };
+  }, []);
+  const panelAnchor = useMemo(
+    () =>
+      viewport
+        ? {
+            current: {
+              getBoundingClientRect: () => new DOMRect(viewport.x, viewport.bottom, 0, 0),
+            },
+          }
+        : anchor,
+    [anchor, viewport],
+  );
   return (
     <Popover
       open
@@ -24,14 +65,21 @@ export function FloatingPanel({
         if (!open) onClose();
       }}
     >
-      <Popover.Anchor virtualRef={anchor} />
+      <Popover.Anchor virtualRef={panelAnchor} />
       <Popover.Provider>
         <Popover.Content
           id={id}
           aria-label={label}
-          side="bottom"
+          side={viewport ? "top" : "bottom"}
           align="center"
-          sideOffset={8}
+          sideOffset={viewport ? 0 : 8}
+          avoidCollisions={!viewport}
+          updatePositionStrategy={viewport ? "always" : "optimized"}
+          style={
+            viewport
+              ? { maxHeight: Math.max(0, viewport.height), maxWidth: Math.max(0, viewport.width) }
+              : undefined
+          }
           collisionPadding={12}
           onOpenAutoFocus={(event) => event.preventDefault()}
           onCloseAutoFocus={(event) => {
