@@ -392,7 +392,7 @@ export function EditorPage() {
               layers={settings.layers}
               selectedId={selectedLayer}
               onSelect={selectLayer}
-              onAddText={() => {
+              onAddText={(preset) => {
                 dispatch({
                   type: "add-text",
                   layer: {
@@ -400,10 +400,12 @@ export function EditorPage() {
                     id: crypto.randomUUID(),
                     text: "텍스트",
                     scale: 0.6,
+                    ...preset,
                   },
                 });
                 setStatus("");
-                requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
+                if (!preset)
+                  requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
               }}
               onAdd={(images) => {
                 dispatch({ type: "add-images", images });

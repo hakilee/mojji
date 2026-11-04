@@ -8,7 +8,7 @@
     "publicReferenceExports": 53,
     "referenceComponentsAndParts": 103,
     "extensions": 15,
-    "applicationComponents": 6
+    "applicationComponents": 7
   },
   "ports": [
     {
@@ -26,7 +26,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 445
+          "line": 447
         }
       ]
     },
@@ -119,6 +119,30 @@
           "line": 332
         },
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 72
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 89
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 173
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 181
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 202
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 232
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 226
         },
@@ -156,11 +180,11 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 32
+          "line": 33
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 35
+          "line": 36
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -172,7 +196,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 615
+          "line": 617
         }
       ]
     },
@@ -426,6 +450,10 @@
           "line": 32
         },
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 111
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 151
         },
@@ -439,7 +467,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 491
+          "line": 493
         }
       ]
     },
@@ -503,6 +531,10 @@
           "line": 33
         },
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 114
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 154
         },
@@ -512,7 +544,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 56
+          "line": 59
         }
       ]
     },
@@ -540,6 +572,10 @@
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 64
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 209
         }
@@ -550,6 +586,10 @@
       "source": "packages/ui/src/modal/index.tsx",
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 88
+        },
         {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 245
@@ -562,6 +602,10 @@
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 76
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 230
         }
@@ -572,6 +616,10 @@
       "source": "packages/ui/src/modal/index.tsx",
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 94
+        },
         {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 251
@@ -584,6 +632,10 @@
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 87
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 242
         }
@@ -594,6 +646,10 @@
       "source": "packages/ui/src/modal/index.tsx",
       "target": "src/components/design-system/meki/modal/index.ts",
       "usages": [
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 71
+        },
         {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 225
@@ -743,12 +799,16 @@
       "target": "src/components/design-system/meki/select/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 129
+        },
+        {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 166
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 493
+          "line": 495
         }
       ]
     },
@@ -758,12 +818,16 @@
       "target": "src/components/design-system/meki/select/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 139
+        },
+        {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 180
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 503
+          "line": 505
         }
       ]
     },
@@ -772,6 +836,14 @@
       "source": "packages/ui/src/select/index.tsx",
       "target": "src/components/design-system/meki/select/index.ts",
       "usages": [
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 140
+        },
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 142
+        },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 181
@@ -782,7 +854,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 507
+          "line": 509
         }
       ]
     },
@@ -804,12 +876,16 @@
       "target": "src/components/design-system/meki/select/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 136
+        },
+        {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 177
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 500
+          "line": 502
         }
       ]
     },
@@ -819,12 +895,16 @@
       "target": "src/components/design-system/meki/select/index.ts",
       "usages": [
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 137
+        },
+        {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 178
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 501
+          "line": 503
         }
       ]
     },
@@ -861,6 +941,10 @@
           "line": 328
         },
         {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 155
+        },
+        {
           "file": "src/components/editor/FontPicker.tsx",
           "line": 192
         },
@@ -874,11 +958,11 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 95
+          "line": 98
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 622
+          "line": 624
         }
       ]
     },
@@ -1054,11 +1138,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 453
+          "line": 455
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 472
+          "line": 474
         }
       ]
     },
@@ -1080,11 +1164,11 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 112
+          "line": 115
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 475
+          "line": 477
         }
       ]
     },
@@ -1098,7 +1182,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 465
+          "line": 467
         }
       ]
     },
@@ -1120,7 +1204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 458
+          "line": 460
         }
       ]
     },
@@ -1130,7 +1214,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 481
+          "line": 483
         }
       ]
     },
@@ -1138,6 +1222,10 @@
       "component": "SegmentedControl",
       "target": "src/components/design-system/SegmentedControl.tsx",
       "usages": [
+        {
+          "file": "src/components/editor/EmojiPicker.tsx",
+          "line": 98
+        },
         {
           "file": "src/components/editor/LayerControls.tsx",
           "line": 135
@@ -1174,7 +1262,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 514
+          "line": 516
         }
       ]
     },
@@ -1198,7 +1286,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 47
+          "line": 50
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1246,7 +1334,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 565
+          "line": 567
         }
       ]
     }
@@ -1260,6 +1348,33 @@
         "src/components/design-system/index.ts",
         "src/lib/emoji.ts",
         "src/lib/font-loading.ts"
+      ]
+    },
+    {
+      "file": "src/components/editor/EmojiPicker.tsx",
+      "components": ["EmojiPicker"],
+      "designSystem": [
+        "Button",
+        "FormField.Label",
+        "Input",
+        "Modal",
+        "Modal.Close",
+        "Modal.Content",
+        "Modal.Description",
+        "Modal.Title",
+        "Modal.Trigger",
+        "SegmentedControl",
+        "Select",
+        "Select.Content",
+        "Select.Item",
+        "Select.Trigger",
+        "Select.Value",
+        "Spinner"
+      ],
+      "dependencies": [
+        "src/components/design-system/index.ts",
+        "src/lib/emoji-catalog.ts",
+        "src/lib/kaomoji.ts"
       ]
     },
     {
@@ -1309,6 +1424,7 @@
       "designSystem": ["Button", "ChoiceButton", "HelpBubble", "Input", "Spinner"],
       "dependencies": [
         "src/components/design-system/index.ts",
+        "src/components/editor/EmojiPicker.tsx",
         "src/lib/emoji.ts",
         "src/lib/image-upload.ts"
       ]

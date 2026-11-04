@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, ChoiceButton, HelpBubble, Input, Spinner } from "~/components/design-system";
-import type { ImageLayer, Layer } from "~/lib/emoji";
+import type { ImageLayer, Layer, TextLayer } from "~/lib/emoji";
 import { loadImage } from "~/lib/image-upload";
+import { EmojiPicker } from "./EmojiPicker";
 
 export function LayerEditor({
   layers,
@@ -11,7 +12,7 @@ export function LayerEditor({
   onAdd,
 }: {
   layers: Layer[];
-  onAddText: () => void;
+  onAddText: (preset?: Pick<TextLayer, "text" | "font">) => void;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onAdd: (images: ImageLayer[]) => void;
@@ -28,18 +29,20 @@ export function LayerEditor({
   }, []);
   return (
     <div id="layer-stack" className="mt-group space-y-inset">
-      <div className="grid grid-cols-2 gap-control">
-        <Button variant="white" size="small" onClick={onAddText}>
+      <div className="grid grid-cols-3 gap-control">
+        <Button variant="white" size="small" className="px-2" onClick={() => onAddText()}>
           텍스트 추가
         </Button>
         <Button
           variant="white"
           size="small"
+          className="px-2"
           disabled={loading || images.length >= 12}
           onClick={() => document.getElementById("image-upload")?.click()}
         >
           이미지 추가
         </Button>
+        <EmojiPicker onAdd={(text) => onAddText({ text, font: "Noto Sans KR" })} />
       </div>
       <div className="space-y-control">
         <div className="flex items-center gap-1">
