@@ -112,11 +112,11 @@
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 316
+          "line": 321
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 327
+          "line": 332
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
@@ -858,7 +858,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 323
+          "line": 328
         },
         {
           "file": "src/components/editor/FontPicker.tsx",

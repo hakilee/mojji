@@ -54,7 +54,7 @@ export function FloatingPanel({
             }
             restoreFocus.current = false;
           }}
-          className="flex w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--radix-popover-content-available-height))] flex-col overflow-hidden rounded-xl border-neutral-200 p-3 text-sm shadow-floating outline-none"
+          className="flex w-80 max-w-[calc(100vw-24px)] max-h-[min(70dvh,var(--radix-popover-content-available-height))] flex-col overflow-hidden rounded-xl border-neutral-200 p-3 text-sm shadow-floating outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-stroke-focus"
         >
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h2 className="font-medium">{label}</h2>
