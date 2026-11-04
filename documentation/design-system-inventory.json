@@ -108,7 +108,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 62
+          "line": 110
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
@@ -665,7 +665,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 21
+          "line": 62
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -695,7 +695,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 29
+          "line": 70
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -714,7 +714,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 28
+          "line": 69
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -1010,7 +1010,7 @@
       "usages": [
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 27
+          "line": 68
         }
       ]
     },
@@ -1024,7 +1024,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 61
+          "line": 109
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
