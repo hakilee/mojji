@@ -69,7 +69,13 @@ export function LayerEditor({
             setErrors([]);
             const added: ImageLayer[] = [];
             const errors: string[] = [];
-            for (const file of files.slice(0, Math.max(0, 12 - images.length))) {
+            for (const [index, file] of files.entries()) {
+              if (added.length >= 12 - images.length) {
+                errors.push(
+                  `${files.length - index}개 파일을 건너뛰었어요. 이미지는 최대 12개까지 추가할 수 있어요.`,
+                );
+                break;
+              }
               try {
                 added.push(await loadImage(file));
               } catch (error) {
@@ -80,10 +86,6 @@ export function LayerEditor({
               if (!mounted.current) return;
             }
             if (added.length) onAdd(added);
-            if (files.length > 12 - images.length)
-              errors.push(
-                `${files.length - (12 - images.length)}개 파일을 건너뛰었어요. 이미지는 최대 12개까지 추가할 수 있어요.`,
-              );
             setErrors(errors);
             setLoading(false);
           }}

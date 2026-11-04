@@ -874,7 +874,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 93
+          "line": 95
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1080,7 +1080,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 110
+          "line": 112
         },
         {
           "file": "src/pages/EditorPage.tsx",

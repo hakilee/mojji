@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Browser-only; input never leaves the device.
 
+- E5ae (#104): Failed image uploads do not consume the 12-image capacity. Process a selected batch in order until successfully decoded images fill the remaining slots, retaining individual failure reasons. Report as skipped only files left after capacity is actually full. Preserve one document-history action per successful batch, partial success and retry behavior.
+
 - E5ad (#102): Batch image uploads retain valid files and list each failed filename with its actionable reason. Wrap long names within narrow layouts. If the remaining 12-image capacity skips files, report their count. Clear previous failures on a new attempt and allow corrected same-name files to be retried without reloading or losing existing edits.
 
 - E5ac (#100): Group a complete slider pointer gesture into one undo action whether it begins on the thumb or anywhere on its track. Apply to document timing and contextual layer placement sliders, including portalled panels. Releasing the pointer ends the action so subsequent gestures stay independent; preserve keyboard grouping and decoded GIF timing.
