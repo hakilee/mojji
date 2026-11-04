@@ -18,7 +18,7 @@ export function LayerEditor({
 }) {
   const images = layers.filter((layer) => layer.type === "image");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -66,21 +66,25 @@ export function LayerEditor({
             event.target.value = "";
             if (!files.length) return;
             setLoading(true);
-            setError("");
+            setErrors([]);
             const added: ImageLayer[] = [];
             const errors: string[] = [];
             for (const file of files.slice(0, Math.max(0, 12 - images.length))) {
               try {
                 added.push(await loadImage(file));
               } catch (error) {
-                errors.push(error instanceof Error ? error.message : "이미지를 불러오지 못했어요.");
+                errors.push(
+                  `${file.name}: ${error instanceof Error ? error.message : "이미지를 불러오지 못했어요."}`,
+                );
               }
               if (!mounted.current) return;
             }
             if (added.length) onAdd(added);
             if (files.length > 12 - images.length)
-              errors.push("이미지는 최대 12개까지 추가할 수 있어요.");
-            setError(errors.join(" "));
+              errors.push(
+                `${files.length - (12 - images.length)}개 파일을 건너뛰었어요. 이미지는 최대 12개까지 추가할 수 있어요.`,
+              );
+            setErrors(errors);
             setLoading(false);
           }}
         />
@@ -90,10 +94,15 @@ export function LayerEditor({
             이미지 불러오는 중…
           </p>
         )}
-        {error && (
-          <p role="alert" className="text-caption text-fg-critical">
-            {error}
-          </p>
+        {errors.length > 0 && (
+          <div role="alert" className="space-y-control text-caption text-fg-critical wrap-anywhere">
+            <p>추가하지 못한 이미지가 있어요.</p>
+            <ul className="list-disc space-y-control pl-4">
+              {errors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
       <div className="space-y-control" role="group" aria-label="레이어 선택">
