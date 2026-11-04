@@ -117,7 +117,12 @@ export function LayerEditor({
             onClick={(event) => {
               onSelect(layer.id);
               if (event.detail === 0)
-                requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
+                requestAnimationFrame(() => {
+                  document
+                    .querySelector('#work-canvas [data-layer][aria-pressed="true"]')
+                    ?.scrollIntoView({ block: "nearest" });
+                  document.getElementById("layer-controls")?.focus({ preventScroll: true });
+                });
             }}
           >
             <span

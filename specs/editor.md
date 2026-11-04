@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Browser-only; input never leaves the device.
 
+- E5ag (#108): Keyboard activation of a canvas/list layer reveals its canvas anchor before moving focus to its contextual panel with a visible neutral 2px focus outline, without a second focus-induced document scroll. Show the panel outline only for focus-visible, preserving pointer manipulation focus, anchoring, viewport containment, keyboard traversal and Escape restoration for text/image layers.
+
 - E5af (#106): Shared loading indicators use valid phrasing content within paragraph statuses and buttons without DOM nesting warnings. Preserve the output/ref/label/size API, twelve-blade appearance, inherited color, decorative versus labelled semantics and reduced-motion behavior.
 
 - E5ae (#104): Failed image uploads do not consume the 12-image capacity. Process a selected batch in order until successfully decoded images fill the remaining slots, retaining individual failure reasons. Report as skipped only files left after capacity is actually full. Preserve one document-history action per successful batch, partial success and retry behavior.

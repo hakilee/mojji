@@ -299,7 +299,12 @@ export function CanvasEditor({
               onClick={(event) => {
                 if (event.detail === 0) {
                   onSelect(id);
-                  requestAnimationFrame(() => document.getElementById("layer-controls")?.focus());
+                  requestAnimationFrame(() => {
+                    document
+                      .querySelector('#work-canvas [data-layer][aria-pressed="true"]')
+                      ?.scrollIntoView({ block: "nearest" });
+                    document.getElementById("layer-controls")?.focus({ preventScroll: true });
+                  });
                 }
               }}
               onDoubleClick={layer.type === "text" ? () => onEditText(id) : undefined}
