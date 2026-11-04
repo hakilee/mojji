@@ -20,14 +20,17 @@ yarn dev
 
 다음 기능으로 이모지를 만드세요:
 
-- 한글 포함 텍스트, 3줄·9자까지 자동 크기 조절
+- 한글 포함 텍스트, 3줄·40자까지 자동 크기 조절
+- 이모지 추가: 한글·영문 검색, 분류 필터, 피부색 변형 포함 이모지와 감정별 카오모지
 - Black Han Sans, Jua, Noto Sans KR 로컬 글꼴과 Google Fonts 검색·적용
 - 글자별 색상·가로/세로 그라데이션·배경색·투명 배경
 - 9가지 모션: 없음·두근두근·통통·슬라이드·흔들흔들·빙글빙글·둥실둥실·갸우뚱·말랑말랑
-- 9자·3줄 제한 에디터와 실시간 Slack 반응 카운터 미리보기
+- 40자·3줄 제한 에디터와 실시간 Slack 반응 카운터 미리보기
 - 128×128 GIF 다운로드, 128 KiB 상한, 무한 반복
 
 모든 렌더링은 브라우저 안에서 이루어집니다. Google Fonts는 선택 시 외부에서 글꼴 파일을 불러오며 입력 텍스트를 API 매개변수로 전송하지 않습니다.
+
+이모지 목록은 [Emojibase](https://emojibase.dev/docs/datasets/)의 한글 데이터와 영문 별칭을 지연 로딩합니다. 이모지와 카오모지는 편집 가능한 텍스트 레이어로 추가되며, 이모지 모양과 지원 여부는 기기의 글꼴에 따라 달라집니다.
 
 자체 사용자 인터페이스(UI) 규칙은 [디자인 시스템](documentation/design-system.md)에 정리되어 있습니다.
 
@@ -59,7 +62,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 - `src/lib/`: GIF 렌더러와 colocated 테스트
 - `src/data/`: 지연 로딩 글꼴 목록
 - `src/styles/tailwind.css`: Tailwind 진입점과 테마 설정 (화면 스타일은 유틸리티 클래스)
-- `public/licenses/`: 번들 글꼴의 OFL 라이선스
+- `public/licenses/`: 번들 글꼴의 OFL 라이선스와 이모지 데이터·아이콘의 MIT 고지
 
 [GitHub 이슈](https://github.com/hakilee/slackmoji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.
 

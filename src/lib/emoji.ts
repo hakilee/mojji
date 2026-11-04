@@ -1,6 +1,6 @@
 import { encode } from "modern-gif";
 
-export const maxTextCharacters = 9;
+export const maxTextCharacters = 40;
 export const motionFrameDelays = { 0.5: 120, 1: 60, 1.5: 40, 2: 30 } as const;
 
 export const fonts: readonly string[] = ["Black Han Sans", "Jua", "Noto Sans KR"];

@@ -61,7 +61,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       );
     },
   );
-  test.each(["", "   ", "a".repeat(10), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
+  test.each(["", "   ", "a".repeat(41), "a\nb\nc\nd"])("rejects invalid text %j", async (text) => {
     const canvas = createCanvas(128, 128);
     const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
     expect(validateText(text)).not.toBeNull();
@@ -148,8 +148,29 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
 
   test("accepts Unicode characters and three lines", () => {
     expect(validateText("안녕\n반가워\n🎉".repeat(1))).toBeNull();
-    expect(validateText("🎉".repeat(9))).toBeNull();
+    expect(validateText("🎉".repeat(40))).toBeNull();
   });
+
+  test.each(["👩🏽‍💻", "(╯°□°)╯︵ ┻━┻"])(
+    "exports a complete inserted %s as an animated GIF [E5ak]",
+    async (text) => {
+      const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+
+      const blob = await exportGif(ctx, {
+        ...initialSettings,
+        layers: [{ ...initialTextLayer, text, font: "Noto Sans KR" }],
+      });
+      const decoded = decode(await blob.arrayBuffer());
+      const frames = decodeFrames(await blob.arrayBuffer());
+
+      expect(decoded.width).toBe(128);
+      expect(decoded.height).toBe(128);
+      expect(frames).toHaveLength(20);
+      expect(frames.every((frame) => frame.delay === 60)).toBe(true);
+      expect(frames[0].data.some((value, index) => index % 4 === 3 && value > 0)).toBe(true);
+      expect(blob.size).toBeLessThanOrEqual(128 * 1024);
+    },
+  );
 
   test.each(Object.keys(motions) as (keyof typeof motions)[])(
     "exports decodable %s GIF with dimensions, timing and transparent pixels",
@@ -327,8 +348,8 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
   );
 
   test("constrains pasted text by grapheme and line count without splitting emoji", () => {
-    expect(constrainText("👨‍👩‍👧‍👦".repeat(10))).toBe("👨‍👩‍👧‍👦".repeat(9));
-    expect(validateText("👨‍👩‍👧‍👦".repeat(9))).toBeNull();
+    expect(constrainText("👨‍👩‍👧‍👦".repeat(41))).toBe("👨‍👩‍👧‍👦".repeat(40));
+    expect(validateText("👨‍👩‍👧‍👦".repeat(40))).toBeNull();
     expect(constrainText("가\r\n나\r다\n라")).toBe("가\n나\n다");
   });
 
