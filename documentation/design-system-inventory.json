@@ -108,7 +108,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 112
+          "line": 117
         },
         {
           "file": "src/components/design-system/HistoryButton.tsx",
@@ -1104,7 +1104,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 111
+          "line": 116
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
