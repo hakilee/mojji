@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Browser-only; input never leaves the device.
 
+- E5ab (#98): Canvas text-edit entry must reveal the selected layer's text content disclosure before focusing its native textarea, including when the same selected layer's content was collapsed. Preserve other disclosures, content/history and per-layer selection; entering editing alone is not a document edit.
+
 - E5aa (#96): Keep the contextual layer panel title and close action outside its scrolling settings region. On narrow/short viewports, settings scroll independently while the header remains reachable. Preserve anchoring, viewport containment, native field editing, keyboard dismissal and export.
 
 ## Current design-system contract — E5z (#94)
