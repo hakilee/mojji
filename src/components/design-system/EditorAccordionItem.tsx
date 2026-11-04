@@ -6,17 +6,28 @@ export function EditorAccordionItem({
   id,
   title,
   value,
+  summary,
   children,
 }: {
   id?: string;
   title: string;
   value: string;
+  summary?: string;
   children: ReactNode;
 }) {
   return (
-    <Accordion.Item id={id} value={value} className="min-w-0">
+    <Accordion.Item
+      id={id}
+      value={value}
+      className="my-control min-w-0 rounded-panel border-0 transition-colors duration-150 data-[state=open]:bg-bg-neutral-weak motion-reduce:transition-none"
+    >
       <Accordion.Trigger className="group w-full gap-control px-group text-left focus-visible:-outline-offset-2">
-        {title}
+        <span className="shrink-0 font-semibold">{title}</span>
+        {summary && (
+          <span className="ml-auto min-w-0 truncate text-caption font-normal text-fg-neutral-muted">
+            {summary}
+          </span>
+        )}
         <ChevronDownIcon
           size={16}
           className="shrink-0 text-text-tertiary transition-transform duration-200 group-data-[state=open]:rotate-180 motion-reduce:transition-none"

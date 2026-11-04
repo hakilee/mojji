@@ -35,7 +35,12 @@ export function TextLayerEditor({
   useEffect(() => () => onComposingChange(false), [onComposingChange]);
   return (
     <Accordion type="multiple" defaultValue={["content"]}>
-      <EditorAccordionItem id="layer-text-settings" value="content" title="텍스트">
+      <EditorAccordionItem
+        id="layer-text-settings"
+        value="content"
+        title="텍스트"
+        summary={layer.text || "비어 있음"}
+      >
         <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak transition-colors duration-150 hover:not-focus-within:border-stroke-neutral-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-stroke-brand has-aria-invalid:border-fg-critical has-aria-invalid:outline-fg-critical motion-reduce:transition-none">
           <ContentTextArea
             id="layer-text"
@@ -101,7 +106,12 @@ export function TextLayerEditor({
           {notice}
         </p>
       </EditorAccordionItem>
-      <EditorAccordionItem id="layer-font-settings" value="font" title="글꼴">
+      <EditorAccordionItem
+        id="layer-font-settings"
+        value="font"
+        title="글꼴"
+        summary={layer.fontLabel ?? layer.font}
+      >
         <FontPicker
           font={layer.font}
           fontLabel={layer.fontLabel}
@@ -111,7 +121,11 @@ export function TextLayerEditor({
           onLoading={onLoading}
         />
       </EditorAccordionItem>
-      <EditorAccordionItem value="color" title="색상">
+      <EditorAccordionItem
+        value="color"
+        title="색상"
+        summary={layer.gradient ? "그라데이션" : layer.characterColors ? "글자별" : "단색"}
+      >
         <div className="mb-group">
           <SegmentedControl
             label="색상 방식"
