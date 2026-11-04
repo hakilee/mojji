@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Browser-only; input never leaves the device.
 
+- E5aj (#114): Shared choice cards use the same neutral border token on enabled hover and selected states, so clicking an effect does not switch border colors. Retain selected fill/text, pressed feedback, disabled state and the distinct keyboard focus outline.
+
 - E5ai (#112): On narrow layout viewports (up to 760px), keep the existing layer editor docked above the visual viewport bottom instead of flipping around its canvas anchor. Track visual viewport resize/scroll, constrain panel height to the visible area with 12px clearance, keep its header reachable and settings independently scrollable, and preserve the same mounted controls, native text/IME focus and disclosure state through keyboard opening/closing. Desktop retains canvas anchoring. Verify keyboard-sized and offset viewport changes with Aside; explicitly record real-device keyboard verification gaps.
 
 - E5ag (#108): Keyboard activation of a canvas/list layer reveals its canvas anchor before moving focus to its contextual panel with a visible neutral 2px focus outline, without a second focus-induced document scroll. Show the panel outline only for focus-visible, preserving pointer manipulation focus, anchoring, viewport containment, keyboard traversal and Escape restoration for text/image layers.
