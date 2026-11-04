@@ -35,7 +35,7 @@ export function TextLayerEditor({
   useEffect(() => () => onComposingChange(false), [onComposingChange]);
   return (
     <Accordion type="multiple" defaultValue={["content"]}>
-      <EditorAccordionItem value="content" title="텍스트">
+      <EditorAccordionItem id="layer-text-settings" value="content" title="텍스트">
         <div className="overflow-hidden rounded-panel border border-stroke-neutral bg-bg-neutral-weak transition-colors duration-150 hover:not-focus-within:border-stroke-neutral-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-stroke-brand has-aria-invalid:border-fg-critical has-aria-invalid:outline-fg-critical motion-reduce:transition-none">
           <ContentTextArea
             id="layer-text"

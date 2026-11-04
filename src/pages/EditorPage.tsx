@@ -379,7 +379,13 @@ export function EditorPage() {
               }}
               onEditText={(id) => {
                 selectLayer(id);
-                requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
+                requestAnimationFrame(() => {
+                  const button = document
+                    .getElementById("layer-text-settings")
+                    ?.querySelector("button");
+                  if (button?.getAttribute("aria-expanded") === "false") button.click();
+                  requestAnimationFrame(() => document.getElementById("layer-text")?.focus());
+                });
               }}
             />
             <LayerEditor
