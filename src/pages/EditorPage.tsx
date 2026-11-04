@@ -450,7 +450,11 @@ export function EditorPage() {
                 setOpenPanels(values);
               }}
             >
-              <EditorAccordionItem value="background" title="배경">
+              <EditorAccordionItem
+                value="background"
+                title="배경"
+                summary={settings.transparent ? "투명" : settings.background}
+              >
                 <ColorPicker
                   label="배경색"
                   value={settings.background}
@@ -465,7 +469,7 @@ export function EditorPage() {
                   />
                 </div>
               </EditorAccordionItem>
-              <EditorAccordionItem value="motion" title="효과">
+              <EditorAccordionItem value="motion" title="효과" summary={motions[settings.motion]}>
                 <div className="grid grid-cols-3 gap-control">
                   {Object.entries(motions).map(([motion, label]) => (
                     <ChoiceButton

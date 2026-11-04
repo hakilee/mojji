@@ -55,7 +55,11 @@ export function LayerControls({
         />
       )}
       <Accordion type="multiple" defaultValue={layer.type === "image" ? ["layout"] : []}>
-        <EditorAccordionItem value="layout" title="배치">
+        <EditorAccordionItem
+          value="layout"
+          title="배치"
+          summary={`${Math.round(layer.x)}, ${Math.round(layer.y)} · ${layer.type === "text" ? `${Math.round(layer.scale * 100)}%` : `${layer.size}px`}`}
+        >
           <div className="space-y-group">
             <div className="grid grid-cols-3 gap-control">
               {[

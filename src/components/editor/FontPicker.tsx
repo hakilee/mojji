@@ -125,10 +125,10 @@ export function FontPicker({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-control">
+      <div className="grid gap-control">
         {fonts.map((family) => (
           <ChoiceButton
-            className="flex flex-col items-start gap-control overflow-hidden text-left [&_small]:text-caption [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
+            className="flex items-center justify-between gap-control overflow-hidden text-left [&_small]:text-caption [&_small]:text-fg-neutral-muted [&_small]:wrap-anywhere"
             key={family}
             disabled={!!loading}
             selected={font === family}
@@ -138,7 +138,7 @@ export function FontPicker({
             }}
           >
             <span
-              className="text-[22px] whitespace-nowrap max-[760px]:text-lg"
+              className="shrink-0 text-[22px] whitespace-nowrap max-[760px]:text-lg"
               style={{ fontFamily: family }}
             >
               가나다 Aa
