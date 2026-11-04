@@ -6,6 +6,7 @@ import {
   ChoiceButton,
   ColorPicker,
   HelpBubble,
+  HistoryButton,
   MotionIcon,
   Select,
   RangeField,
@@ -93,17 +94,18 @@ export function EditorPage() {
     requestAnimationFrame(() => document.getElementById("work-canvas")?.focus());
   }
 
-  function restore(type: "undo" | "redo") {
+  function restore(type: "undo" | "redo", focusCanvas = true) {
     if (fontLoading || composing || !(type === "undo" ? history.past : history.future).length)
       return;
     dispatch({ type });
     setStatus(type === "undo" ? "실행을 취소했어요." : "다시 실행했어요.");
-    requestAnimationFrame(() => {
-      const surface = document.getElementById("work-canvas");
-      (
-        surface?.querySelector<HTMLElement>('[data-layer][aria-pressed="true"]') ?? surface
-      )?.focus();
-    });
+    if (focusCanvas)
+      requestAnimationFrame(() => {
+        const surface = document.getElementById("work-canvas");
+        (
+          surface?.querySelector<HTMLElement>('[data-layer][aria-pressed="true"]') ?? surface
+        )?.focus();
+      });
   }
 
   useEffect(() => {
@@ -299,50 +301,16 @@ export function EditorPage() {
             role="group"
             aria-label="편집 기록"
           >
-            <Button
-              variant="white"
-              svgOnly
-              aria-label="실행 취소"
-              aria-keyshortcuts="Meta+Z Control+Z"
-              title="실행 취소 (⌘/Ctrl+Z)"
+            <HistoryButton
+              direction="undo"
               disabled={!history.past.length || fontLoading || composing}
-              onClick={() => restore("undo")}
-            >
-              <svg
-                aria-hidden="true"
-                className="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m9 5-5 5 5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)" />
-              </svg>
-            </Button>
-            <Button
-              variant="white"
-              svgOnly
-              aria-label="다시 실행"
-              aria-keyshortcuts="Meta+Shift+Z Control+Shift+Z Control+Y"
-              title="다시 실행 (⌘/Ctrl+Shift+Z, Ctrl+Y)"
+              onRestore={() => restore("undo", false)}
+            />
+            <HistoryButton
+              direction="redo"
               disabled={!history.future.length || fontLoading || composing}
-              onClick={() => restore("redo")}
-            >
-              <svg
-                aria-hidden="true"
-                className="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(0 -2)" />
-              </svg>
-            </Button>
+              onRestore={() => restore("redo", false)}
+            />
           </div>
         </header>
         <div className="grid grid-cols-3 items-start gap-section p-panel max-[760px]:p-group max-[1000px]:grid-cols-1">

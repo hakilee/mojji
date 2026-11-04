@@ -465,7 +465,7 @@ describe("editor history [E2b E5v]", () => {
     }
   });
 
-  test("retains the most recent 100 actions and can redo them", () => {
+  test("walks each of the 100 retained actions in order and stops at both ends [E5ao]", () => {
     let history = initialEditorHistory;
     for (let index = 1; index <= 101; index++)
       history = editorHistoryReducer(history, {
@@ -474,13 +474,15 @@ describe("editor history [E2b E5v]", () => {
         patch: { text: String(index) },
       });
 
-    for (let index = 0; index < 100; index++)
+    for (let index = 0; index < 100; index++) {
       history = editorHistoryReducer(history, { type: "undo" });
-    expect(history.present.settings.layers[0]).toMatchObject({ text: "1" });
+      expect(history.present.settings.layers[0]).toMatchObject({ text: String(100 - index) });
+    }
     expect(editorHistoryReducer(history, { type: "undo" })).toBe(history);
-    for (let index = 0; index < 100; index++)
+    for (let index = 0; index < 100; index++) {
       history = editorHistoryReducer(history, { type: "redo" });
-    expect(history.present.settings.layers[0]).toMatchObject({ text: "101" });
+      expect(history.present.settings.layers[0]).toMatchObject({ text: String(index + 2) });
+    }
     expect(editorHistoryReducer(history, { type: "redo" })).toBe(history);
   });
 
