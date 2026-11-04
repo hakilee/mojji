@@ -274,7 +274,7 @@ export function FontPicker({
             />
           </div>
           <div
-            className="min-h-24 flex-1 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-control"
+            className="min-h-24 flex-1 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-1"
             role="group"
             aria-label="검색 결과"
             aria-busy={catalogLoading}
