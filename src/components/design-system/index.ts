@@ -14,3 +14,4 @@ export { ContentTextArea } from "./ContentTextArea";
 export { CanvasHitTarget } from "./CanvasHitTarget";
 export { CanvasResizeHandles } from "./CanvasResizeHandles";
 export { ReactionButton } from "./ReactionButton";
+export { HistoryButton } from "./HistoryButton";

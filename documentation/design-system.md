@@ -54,6 +54,7 @@ Pretendard Variable, 15px 본문, neutral-950/700/500 텍스트, neutral-900 검
 | ContentTextArea     | 콘텐츠 폰트/IME/줄/입력 제한을 화면이 관리하는 native textarea 표면.                                                                                  |
 | CanvasHitTarget     | 드래그·선택·키보드 편집용 native hit button과 선택 가이드. geometry/편집 상태는 CanvasEditor 소유.                                                    |
 | ReactionButton      | 기존 Slack 26px pill·16px emoji·선택 파랑 상태 유지.                                                                                                  |
+| HistoryButton       | 공용 Button small·18px 아이콘. 짧은 클릭은 한 단계, 길게 누르면 기존 기록 스택을 연속 이동하고 해제/취소/비활성 시 정리.                              |
 | Link                | 공통 focus-visible/touch 처리의 native 링크.                                                                                                          |
 | MotionIcon          | 기존 24px 그리드 모션 아이콘.                                                                                                                         |
 
