@@ -26,7 +26,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 458
+          "line": 456
         }
       ]
     },
@@ -148,15 +148,15 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 226
+          "line": 225
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 246
+          "line": 242
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 323
+          "line": 319
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
@@ -204,7 +204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 637
+          "line": 635
         }
       ]
     },
@@ -463,11 +463,11 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 151
+          "line": 150
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 254
+          "line": 250
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -475,7 +475,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 504
+          "line": 502
         }
       ]
     },
@@ -544,15 +544,15 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 154
+          "line": 153
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 257
+          "line": 253
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 59
+          "line": 55
         }
       ]
     },
@@ -585,7 +585,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 209
+          "line": 208
         }
       ]
     },
@@ -600,7 +600,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 245
+          "line": 241
         }
       ]
     },
@@ -615,7 +615,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 230
+          "line": 229
         }
       ]
     },
@@ -630,7 +630,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 251
+          "line": 247
         }
       ]
     },
@@ -645,7 +645,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 242
+          "line": 240
         }
       ]
     },
@@ -660,7 +660,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 225
+          "line": 224
         }
       ]
     },
@@ -816,7 +816,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 506
+          "line": 504
         }
       ]
     },
@@ -835,7 +835,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 516
+          "line": 514
         }
       ]
     },
@@ -862,7 +862,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 520
+          "line": 518
         }
       ]
     },
@@ -893,7 +893,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 513
+          "line": 511
         }
       ]
     },
@@ -912,7 +912,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 514
+          "line": 512
         }
       ]
     },
@@ -954,19 +954,19 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 192
+          "line": 191
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 293
+          "line": 289
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 306
+          "line": 302
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 98
+          "line": 94
         },
         {
           "file": "src/components/MochiGallery.tsx",
@@ -974,7 +974,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 644
+          "line": 642
         }
       ]
     },
@@ -1174,11 +1174,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 466
+          "line": 464
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 485
+          "line": 483
         }
       ]
     },
@@ -1188,23 +1188,23 @@
       "usages": [
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 130
+          "line": 129
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 196
+          "line": 195
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 283
+          "line": 279
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 115
+          "line": 111
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 488
+          "line": 486
         }
       ]
     },
@@ -1214,15 +1214,15 @@
       "usages": [
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 270
+          "line": 266
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 478
+          "line": 476
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 625
+          "line": 623
         }
       ]
     },
@@ -1244,7 +1244,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 471
+          "line": 469
         }
       ]
     },
@@ -1254,7 +1254,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 494
+          "line": 492
         }
       ]
     },
@@ -1302,7 +1302,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 527
+          "line": 525
         }
       ]
     },
@@ -1320,10 +1320,6 @@
       "component": "HelpBubble",
       "target": "src/components/design-system/HelpBubble.tsx",
       "usages": [
-        {
-          "file": "src/components/editor/FontPicker.tsx",
-          "line": 243
-        },
         {
           "file": "src/components/editor/LayerEditor.tsx",
           "line": 50
@@ -1384,7 +1380,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 578
+          "line": 576
         }
       ]
     },
@@ -1449,7 +1445,6 @@
         "Checkbox",
         "ChoiceButton",
         "FormField.Label",
-        "HelpBubble",
         "Input",
         "Modal",
         "Modal.Close",

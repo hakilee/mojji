@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5ar (#132): Reduce every HelpBubble consumer: canvas retains only drag/move, corner resizing and Alt snap bypass; layers retain stacking order, 12-image/5MB limits and GIF first-frame behavior. Remove Google Fonts fetching-detail bubble entirely. Supersede E5t’s three-consumer requirement with these two essential bubbles; preserve shared popover accessibility and actual editing/keyboard behavior.
+
 - E5aq (#130): Align editor/gallery card edges and shared 24px desktop/16px narrow insets; use 16px brand title with 32×28 logo, 15px section headings and 14px tabs/control labels. Keep 34px history controls. Gallery uses the workspace card radius/border, removes the download-help sentence, and centers loading/empty/error/retry content in a stable 128px minimum area. Verify with temporary alignment guides in Aside, including narrow layout; guides are not product UI. Preserve gallery fetching, tabs and downloads.
 
 - E5ap (#126): When history restoration closes the layer panel, preserve focus on an active history toolbar button instead of restoring the canvas anchor, so held undo/redo continues through mixed text/font/motion snapshots. Keep genuine blur cancellation and normal panel close/Escape focus restoration. Verify mixed-history traversal through both stack ends, explicit close/Escape and GIF output with Aside.
