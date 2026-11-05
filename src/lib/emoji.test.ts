@@ -5,7 +5,8 @@ import {
   constrainText,
   drawEmoji,
   exportGif,
-  initialSettings,
+  gifFilename,
+  initialSettings as defaultSettings,
   initialTextLayer,
   type ImageLayer,
   type Settings,
@@ -15,7 +16,43 @@ import {
   validateText,
 } from "~/lib/emoji";
 
+const initialSettings = { ...defaultSettings, transparent: true };
+
 describe("emoji editor [E1 E2 E3 E4]", () => {
+  test.each([
+    ["하키짱", "하키짱.gif"],
+    ["하키\n짱", "하키 짱.gif"],
+    ["a/b:c?", "a b c.gif"],
+    ["...", "slackmoji.gif"],
+  ])("names GIF from text %s", (text, name) => {
+    expect(gifFilename([{ ...initialTextLayer, text }])).toBe(name);
+  });
+  test("uses source image name when text is blank", () => {
+    const image: ImageLayer = {
+      type: "image",
+      id: "image",
+      name: "하키짱.png",
+      source: createCanvas(1, 1) as unknown as HTMLCanvasElement,
+      aspectRatio: 1,
+      x: 64,
+      y: 64,
+      size: 48,
+      rotation: 0,
+      fit: "contain",
+    };
+    expect(gifFilename([{ ...initialTextLayer, text: " " }, image])).toBe("하키짱.gif");
+    expect(gifFilename([])).toBe("slackmoji.gif");
+    expect(gifFilename([{ ...initialTextLayer, text: "가".repeat(100) }])).toBe(
+      "가".repeat(80) + ".gif",
+    );
+  });
+  test("defaults GIF to opaque white", async () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    const blob = await exportGif(ctx, { ...defaultSettings, motion: "none" });
+    expect(Array.from(decodeFrames(await blob.arrayBuffer())[0].data.slice(0, 4))).toEqual([
+      255, 255, 255, 255,
+    ]);
+  });
   test.each([false, true])(
     "renders adjustable multiline spacing with individual colors=%s [E5as]",
     async (individual) => {
@@ -31,7 +68,12 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           characterColors: individual ? { 0: "#ff0000" } : undefined,
         };
         heights.push(measureEmojiText(ctx, layer).height);
-        const blob = await exportGif(ctx, { ...initialSettings, motion: "none", layers: [layer] });
+        const blob = await exportGif(ctx, {
+          ...initialSettings,
+          transparent: true,
+          motion: "none",
+          layers: [layer],
+        });
         const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
         const rows = Array.from({ length: 128 }, (_, y) => y).filter((y) =>
           Array.from({ length: 128 }, (_, x) => pixels[(y * 128 + x) * 4 + 3]).some(
@@ -163,6 +205,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const blob = await exportGif(ctx, {
         ...initialSettings,
         motion,
+        transparent: true,
         layers: [
           { ...initialTextLayer, text: "" },
           {
@@ -401,6 +444,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const blob = await exportGif(canvas.getContext("2d") as unknown as CanvasRenderingContext2D, {
         ...initialSettings,
         motion: "none",
+        transparent: true,
         layers: [
           {
             ...initialTextLayer,

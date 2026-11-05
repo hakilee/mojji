@@ -22,11 +22,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 38
+          "line": 46
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 456
+          "line": 457
         }
       ]
     },
@@ -204,7 +204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 632
+          "line": 633
         }
       ]
     },
@@ -471,11 +471,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 175
+          "line": 178
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 502
+          "line": 503
         }
       ]
     },
@@ -812,11 +812,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 177
+          "line": 180
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 504
+          "line": 505
         }
       ]
     },
@@ -831,11 +831,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 191
+          "line": 194
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 514
+          "line": 515
         }
       ]
     },
@@ -854,15 +854,15 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 192
+          "line": 195
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 193
+          "line": 196
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 518
+          "line": 519
         }
       ]
     },
@@ -889,11 +889,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 188
+          "line": 191
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 511
+          "line": 512
         }
       ]
     },
@@ -908,11 +908,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 189
+          "line": 192
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 512
+          "line": 513
         }
       ]
     },
@@ -974,7 +974,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 639
+          "line": 640
         }
       ]
     },
@@ -1162,23 +1162,23 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 39
+          "line": 47
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 120
+          "line": 128
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 135
+          "line": 143
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 464
+          "line": 465
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 483
+          "line": 484
         }
       ]
     },
@@ -1204,7 +1204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 486
+          "line": 487
         }
       ]
     },
@@ -1218,11 +1218,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 476
+          "line": 477
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 623
+          "line": 624
         }
       ]
     },
@@ -1232,19 +1232,19 @@
       "usages": [
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 161
+          "line": 40
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 167
+          "line": 170
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 203
+          "line": 206
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 469
+          "line": 470
         }
       ]
     },
@@ -1254,7 +1254,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 492
+          "line": 493
         }
       ]
     },
@@ -1272,7 +1272,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 141
+          "line": 149
         }
       ]
     },
@@ -1302,11 +1302,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 110
+          "line": 118
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 525
+          "line": 526
         }
       ]
     },
@@ -1330,7 +1330,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 352
+          "line": 353
         }
       ]
     },
@@ -1340,11 +1340,11 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 246
+          "line": 247
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 322
+          "line": 323
         }
       ]
     },
@@ -1354,7 +1354,7 @@
       "usages": [
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 46
+          "line": 54
         }
       ]
     },
@@ -1384,7 +1384,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 576
+          "line": 577
         }
       ]
     },
@@ -1394,11 +1394,11 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 336
+          "line": 337
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 341
+          "line": 342
         }
       ]
     }
