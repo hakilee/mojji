@@ -402,6 +402,10 @@ export function EditorPage() {
               layers={settings.layers}
               selectedId={selectedLayer}
               onSelect={selectLayer}
+              onColorChange={(id, color) => {
+                dispatch({ type: "change-text", id, patch: { color, characterColors: undefined } });
+                setStatus("");
+              }}
               onAddText={(preset) => {
                 dispatch({
                   type: "add-text",

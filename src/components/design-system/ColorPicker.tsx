@@ -24,12 +24,14 @@ export function ColorPicker({
   value,
   onChange,
   disabled = false,
+  swatch = false,
 }: {
   label: string;
   displayLabel?: string;
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  swatch?: boolean;
 }) {
   const id = useId();
   const [draft, setDraft] = useState<string | null>(null);
@@ -44,12 +46,20 @@ export function ColorPicker({
       <Popover.Trigger
         disabled={disabled}
         aria-label={`${label} 선택`}
-        className="flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-[state=open]:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
+        className={
+          swatch
+            ? "flex size-8 shrink-0 items-center justify-center rounded-control border border-stroke-neutral bg-bg-layer-default p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+            : "flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-[state=open]:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
+        }
       >
-        <span>{displayLabel}</span>
+        {!swatch && <span>{displayLabel}</span>}
         <span
           aria-hidden="true"
-          className="size-5 shrink-0 rounded-control-inset border border-stroke-neutral-strong"
+          className={
+            swatch
+              ? "size-full rounded-[2px]"
+              : "size-5 shrink-0 rounded-control-inset border border-stroke-neutral-strong"
+          }
           style={{ backgroundColor: value }}
         />
       </Popover.Trigger>

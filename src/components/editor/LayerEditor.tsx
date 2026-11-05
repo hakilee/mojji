@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, ChoiceButton, HelpBubble, Input, Spinner } from "~/components/design-system";
+import {
+  Button,
+  ColorPicker,
+  ChoiceButton,
+  HelpBubble,
+  Input,
+  Spinner,
+} from "~/components/design-system";
 import type { ImageLayer, Layer, TextLayer } from "~/lib/emoji";
 import { loadImage } from "~/lib/image-upload";
 import { EmojiPicker } from "./EmojiPicker";
@@ -10,12 +17,14 @@ export function LayerEditor({
   selectedId,
   onSelect,
   onAdd,
+  onColorChange,
 }: {
   layers: Layer[];
   onAddText: (preset?: Pick<TextLayer, "text" | "font">) => void;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onAdd: (images: ImageLayer[]) => void;
+  onColorChange: (id: string, color: string) => void;
 }) {
   const images = layers.filter((layer) => layer.type === "image");
   const [loading, setLoading] = useState(false);
@@ -108,40 +117,51 @@ export function LayerEditor({
       </div>
       <div className="space-y-control" role="group" aria-label="레이어 선택">
         {layers.toReversed().map((layer) => (
-          <ChoiceButton
-            key={layer.id}
-            aria-label={`${layer.type === "text" ? "텍스트" : "이미지"} 레이어 선택: ${layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}`}
-            className="flex w-full items-center gap-inset text-left"
-            selected={selectedId === layer.id}
-            onClick={(event) => {
-              onSelect(layer.id);
-              if (event.detail === 0)
-                requestAnimationFrame(() => {
-                  document
-                    .querySelector('#work-canvas [data-layer][aria-pressed="true"]')
-                    ?.scrollIntoView({ block: "nearest" });
-                  document.getElementById("layer-controls")?.focus({ preventScroll: true });
-                });
-            }}
-          >
-            <span
-              aria-hidden="true"
-              className="flex size-8 shrink-0 items-center justify-center rounded-control-inset bg-bg-neutral-weak text-label font-semibold"
+          <div key={layer.id} className="relative">
+            <ChoiceButton
+              aria-label={`${layer.type === "text" ? "텍스트" : "이미지"} 레이어 선택: ${layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}`}
+              className={`flex w-full items-center gap-inset text-left ${layer.type === "text" ? "pr-16" : ""}`}
+              selected={selectedId === layer.id}
+              onClick={(event) => {
+                onSelect(layer.id);
+                if (event.detail === 0)
+                  requestAnimationFrame(() => {
+                    document
+                      .querySelector('#work-canvas [data-layer][aria-pressed="true"]')
+                      ?.scrollIntoView({ block: "nearest" });
+                    document.getElementById("layer-controls")?.focus({ preventScroll: true });
+                  });
+              }}
             >
-              {layer.type === "text" ? "T" : "▧"}
-            </span>
-            <span className="min-w-0 flex-1">
               <span
-                className="block truncate text-label"
-                style={layer.type === "text" ? { fontFamily: `"${layer.font}"` } : undefined}
+                aria-hidden="true"
+                className="flex size-8 shrink-0 items-center justify-center rounded-control-inset bg-bg-neutral-weak text-label font-semibold"
               >
-                {layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}
+                {layer.type === "text" ? "T" : "▧"}
               </span>
-              <span className="block truncate text-caption text-fg-neutral-muted">
-                {layer.type === "text" ? (layer.fontLabel ?? layer.font) : "이미지"}
+              <span className="min-w-0 flex-1">
+                <span
+                  className="block truncate text-label"
+                  style={layer.type === "text" ? { fontFamily: `"${layer.font}"` } : undefined}
+                >
+                  {layer.type === "text" ? layer.text.trim() || "빈 텍스트" : layer.name}
+                </span>
+                <span className="block truncate text-caption text-fg-neutral-muted">
+                  {layer.type === "text" ? (layer.fontLabel ?? layer.font) : "이미지"}
+                </span>
               </span>
-            </span>
-          </ChoiceButton>
+            </ChoiceButton>
+            {layer.type === "text" && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <ColorPicker
+                  swatch
+                  label={`${layer.text.trim() || "빈 텍스트"} 글자색`}
+                  value={layer.color}
+                  onChange={(color) => onColorChange(layer.id, color)}
+                />
+              </div>
+            )}
+          </div>
         ))}
         {!layers.length && (
           <p className="px-inset py-group text-caption text-fg-neutral-muted">
