@@ -4,6 +4,31 @@ import { editorHistoryReducer, initialEditorHistory } from "./editor-history";
 import { drawEmoji, initialSettings, initialTextLayer, type ImageLayer } from "./emoji";
 
 describe("editor history [E2b E5v]", () => {
+  test("groups line spacing changes and restores independent layers [E5as]", () => {
+    let history = editorHistoryReducer(initialEditorHistory, {
+      type: "add-text",
+      layer: { ...initialTextLayer, id: "second", text: "두\n줄" },
+    });
+    const before = history;
+    expect(before.present.settings.layers[1]).toMatchObject({ lineHeight: 110 });
+    history = editorHistoryReducer(history, { type: "begin-group", group: "pointer" });
+    for (const lineHeight of [120, 150, 200]) {
+      history = editorHistoryReducer(history, {
+        type: "change-text",
+        id: "second",
+        patch: { lineHeight },
+      });
+    }
+    history = editorHistoryReducer(history, { type: "end-group", group: "pointer" });
+    expect(history.past).toHaveLength(before.past.length + 1);
+    expect(history.present.settings.layers[0]).toEqual(initialTextLayer);
+    const after = history.present;
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(before.present);
+    history = editorHistoryReducer(history, { type: "redo" });
+    expect(history.present).toEqual(after);
+  });
+
   test.each(["text", "image"] as const)(
     "undoes a complete %s resize atomically and preserves rendering/resources [E5am]",
     (type) => {

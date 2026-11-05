@@ -10,11 +10,52 @@ import {
   type ImageLayer,
   type Settings,
   motions,
+  measureEmojiText,
   textCharacters,
   validateText,
 } from "~/lib/emoji";
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
+  test.each([false, true])(
+    "renders adjustable multiline spacing with individual colors=%s [E5as]",
+    async (individual) => {
+      const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+      const gaps: number[] = [];
+      const heights: number[] = [];
+      for (const lineHeight of [110, 200]) {
+        const layer = {
+          ...initialTextLayer,
+          text: "MMMMMMMM\nMMMMMMMM",
+          lineHeight,
+          color: "#000000",
+          characterColors: individual ? { 0: "#ff0000" } : undefined,
+        };
+        heights.push(measureEmojiText(ctx, layer).height);
+        const blob = await exportGif(ctx, { ...initialSettings, motion: "none", layers: [layer] });
+        const pixels = decodeFrames(await blob.arrayBuffer())[0].data;
+        const rows = Array.from({ length: 128 }, (_, y) => y).filter((y) =>
+          Array.from({ length: 128 }, (_, x) => pixels[(y * 128 + x) * 4 + 3]).some(
+            (alpha) => alpha > 128,
+          ),
+        );
+        gaps.push(Math.max(...rows.slice(1).map((y, index) => y - rows[index]! - 1)));
+        expect(rows[0]! + rows.at(-1)!).toBeCloseTo(127, -1);
+        expect(rows[0]).toBeGreaterThan(0);
+        expect(rows.at(-1)).toBeLessThan(127);
+      }
+      expect(heights[1]! - heights[0]!).toBe(90);
+      expect(gaps[1]).toBeGreaterThan(gaps[0]!);
+    },
+  );
+
+  test("line spacing does not change single-line pixels [E5as]", () => {
+    const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
+    drawEmoji(ctx, initialSettings, 0);
+    const pixels = ctx.getImageData(0, 0, 128, 128).data;
+    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, lineHeight: 200 }] }, 0);
+    expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(pixels);
+  });
+
   test.each(["text", "image"] as const)(
     "recovers correct pixels after a failed %s paint [E2d]",
     (layer) => {
