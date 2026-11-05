@@ -101,7 +101,7 @@ export function EditorPage() {
     if (fontLoading || composing || !(type === "undo" ? history.past : history.future).length)
       return;
     dispatch({ type });
-    setStatus(type === "undo" ? "실행을 취소했어요." : "다시 실행했어요.");
+    setStatus("");
     if (focusCanvas)
       requestAnimationFrame(() => {
         const surface = document.getElementById("work-canvas");
@@ -626,9 +626,6 @@ export function EditorPage() {
                 onCheckedChange={setPublish}
                 disabled={busy}
               />
-              <p className="text-caption text-fg-neutral-muted">
-                체크하면 완성된 GIF가 공개돼요. 해제하면 나만 다운로드해요.
-              </p>
               <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
                 {status || invalid}
               </p>
