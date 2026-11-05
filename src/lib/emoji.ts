@@ -45,6 +45,7 @@ export type Layer = TextLayer | ImageLayer;
 export type Settings = {
   layers: Layer[];
   background: string;
+  backgroundGradient?: TextLayer["gradient"];
   transparent: boolean;
   motion: keyof typeof motions;
   speed: keyof typeof motionFrameDelays;
@@ -194,7 +195,19 @@ function applyMotion(ctx: CanvasRenderingContext2D, motion: Settings["motion"], 
 export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, progress: number) {
   ctx.clearRect(0, 0, 128, 128);
   if (!settings.transparent) {
-    ctx.fillStyle = settings.background;
+    if (settings.backgroundGradient) {
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        settings.backgroundGradient.direction === "horizontal" ? 128 : 0,
+        settings.backgroundGradient.direction === "vertical" ? 128 : 0,
+      );
+      gradient.addColorStop(0, settings.background);
+      gradient.addColorStop(1, settings.backgroundGradient.end);
+      ctx.fillStyle = gradient;
+    } else {
+      ctx.fillStyle = settings.background;
+    }
     ctx.fillRect(0, 0, 128, 128);
   }
   for (const layer of settings.layers) {

@@ -26,7 +26,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 462
+          "line": 463
         }
       ]
     },
@@ -204,7 +204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 638
+          "line": 702
         }
       ]
     },
@@ -479,7 +479,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 508
+          "line": 521
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 572
         }
       ]
     },
@@ -820,7 +824,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 510
+          "line": 523
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 574
         }
       ]
     },
@@ -839,7 +847,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 520
+          "line": 538
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 584
         }
       ]
     },
@@ -866,7 +878,15 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 524
+          "line": 539
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 540
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 588
         }
       ]
     },
@@ -897,7 +917,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 517
+          "line": 535
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 581
         }
       ]
     },
@@ -916,7 +940,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 518
+          "line": 536
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 582
         }
       ]
     },
@@ -978,7 +1006,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 645
+          "line": 709
         }
       ]
     },
@@ -1178,11 +1206,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 470
+          "line": 471
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 489
+          "line": 553
         }
       ]
     },
@@ -1208,7 +1236,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 492
+          "line": 556
         }
       ]
     },
@@ -1222,11 +1250,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 482
+          "line": 546
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 629
+          "line": 693
         }
       ]
     },
@@ -1252,7 +1280,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 475
+          "line": 501
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 509
         }
       ]
     },
@@ -1262,7 +1294,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 498
+          "line": 562
         }
       ]
     },
@@ -1281,6 +1313,10 @@
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
           "line": 142
+        },
+        {
+          "file": "src/pages/EditorPage.tsx",
+          "line": 483
         }
       ]
     },
@@ -1314,7 +1350,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 531
+          "line": 595
         }
       ]
     },
@@ -1338,7 +1374,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 354
+          "line": 355
         }
       ]
     },
@@ -1348,11 +1384,11 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 248
+          "line": 249
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 324
+          "line": 325
         }
       ]
     },
@@ -1392,7 +1428,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 582
+          "line": 646
         }
       ]
     },
@@ -1402,11 +1438,11 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 338
+          "line": 339
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 343
+          "line": 344
         }
       ]
     }
@@ -1546,6 +1582,7 @@
         "MotionIcon",
         "RangeField",
         "ReactionButton",
+        "SegmentedControl",
         "Select",
         "Select.Content",
         "Select.Item",

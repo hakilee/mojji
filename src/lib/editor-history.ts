@@ -54,12 +54,15 @@ function sameSettings(left: Settings, right: Settings) {
       {
         ...left,
         layers: undefined,
+        backgroundGradient: undefined,
       },
       {
         ...right,
         layers: undefined,
+        backgroundGradient: undefined,
       },
     ) &&
+    sameValues(left.backgroundGradient, right.backgroundGradient) &&
     left.layers.length === right.layers.length &&
     left.layers.every((layer, index) => {
       const other = right.layers[index];
