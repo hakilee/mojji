@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bb (#155): Shared color pickers follow selected concept 1 with pale gray option backgrounds only on hover. Use a small unfilled close icon with a 34px target, borderless option wrappers and colored swatches, a subtle white-swatch edge and contrasting checkmark selection. Unify direct color and HEX inputs on one soft neutral surface. Preserve keyboard focus, native color selection, validation, dismissal and history. Verify desktop/narrow with Aside.
+
 - E5ba (#151): Layer-row color triggers use a single 32px circular color dot without a rectangular frame (selected design 1), superseding E5aw square geometry. Keep a subtle neutral edge for white colors, accessible labels, keyboard focus, picker behavior and history. Verify desktop/narrow via Aside.
 
 - E5ay (#147): Contextual layer panels use semantic z-index150, below modal backdrop/content200 and ordinary nested popovers300. Opening Google Fonts must cover the parent panel without unmounting it; preserve search focus, modal focus containment, font selection and close/Escape restoration. Verify overlap hit testing on desktop/narrow layouts with Aside.

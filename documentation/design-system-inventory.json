@@ -104,7 +104,7 @@
         },
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 79
+          "line": 80
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -228,6 +228,10 @@
         {
           "file": "src/components/design-system/Checkbox.tsx",
           "line": 24
+        },
+        {
+          "file": "src/components/design-system/ColorPicker.tsx",
+          "line": 127
         }
       ]
     },
@@ -528,11 +532,11 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 132
+          "line": 138
         },
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 142
+          "line": 148
         },
         {
           "file": "src/components/design-system/meki/form-field/parts.tsx",
@@ -725,7 +729,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 41
+          "line": 42
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -755,7 +759,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 67
+          "line": 68
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -774,7 +778,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 66
+          "line": 67
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -793,7 +797,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 46
+          "line": 47
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -1140,7 +1144,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 78
+          "line": 79
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -1591,6 +1595,7 @@
       "components": ["ColorPicker"],
       "dependencies": [
         "npm:react",
+        "src/components/design-system/icons/components/check-icon.tsx",
         "src/components/design-system/meki/button.tsx",
         "src/components/design-system/meki/input.tsx",
         "src/components/design-system/meki/popover/index.ts"
