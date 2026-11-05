@@ -6,7 +6,7 @@ Use the pinned Wrangler development dependency through Yarn. Authenticate with `
 
 ## Merge-triggered release (#157)
 
-Target configuration: Cloudflare Workers Builds connected to `hakilee/slackmoji`, production branch `main`, repository root `/`, preview builds disabled. GitHub Actions remain unused. GitHub branch protection requires PRs; a squash merge produces the main push that triggers the release.
+Configured release path: Cloudflare Workers Builds connected to `hakilee/slackmoji`, production branch `main`, repository root `/`, preview builds disabled. GitHub Actions remain unused. GitHub branch protection requires PRs; a squash merge produces the main push that triggers the release.
 
 - Build command: `corepack enable && yarn install --immutable && yarn verify`
 - Deploy command: `yarn wrangler d1 migrations apply slackmoji-gallery --remote && yarn wrangler deploy`
@@ -14,7 +14,7 @@ Target configuration: Cloudflare Workers Builds connected to `hakilee/slackmoji`
 - Build API token must authorize deployment of this Worker and access to its configured D1/R2 resources. Keep token values in Cloudflare, never in this repository.
 - Do not enable previews against production bindings. A failed build must not execute the deploy command.
 
-Activation is pending GitHub App reauthorization and saved Cloudflare settings; confirm a main merge triggers a successful build/deployment before considering setup complete. See #157 for live evidence.
+The GitHub connection and these settings are saved in Cloudflare. The first main merge validates the complete automatic release path; #157 owns build and deployment evidence.
 
 ## Manual recovery release
 

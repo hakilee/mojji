@@ -68,7 +68,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 
 ## 배포
 
-Cloudflare Workers의 `haklee` 계정에 배포합니다. main 머지 시 전체 검증 후 배포하는 Workers Builds 연결을 설정 중입니다(#157). GitHub Actions는 사용하지 않습니다. 활성화 상태와 수동 복구 절차는 [배포 가이드](documentation/deployment.md)를 참고하세요.
+Cloudflare Workers의 `haklee` 계정에 배포합니다. main 머지 시 Workers Builds가 전체 검증 후 자동 배포합니다(#157). GitHub Actions는 사용하지 않습니다. 활성화 상태와 수동 복구 절차는 [배포 가이드](documentation/deployment.md)를 참고하세요.
 
 ## 브랜드 자산
 
