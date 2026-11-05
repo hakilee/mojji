@@ -192,15 +192,15 @@
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 111
+          "line": 108
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 145
+          "line": 144
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 157
+          "line": 158
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -970,7 +970,7 @@
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 143
+          "line": 134
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1021,7 +1021,7 @@
       "usages": [
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 93
+          "line": 90
         }
       ]
     },
@@ -1032,7 +1032,7 @@
       "usages": [
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 108
+          "line": 105
         }
       ]
     },
@@ -1043,7 +1043,7 @@
       "usages": [
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 104
+          "line": 101
         }
       ]
     },
@@ -1054,11 +1054,11 @@
       "usages": [
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 105
+          "line": 102
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 106
+          "line": 103
         }
       ]
     },
