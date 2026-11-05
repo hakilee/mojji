@@ -1124,7 +1124,12 @@
       "component": "Toaster",
       "source": "npm:sonner",
       "target": "npm:sonner",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/main.tsx",
+          "line": 29
+        }
+      ]
     },
     {
       "component": "Tooltip",
