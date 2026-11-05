@@ -99,8 +99,12 @@ export function MochiGallery() {
         className="mt-group"
       >
         <Tabs.List aria-label="모찌 정렬">
-          <Tabs.Trigger value="recent">최근</Tabs.Trigger>
-          <Tabs.Trigger value="popular">가장 많이 다운로드</Tabs.Trigger>
+          <Tabs.Trigger value="recent" className="focus-visible:outline-none">
+            최근
+          </Tabs.Trigger>
+          <Tabs.Trigger value="popular" className="focus-visible:outline-none">
+            가장 많이 다운로드
+          </Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value={sort}>
           <div className="grid grid-cols-6 gap-group max-[1000px]:grid-cols-4 max-[600px]:grid-cols-2">

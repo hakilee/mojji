@@ -192,15 +192,15 @@
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 108
+          "line": 112
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 144
+          "line": 148
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 158
+          "line": 162
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -970,7 +970,7 @@
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 134
+          "line": 138
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1032,7 +1032,7 @@
       "usages": [
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 105
+          "line": 109
         }
       ]
     },
@@ -1058,7 +1058,7 @@
         },
         {
           "file": "src/components/MochiGallery.tsx",
-          "line": 103
+          "line": 105
         }
       ]
     },
