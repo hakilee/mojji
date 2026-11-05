@@ -5,6 +5,7 @@ interface Item {
   id: string;
   created_at: number;
   downloads: number;
+  filename: string;
 }
 export function MochiGallery() {
   const [sort, setSort] = useState("recent");
@@ -45,7 +46,7 @@ export function MochiGallery() {
       });
     return () => controller.abort();
   }, [sort, offset, retry]);
-  async function download(id: string) {
+  async function download(id: string, filename: string) {
     setDownloading(id);
     setDownloadError("");
     try {
@@ -62,7 +63,7 @@ export function MochiGallery() {
       const url = URL.createObjectURL(await response.blob());
       const link = document.createElement("a");
       link.href = url;
-      link.download = "slackmoji.gif";
+      link.download = filename;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
       setItems((previous) =>
@@ -115,7 +116,7 @@ export function MochiGallery() {
                 className="h-auto flex-col gap-inset p-group"
                 disabled={downloading !== null}
                 aria-label={`모찌 다운로드 · ${item.downloads}회`}
-                onClick={() => void download(item.id)}
+                onClick={() => void download(item.id, item.filename)}
               >
                 <img
                   src={`/api/mochi/${item.id}/image`}

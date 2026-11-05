@@ -1,3 +1,4 @@
+import { formatDownloadFilename } from "./download-filename";
 import { encode } from "modern-gif";
 
 export const maxTextCharacters = 40;
@@ -61,7 +62,7 @@ export const initialTextLayer: TextLayer = {
   x: 64,
   y: 64,
   scale: 1,
-  lineHeight: 90,
+  lineHeight: 85,
   font: "Black Han Sans",
   color: "#7555e8",
 };
@@ -356,13 +357,8 @@ export function downloadFilename(layers: Layer[], format: "png" | "gif"): string
     .flatMap((layer) => (layer.type === "text" && layer.text.trim() ? [layer.text.trim()] : []))
     .join(" ");
   const image = layers.find((layer) => layer.type === "image");
-  const name = (text || (image?.type === "image" ? image.name.replace(/\.[^.]+$/, "") : ""))
-    .split("")
-    .map((character) => (character.charCodeAt(0) < 32 ? " " : character))
-    .join("")
-    .replace(/[<>:"/\\|?*]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/^[. ]+|[. ]+$/g, "");
-  return `${Array.from(name).slice(0, 80).join("") || "slackmoji"}.${format}`;
+  return formatDownloadFilename(
+    text || (image?.type === "image" ? image.name.replace(/\.[^.]+$/, "") : ""),
+    format,
+  );
 }

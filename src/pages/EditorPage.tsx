@@ -210,7 +210,10 @@ export function EditorPage() {
         try {
           const response = await fetch("/api/mochi", {
             method: "POST",
-            headers: { "Content-Type": "image/gif" },
+            headers: {
+              "Content-Type": "image/gif",
+              "X-Mochi-Filename": encodeURIComponent(downloadFilename(settings.layers, "gif")),
+            },
             body: settings.motion === "none" ? await exportGif(ctx, settings) : blob,
             signal: AbortSignal.timeout(15000),
           });

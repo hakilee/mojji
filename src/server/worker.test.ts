@@ -14,6 +14,14 @@ describe("public gallery API [E6]", () => {
         .filter((sql) => sql.trim())
         .map((sql) => platform.env.DB.prepare(sql)),
     );
+    await platform.env.DB.prepare("INSERT INTO mochi (id,bytes) VALUES ('legacy',100)").run();
+    await platform.env.DB.exec(await readFile("migrations/0002_mochi_filename.sql", "utf8"));
+    expect(
+      await platform.env.DB.prepare("SELECT filename FROM mochi WHERE id='legacy'").first(
+        "filename",
+      ),
+    ).toBe("slackmoji.gif");
+    await platform.env.DB.prepare("DELETE FROM mochi WHERE id='legacy'").run();
     const gif = await encode({
       width: 128,
       height: 128,
@@ -23,12 +31,19 @@ describe("public gallery API [E6]", () => {
     const published = await worker.fetch(
       new Request("https://example.test/api/mochi", {
         method: "POST",
-        headers: { Origin: "https://example.test", "Content-Type": "image/gif" },
+        headers: {
+          Origin: "https://example.test",
+          "Content-Type": "image/gif",
+          "X-Mochi-Filename": encodeURIComponent("../슬랙\n모찌: (♡).gif"),
+        },
         body: gif,
       }),
       platform.env,
     );
     expect(published.status).toBe(201);
+    expect(await platform.env.DB.prepare("SELECT filename FROM mochi").first("filename")).toBe(
+      "슬랙 모찌 (♡).gif",
+    );
     const { id } = (await published.json()) as { id: string };
     expect(
       (
@@ -70,7 +85,8 @@ describe("public gallery API [E6]", () => {
       downloads.every(
         (response) =>
           response.status === 200 &&
-          response.headers.get("Content-Disposition")?.includes("attachment"),
+          response.headers.get("Content-Disposition") ===
+            "attachment; filename=\"slackmoji.gif\"; filename*=UTF-8''%EC%8A%AC%EB%9E%99%20%EB%AA%A8%EC%B0%8C%20%28%E2%99%A1%29.gif",
       ),
     ).toBe(true);
     expect(
@@ -93,8 +109,9 @@ describe("public gallery API [E6]", () => {
     expect(recent.nextOffset).toBe(24);
     const popular = (await (
       await worker.fetch(new Request("https://example.test/api/mochi?sort=popular"), platform.env)
-    ).json()) as { items: { id: string }[] };
+    ).json()) as { items: { id: string; filename: string }[] };
     expect(popular.items[0].id).toBe(id);
+    expect(popular.items[0].filename).toBe("슬랙 모찌 (♡).gif");
     expect(
       (
         (await (
@@ -140,6 +157,19 @@ describe("public gallery API [E6]", () => {
       );
       expect(response.status).toBe(status);
     }
+    const invalidName = await worker.fetch(
+      new Request("https://example.test/api/mochi", {
+        method: "POST",
+        headers: {
+          Origin: "https://example.test",
+          "Content-Type": "image/gif",
+          "X-Mochi-Filename": "%ZZ",
+        },
+        body: new Uint8Array(1),
+      }),
+      platform.env,
+    );
+    expect(invalidName.status).toBe(400);
     expect((await platform.env.MOCHI.list()).objects).toHaveLength(0);
   }, 20000);
 });

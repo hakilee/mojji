@@ -47,7 +47,7 @@ describe("editor history [E2b E5v]", () => {
       layer: { ...initialTextLayer, id: "second", text: "두\n줄" },
     });
     const before = history;
-    expect(before.present.settings.layers[1]).toMatchObject({ lineHeight: 90 });
+    expect(before.present.settings.layers[1]).toMatchObject({ lineHeight: 85 });
     history = editorHistoryReducer(history, { type: "begin-group", group: "pointer" });
     for (const lineHeight of [120, 150, 200]) {
       history = editorHistoryReducer(history, {
