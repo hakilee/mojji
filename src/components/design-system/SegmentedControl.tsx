@@ -16,11 +16,11 @@ export function SegmentedControl<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className="relative isolate flex min-h-control-size gap-1 rounded-xl bg-neutral-50 p-0.5 ring-1 ring-inset ring-neutral-200"
+      className="relative isolate flex min-h-[34px] gap-1 rounded-control bg-neutral-50 p-0.5 ring-1 ring-inset ring-neutral-200"
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0.5 left-0.5 rounded-lg border border-neutral-200 bg-white shadow-control transition-transform duration-200 ease-out motion-reduce:transition-none"
+        className="pointer-events-none absolute inset-y-0.5 left-0.5 rounded-control-inset border border-neutral-200 bg-white shadow-control transition-transform duration-200 ease-out motion-reduce:transition-none"
         style={{
           width: `calc((100% - var(--spacing) * ${options.length}) / ${options.length})`,
           transform: `translateX(calc(${options.findIndex((option) => option.value === value)} * (100% + var(--spacing))))`,
@@ -29,7 +29,7 @@ export function SegmentedControl<T extends string>({
       {options.map((option) => (
         <label
           key={option.value}
-          className="relative z-10 flex min-h-8 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-lg border border-transparent px-inset py-1 text-sm font-medium text-text-tertiary transition-colors hover:text-text-primary has-checked:text-text-primary has-focus-visible:outline-2 has-focus-visible:-outline-offset-2 has-focus-visible:outline-primary motion-reduce:transition-none"
+          className="relative z-10 flex min-h-[30px] min-w-0 flex-1 cursor-pointer items-center justify-center rounded-control-inset border border-transparent px-inset py-0.5 text-sm font-medium text-text-tertiary transition-colors hover:text-text-primary has-checked:text-text-primary has-focus-visible:outline-2 has-focus-visible:-outline-offset-2 has-focus-visible:outline-primary motion-reduce:transition-none"
         >
           <input
             type="radio"
