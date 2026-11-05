@@ -21,6 +21,50 @@ const initialSettings = { ...defaultSettings, transparent: true };
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
   test.each([
+    { direction: "horizontal", motion: "none" },
+    { direction: "vertical", motion: "none" },
+    { direction: "horizontal", motion: "bounce" },
+    { direction: "vertical", motion: "bounce" },
+  ] as const)(
+    "exports $direction background gradient with $motion [E5bc]",
+    async ({ direction, motion }) => {
+      const canvas = createCanvas(128, 128);
+      const ctx = canvas.getContext("2d");
+      const settings: Settings = {
+        ...defaultSettings,
+        background: "#ff0000",
+        backgroundGradient: { end: "#0000ff", direction },
+        motion,
+        layers: [{ ...initialTextLayer, scale: 0.1 }],
+      };
+      const blob = await exportEmoji(ctx as unknown as CanvasRenderingContext2D, settings);
+      const frames = [];
+      if (motion === "none") {
+        ctx.drawImage(await loadImage(Buffer.from(await blob.arrayBuffer())), 0, 0);
+        frames.push(ctx.getImageData(0, 0, 128, 128).data);
+      } else {
+        frames.push(...decodeFrames(await blob.arrayBuffer()).map((frame) => frame.data));
+        expect(frames).toHaveLength(20);
+      }
+      for (const pixels of frames) {
+        const end = direction === "horizontal" ? (8 * 128 + 119) * 4 : (119 * 128 + 8) * 4;
+        const perpendicular =
+          direction === "horizontal" ? (119 * 128 + 8) * 4 : (8 * 128 + 119) * 4;
+        const start = (8 * 128 + 8) * 4;
+        expect(pixels[start]).toBeGreaterThan(220);
+        expect(pixels[start + 2]).toBeLessThan(35);
+        expect(pixels[end]).toBeLessThan(35);
+        expect(pixels[end + 2]).toBeGreaterThan(220);
+        expect(pixels[perpendicular]).toBeGreaterThan(220);
+        expect(pixels[start + 3]).toBe(255);
+      }
+      drawEmoji(ctx as unknown as CanvasRenderingContext2D, { ...settings, transparent: true }, 0);
+      expect(ctx.getImageData(8, 8, 1, 1).data[3]).toBe(0);
+      drawEmoji(ctx as unknown as CanvasRenderingContext2D, settings, 0);
+      expect(ctx.getImageData(8, 8, 1, 1).data[3]).toBe(255);
+    },
+  );
+  test.each([
     ["하키짱", "하키짱.gif"],
     ["하키\n짱", "하키 짱.gif"],
     ["a/b:c?", "a b c.gif"],
@@ -60,6 +104,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           ...defaultSettings,
           motion: "none",
           transparent,
+          backgroundGradient: { end: "#7555e8", direction: "horizontal" },
           layers: [
             {
               type: "image",

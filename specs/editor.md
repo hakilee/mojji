@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bc (#161): Background supports solid or two-color linear gradient with start/end pickers and horizontal/vertical direction, using existing shared controls. Default remains opaque white. Transparency skips background painting without discarding gradient settings. Canvas, previews, PNG and every GIF frame share identical background rendering independent of layer motion. Include background gradient in value-based history equality and undo/redo. Verify decoded output, transparency, no-op history and Aside desktop/narrow controls/downloads.
+
 - E5bb (#155): Shared color pickers follow selected concept 1 with pale gray option backgrounds only on hover. Use a small unfilled close icon with a 34px target, borderless option wrappers and colored swatches, a subtle white-swatch edge and contrasting checkmark selection. Unify direct color and HEX inputs on one soft neutral surface. Preserve keyboard focus, native color selection, validation, dismissal and history. Verify desktop/narrow with Aside.
 
 - E5ba (#151): Layer-row color triggers use a single 32px circular color dot without a rectangular frame (selected design 1), superseding E5aw square geometry. Keep a subtle neutral edge for white colors, accessible labels, keyboard focus, picker behavior and history. Verify desktop/narrow via Aside.
