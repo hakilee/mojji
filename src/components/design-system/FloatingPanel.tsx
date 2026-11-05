@@ -31,7 +31,10 @@ export function FloatingPanel({
           ? {
               x: (visual?.offsetLeft ?? 0) + (visual?.width ?? window.innerWidth) / 2,
               bottom: (visual?.offsetTop ?? 0) + (visual?.height ?? window.innerHeight) - 12,
-              height: (visual?.height ?? window.innerHeight) - 24,
+              height: Math.min(
+                (visual?.height ?? window.innerHeight) - 24,
+                window.innerHeight * 0.45,
+              ),
               width: (visual?.width ?? window.innerWidth) - 24,
             }
           : null,
