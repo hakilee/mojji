@@ -4,7 +4,19 @@ Public hostname: `slackmoji.haklee.me`. Cloudflare account: `haklee` (`93300edc9
 
 Use the pinned Wrangler development dependency through Yarn. Authenticate with `yarn wrangler login` if needed, then confirm `yarn wrangler whoami` includes the intended account. Keep credentials, `.wrangler/`, `.dev.vars*`, `.env*` and browser state out of Git. Never log authentication tokens.
 
-## Release
+## Merge-triggered release (#157)
+
+Target configuration: Cloudflare Workers Builds connected to `hakilee/slackmoji`, production branch `main`, repository root `/`, preview builds disabled. GitHub Actions remain unused. GitHub branch protection requires PRs; a squash merge produces the main push that triggers the release.
+
+- Build command: `corepack enable && yarn install --immutable && yarn verify`
+- Deploy command: `yarn wrangler d1 migrations apply slackmoji-gallery --remote && yarn wrangler deploy`
+- Build environment: `NODE_VERSION=24.18.0`, `HUSKY=0` (remote Git hooks only; `yarn verify` remains mandatory).
+- Build API token must authorize deployment of this Worker and access to its configured D1/R2 resources. Keep token values in Cloudflare, never in this repository.
+- Do not enable previews against production bindings. A failed build must not execute the deploy command.
+
+Activation is pending GitHub App reauthorization and saved Cloudflare settings; confirm a main merge triggers a successful build/deployment before considering setup complete. See #157 for live evidence.
+
+## Manual recovery release
 
 After the issue-linked PR is squash-merged and the working tree is clean on the accepted main commit:
 
@@ -16,7 +28,7 @@ yarn wrangler deploy
 yarn wrangler deployments list
 ```
 
-Worker URL: `https://slackmoji.haklee.workers.dev`. A deployment updates the Worker and its custom domain immediately; there is no separate staging Worker or release-isolation environment. Validate locally before deploying. There is no Git deployment, GitHub Actions or remote build pipeline. Upload only the verified local `dist` output. Do not run an unverified build during release.
+Worker URL: `https://slackmoji.haklee.workers.dev`. A deployment updates the Worker and its custom domain immediately; there is no separate staging Worker or release-isolation environment. Validate locally before deploying. GitHub Actions are not used. For manual recovery, upload only the verified local `dist` output. The configured Workers Builds path must also pass full verification before deployment.
 
 Confirm public HTTP 200, TLS, custom-domain routing and exact HTML/JS/CSS/font asset bytes. Use Aside CLI to verify text/font/motion editing, local font upload and GIF download on the production hostname. Record accepted commit, Worker version and results on the owning issue/PR. Native renderer tests do not establish production browser behavior. API failures return generic errors without credentials; no external error monitoring is configured.
 
