@@ -73,7 +73,7 @@ const renderSelectContent = function renderSelectContent(
       <Content
         className={cn(
           styles.content,
-          "w-full min-w-(--radix-select-trigger-width) z-popover max-h-[min(20rem,var(--radix-select-content-available-height))] overflow-y-auto rounded-xl border border-neutral-100 bg-neutral-50 p-1",
+          "w-full min-w-(--radix-select-trigger-width) z-popover max-h-[min(20rem,var(--radix-select-content-available-height))] overflow-y-auto rounded-control bg-white p-0.5 ring-1 ring-inset ring-neutral-200",
           className,
         )}
         position="popper"
@@ -81,9 +81,7 @@ const renderSelectContent = function renderSelectContent(
         sideOffset={4}
         {...props}
       >
-        <Viewport className="w-full rounded-lg border border-neutral-100 bg-white p-1">
-          {children}
-        </Viewport>
+        <Viewport className="w-full">{children}</Viewport>
       </Content>
     </Portal>
   );
@@ -97,7 +95,7 @@ export const SelectItemRender = (
   return (
     <Item
       className={cn(
-        "flex cursor-pointer select-none items-center rounded-lg px-2 text-text-primary leading-none outline-none transition duration-150",
+        "flex cursor-pointer select-none items-center rounded-control-inset px-2 text-text-primary leading-none outline-none transition duration-150",
         "data-[highlighted]:bg-black/5 data-[state=checked]:font-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         itemSizes[size],
         className,

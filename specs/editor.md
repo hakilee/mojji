@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5be (#165): Shared Select menus use one white surface, 2px inset, control outer radius10px and control-inset item radius8px matching SegmentedControl. Remove the redundant framed viewport card and stacked padding. Preserve item heights, keyboard selection, focus/disabled behavior, popper offsets and viewport scrolling. Verify speed/gradient menus and narrow containment via Aside; existing quality gates suffice for this styling change.
+
 - E5bd (#163): Background gradient shapes include horizontal, vertical, centered radial and centered diamond. Radial and diamond use the start color at the center and reach the end color at the edge; diamond uses Manhattan distance. Shapes share preview/export rendering and retain colors through shape changes, transparency and undo/redo. Verify decoded PNG/GIF geometry, symmetry and opaque quadrant seams, plus Aside controls/downloads.
 
 - E5bc (#161): Background supports solid or two-color linear gradient with start/end pickers and horizontal/vertical direction, using existing shared controls. Default remains opaque white. Transparency skips background painting without discarding gradient settings. Canvas, previews, PNG and every GIF frame share identical background rendering independent of layer motion. Include background gradient in value-based history equality and undo/redo. Verify decoded output, transparency, no-op history and Aside desktop/narrow controls/downloads.
