@@ -48,7 +48,7 @@ export function ColorPicker({
         aria-label={`${label} 선택`}
         className={
           swatch
-            ? "flex size-8 shrink-0 items-center justify-center rounded-control border border-stroke-neutral bg-bg-layer-default p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
+            ? "flex size-8 shrink-0 items-center justify-center rounded-full border border-stroke-neutral bg-bg-layer-default p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus disabled:cursor-not-allowed"
             : "flex min-h-control-size min-w-0 cursor-pointer items-center justify-between gap-control rounded-control border border-stroke-neutral bg-bg-layer-default px-inset py-control text-label text-fg-neutral-secondary shadow-control transition-colors duration-150 enabled:hover:border-stroke-neutral-strong enabled:active:bg-bg-neutral-weak-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus data-[state=open]:border-stroke-brand disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-fg-disabled motion-reduce:transition-none"
         }
       >
@@ -57,7 +57,7 @@ export function ColorPicker({
           aria-hidden="true"
           className={
             swatch
-              ? "size-full rounded-[2px]"
+              ? "size-full rounded-full"
               : "size-5 shrink-0 rounded-control-inset border border-stroke-neutral-strong"
           }
           style={{ backgroundColor: value }}

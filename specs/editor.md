@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5ba (#151): Layer-row color triggers use a single 32px circular color dot without a rectangular frame (selected design 1), superseding E5aw square geometry. Keep a subtle neutral edge for white colors, accessible labels, keyboard focus, picker behavior and history. Verify desktop/narrow via Aside.
+
 - E5ay (#147): Contextual layer panels use semantic z-index150, below modal backdrop/content200 and ordinary nested popovers300. Opening Google Fonts must cover the parent panel without unmounting it; preserve search focus, modal focus containment, font selection and close/Escape restoration. Verify overlap hit testing on desktop/narrow layouts with Aside.
 
 - E5ax (#145): Shared segmented controls use outer control radius10px and inset radius8px with2px padding. Reduce minimum height to34px (30px options), preserving content wrapping, sliding geometry, keyboard semantics and reduced motion across color mode, image fitting and emoji mode. Verify desktop/narrow computed geometry and selection via Aside.
