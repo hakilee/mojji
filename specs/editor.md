@@ -68,6 +68,8 @@ Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly 
 
 ## Public gallery — E6 (#128)
 
+- E6a (#169): Gallery download success shows “모찌를 다운로드했어요.” in the existing Sonner snackbar at bottom center for 3 seconds, without inline success text or layout shift. Repeated successes reuse one toast. Mount one application toaster with narrow viewport/safe-area offsets and accessible live announcements; keep download errors inline and existing counters/download semantics unchanged. Verify real download flow with local mocked responses, placement, expiry, repeat and failure through Aside.
+
 Keep the existing CSR application and add same-origin Cloudflare Worker APIs. A new private R2 bucket stores public rendered GIF assets served through the Worker; a new D1 database owns content identity, creation timestamps and atomic download counters. Never send source layers, uploaded originals or font files. The download action clearly offers public publication versus private local download; only publication adds a gallery item. Publication failure must retain a working local download and explain that the item was not published.
 
 Below the main editor card, show a responsive grid with recent / most downloaded tabs, bounded pagination and loading, empty, retry and failure states. Clicking an item initiates a download immediately. Thumbnail requests never increment counts. Count served download responses, not unique people or guaranteed completed saves. Stable ordering uses a unique tie-breaker.
