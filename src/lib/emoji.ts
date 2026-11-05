@@ -57,7 +57,7 @@ export const initialTextLayer: TextLayer = {
   x: 64,
   y: 64,
   scale: 1,
-  lineHeight: 110,
+  lineHeight: 90,
   font: "Black Han Sans",
   color: "#7555e8",
 };
