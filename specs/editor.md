@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E6c (#177): Publication stores the sanitized content-derived GIF filename in D1. List responses and gallery downloads retain that name; download responses include UTF-8 Content-Disposition. Keep first publication name for identical content, and slackmoji.gif for older unnamed records. Only the rendered filename is sent, not layer/source data. Extend real D1/R2 tests for migration, Unicode, sanitization, malformed metadata and deduplication.
+
 - E5bi (#175): Replace the motion-speed dropdown with the existing SegmentedControl offering0.5×/1×/1.5×/2× in one full-width row below its label. Preserve native radio keyboard behavior, history and disabled fieldset behavior for no motion; shared segments visibly indicate inherited disabled state. Match existing2px inset and10px/8px radii. Verify selection, keyboard, disabled and narrow layout with Aside.
 
 - E5bh (#173): Shared Input uses a 2px inset focus-visible outline (offset -2px) overlapping its border instead of a detached outer frame. Preserve visible keyboard focus, input dimensions/radii, search behavior and disabled/invalid states; verify emoji-search focus and narrow layout with Aside. Other controls keep their existing focus styles.
@@ -32,7 +34,7 @@ Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly 
 
 - E5at (#136): Remove the publication checkbox helper paragraph and undo/redo success announcements from the download footer. History restoration clears stale status without adding a message. Keep the explicit public checkbox label/default/behavior and all validation, loading, error and download-result feedback. Preserve history/focus behavior and hide empty status space. Verify with existing checks and Aside.
 
-- E5as (#134): Default each text layer (including added text/emoji/kaomoji) to 90% line height (#159 supersedes the original 110% default). Provide a labelled shared 줄간격 slider from 80–200% in 1% increments in text content settings. Use the same value for native text input, glyph measurement/selection, canvas preview and GIF baselines; preserve single-line output, per-character colors, font fitting and independent layers. A slider gesture is one reversible history action. Verify multiline output/geometry and history with colocated tests, and desktop/narrow keyboard/pointer editing plus actual GIF download with Aside.
+- E5as (#134): Default each text layer (including added text/emoji/kaomoji) to 85% line height (#177 supersedes #159’s 90% default). Provide a labelled shared 줄간격 slider from 50–200% in 1% increments in text content settings. Use the same value for native text input, glyph measurement/selection, canvas preview and GIF baselines; preserve single-line output, per-character colors, font fitting and independent layers. A slider gesture is one reversible history action. Verify multiline output/geometry and history with colocated tests, and desktop/narrow keyboard/pointer editing plus actual GIF download with Aside.
 
 - E5ar (#132): Reduce every HelpBubble consumer: canvas retains only drag/move, corner resizing and Alt snap bypass; layers retain stacking order, 12-image/5MB limits and GIF first-frame behavior. Remove Google Fonts fetching-detail bubble entirely. Supersede E5t’s three-consumer requirement with these two essential bubbles; preserve shared popover accessibility and actual editing/keyboard behavior.
 

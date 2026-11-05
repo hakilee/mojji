@@ -1,4 +1,5 @@
 import type { D1Database, R2Bucket, RateLimit } from "@cloudflare/workers-types";
+import { formatDownloadFilename } from "../lib/download-filename";
 import { validateGif } from "./validate-gif";
 
 interface Env {
@@ -30,7 +31,7 @@ export default {
             ? "downloads DESC, created_at DESC, id DESC"
             : "created_at DESC, id DESC";
         const { results } = await env.DB.prepare(
-          `SELECT id, created_at, downloads FROM mochi ORDER BY ${order} LIMIT 25 OFFSET ?`,
+          `SELECT id, created_at, downloads, filename FROM mochi ORDER BY ${order} LIMIT 25 OFFSET ?`,
         )
           .bind(offset)
           .all();
@@ -68,16 +69,16 @@ export default {
         if (!object) return error("모찌를 찾을 수 없어요.", 404);
         const content = await object.arrayBuffer();
         const row = await env.DB.prepare(
-          "UPDATE mochi SET downloads = downloads + 1 WHERE id = ? RETURNING downloads",
+          "UPDATE mochi SET downloads = downloads + 1 WHERE id = ? RETURNING downloads, filename",
         )
           .bind(match.groups.id)
-          .first();
+          .first<{ downloads: number; filename: string }>();
         if (!row) return error("모찌를 찾을 수 없어요.", 404);
         return new Response(content, {
           headers: {
             ...headers,
             "Content-Type": "image/gif",
-            "Content-Disposition": 'attachment; filename="slackmoji.gif"',
+            "Content-Disposition": `attachment; filename="slackmoji.gif"; filename*=UTF-8''${encodeURIComponent(row.filename).replace(/['()*]/g, (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}`,
           },
         });
       }
@@ -88,6 +89,15 @@ export default {
         return error("GIF 파일만 공개할 수 있어요.", 415);
       if (Number(request.headers.get("Content-Length")) > 131072)
         return error("128KB 이하 GIF만 공개할 수 있어요.", 413);
+      let filename: string;
+      try {
+        filename = formatDownloadFilename(
+          decodeURIComponent(request.headers.get("X-Mochi-Filename") ?? "").replace(/\.gif$/i, ""),
+          "gif",
+        );
+      } catch {
+        return error("파일 이름이 올바르지 않아요.", 400);
+      }
       const reader = request.body?.getReader();
       if (!reader) return error("GIF가 비어 있어요.", 400);
       const chunks: Uint8Array[] = [];
@@ -117,8 +127,10 @@ export default {
         byte.toString(16).padStart(2, "0"),
       ).join("");
       await env.MOCHI.put(`${id}.gif`, bytes, { httpMetadata: { contentType: "image/gif" } });
-      await env.DB.prepare("INSERT INTO mochi (id, bytes) VALUES (?, ?) ON CONFLICT(id) DO NOTHING")
-        .bind(id, size)
+      await env.DB.prepare(
+        "INSERT INTO mochi (id, bytes, filename) VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING",
+      )
+        .bind(id, size, filename)
         .run();
       return Response.json({ id }, { status: 201, headers });
     } catch {

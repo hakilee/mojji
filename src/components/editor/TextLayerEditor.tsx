@@ -111,7 +111,7 @@ export function TextLayerEditor({
             <RangeField
               label="줄간격"
               value={layer.lineHeight}
-              min={80}
+              min={50}
               max={200}
               suffix="%"
               onChange={(lineHeight) => onChange({ lineHeight })}

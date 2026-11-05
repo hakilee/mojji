@@ -188,7 +188,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
       const gaps: number[] = [];
       const heights: number[] = [];
-      for (const lineHeight of [90, 200]) {
+      for (const lineHeight of [50, 85, 200]) {
         const layer = {
           ...initialTextLayer,
           text: "MMMMMMMM\nMMMMMMMM",
@@ -214,8 +214,9 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
         expect(rows[0]).toBeGreaterThan(0);
         expect(rows.at(-1)).toBeLessThan(127);
       }
-      expect(heights[1]! - heights[0]!).toBe(110);
-      expect(gaps[1]).toBeGreaterThan(gaps[0]!);
+      expect(heights[1]! - heights[0]!).toBe(35);
+      expect(heights[2]! - heights[1]!).toBe(115);
+      expect(gaps[2]).toBeGreaterThan(gaps[0]!);
     },
   );
 
