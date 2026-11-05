@@ -350,10 +350,8 @@ export function EditorPage() {
             <div className="flex min-h-heading-slot items-center gap-1">
               <h2 className="text-body font-semibold">캔버스</h2>
               <HelpBubble label="캔버스 조작">
-                클릭해 선택하고 드래그로 이동하세요. 선택한 레이어의 모서리를 드래그하면 비율을
-                유지하며 크기가 바뀌어요. 키보드로는 배치의 크기 슬라이더를 사용하세요. 방향키로
-                미세 조절하고, Alt 키로 자석 정렬을 해제하세요. 선택한 레이어는 Backspace나 Delete로
-                삭제할 수 있어요. ⌘/Ctrl+Z로 실행 취소, ⌘/Ctrl+Shift+Z로 다시 실행하세요.
+                드래그로 이동하고, 모서리를 드래그해 크기를 조절해요. Alt를 누르면 자석 정렬이
+                꺼져요.
               </HelpBubble>
             </div>
             <CanvasEditor

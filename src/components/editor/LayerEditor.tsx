@@ -48,12 +48,8 @@ export function LayerEditor({
         <div className="flex items-center gap-1">
           <h3 className="text-label font-semibold">레이어</h3>
           <HelpBubble label="레이어">
-            <p>
-              위쪽 레이어가 앞에 표시돼요. 레이어를 선택해 내용과 스타일, 순서를 바꿀 수 있어요.
-            </p>
-            <p className="mt-control">
-              이미지는 PNG · JPG · WebP · GIF, 최대 12개 · 파일당 5MB. GIF는 첫 프레임을 사용해요.
-            </p>
+            위쪽 레이어가 앞에 보여요. 이미지는 최대 12개·파일당 5MB이며, GIF는 첫 프레임만
+            사용해요.
           </HelpBubble>
         </div>
         <Input

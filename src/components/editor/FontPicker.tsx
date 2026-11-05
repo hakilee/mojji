@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   ChoiceButton,
-  HelpBubble,
   Input,
   Spinner,
 } from "~/components/design-system";
@@ -238,10 +237,7 @@ export function FontPicker({
           className="flex h-160 max-h-[calc(100dvh-32px)] w-[calc(100vw-32px)] max-w-xl min-w-0 flex-col gap-inset overflow-y-auto overscroll-contain rounded-workspace border border-stroke-neutral bg-bg-layer-default p-panel text-fg-neutral shadow-floating outline-none max-[480px]:p-group"
         >
           <div className="flex shrink-0 items-center justify-between gap-control">
-            <div className="flex min-w-0 items-center gap-1">
-              <Modal.Title className="text-body font-semibold">Google Fonts</Modal.Title>
-              <HelpBubble label="Google Fonts">선택한 글꼴만 Google에서 불러옵니다.</HelpBubble>
-            </div>
+            <Modal.Title className="min-w-0 text-body font-semibold">Google Fonts</Modal.Title>
             <Modal.Close aria-label="Google Fonts 닫기" asChild>
               <Button variant="neutral" size="small">
                 닫기
