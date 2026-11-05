@@ -165,7 +165,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       expect(canvas.getContext("2d").getImageData(64, 64, 1, 1).data[3]).toBe(
         transparent ? source.getContext("2d").getImageData(64, 64, 1, 1).data[3] : 255,
       );
-      expect(downloadFilename(defaultSettings.layers, "png")).toBe("최고야!.png");
+      expect(downloadFilename(defaultSettings.layers, "png")).toBe("슬랙 모찌.png");
     },
   );
   test("exports animated effects as GIF", async () => {
@@ -221,9 +221,13 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
 
   test("line spacing does not change single-line pixels [E5as]", () => {
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
-    drawEmoji(ctx, initialSettings, 0);
+    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, text: "슬랙" }] }, 0);
     const pixels = ctx.getImageData(0, 0, 128, 128).data;
-    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, lineHeight: 200 }] }, 0);
+    drawEmoji(
+      ctx,
+      { ...initialSettings, layers: [{ ...initialTextLayer, text: "슬랙", lineHeight: 200 }] },
+      0,
+    );
     expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(pixels);
   });
 
