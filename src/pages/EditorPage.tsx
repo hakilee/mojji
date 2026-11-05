@@ -324,9 +324,9 @@ export function EditorPage() {
             href="/"
             aria-label="슬랙모찌 홈"
           >
-            <img src="/logo.svg" width="48" height="42" alt="" />
+            <img src="/logo.svg" width="32" height="28" alt="" />
           </Link>
-          <h1 className="text-title font-semibold tracking-[-0.5px]">슬랙모찌</h1>
+          <h1 className="text-base font-semibold">슬랙모찌</h1>
           <div
             id="editor-history"
             className="ml-auto flex gap-control"

@@ -84,12 +84,9 @@ export function MochiGallery() {
   return (
     <section
       aria-label="모찌 갤러리"
-      className="mt-section rounded-panel border border-neutral-200 bg-white p-panel max-[760px]:p-group"
+      className="mt-section rounded-workspace border border-stroke-neutral bg-bg-layer-default shadow-control p-panel max-[760px]:p-group"
     >
-      <h2 className="text-heading font-semibold">모두의 모찌</h2>
-      <p className="mt-control text-caption text-fg-neutral-muted">
-        마음에 드는 모찌를 누르면 바로 다운로드해요.
-      </p>
+      <h2 className="text-body font-semibold">모두의 모찌</h2>
       <Tabs
         value={sort}
         onValueChange={(value) => {
@@ -132,26 +129,30 @@ export function MochiGallery() {
               </Button>
             ))}
           </div>
-          <p role="status" className="mt-group text-caption text-fg-neutral-muted">
-            {error ||
-              (loading
-                ? "모찌를 불러오는 중…"
-                : items.length
-                  ? ""
-                  : "아직 공개된 모찌가 없어요. 첫 모찌를 만들어 보세요!")}
-          </p>
-          {loading && <Spinner />}
-          {error && (
-            <Button
-              variant="white"
-              onClick={() => {
-                setRetry((value) => value + 1);
-                setLoading(true);
-                setError("");
-              }}
-            >
-              다시 시도
-            </Button>
+          {(loading || error || !items.length) && (
+            <div className="flex min-h-32 flex-col items-center justify-center gap-inset text-center">
+              {loading && <Spinner />}
+              <p role="status" className="text-label text-fg-neutral-muted">
+                {error ||
+                  (loading
+                    ? "모찌를 불러오는 중…"
+                    : items.length
+                      ? ""
+                      : "아직 공개된 모찌가 없어요. 첫 모찌를 만들어 보세요!")}
+              </p>
+              {error && (
+                <Button
+                  variant="white"
+                  onClick={() => {
+                    setRetry((value) => value + 1);
+                    setLoading(true);
+                    setError("");
+                  }}
+                >
+                  다시 시도
+                </Button>
+              )}
+            </div>
           )}
           {!loading && !error && next !== null && (
             <Button
