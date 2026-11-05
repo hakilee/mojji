@@ -321,7 +321,7 @@ export function EditorPage() {
           }
         }}
       >
-        <header className="flex items-center gap-control p-panel max-[760px]:p-group">
+        <header className="flex items-center gap-control border-b border-stroke-neutral p-panel max-[760px]:p-group">
           <Link
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"

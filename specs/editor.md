@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bf (#166): Separate the editor title/history header from editing content with a 1px bottom border using the shared neutral stroke token. Preserve desktop/narrow padding and control placement; verify computed border and containment with Aside.
+
 - E5be (#165): Shared Select menus use one white surface, 2px inset, control outer radius10px and control-inset item radius8px matching SegmentedControl. Remove the redundant framed viewport card and stacked padding. Preserve item heights, keyboard selection, focus/disabled behavior, popper offsets and viewport scrolling. Verify speed/gradient menus and narrow containment via Aside; existing quality gates suffice for this styling change.
 
 - E5bd (#163): Background gradient shapes include horizontal, vertical, centered radial and centered diamond. Radial and diamond use the start color at the center and reach the end color at the edge; diamond uses Manhattan distance. Shapes share preview/export rendering and retain colors through shape changes, transparency and undo/redo. Verify decoded PNG/GIF geometry, symmetry and opaque quadrant seams, plus Aside controls/downloads.
