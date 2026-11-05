@@ -20,7 +20,8 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
-  gifFilename,
+  downloadFilename,
+  exportEmoji,
   motions,
   motionFrameDelays,
   initialTextLayer,
@@ -188,7 +189,7 @@ export function EditorPage() {
 
   async function download() {
     setBusy(true);
-    setStatus("GIF를 만들고 있어요…");
+    setStatus("이미지를 만들고 있어요…");
     try {
       await loadLayerFonts(settings.layers);
       const output = document.createElement("canvas");
@@ -196,11 +197,11 @@ export function EditorPage() {
       output.height = 128;
       const ctx = output.getContext("2d");
       if (!ctx) throw new Error("이 브라우저에서는 이미지를 만들 수 없어요.");
-      const blob = await exportGif(ctx, settings);
+      const blob = await exportEmoji(ctx, settings);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = gifFilename(settings.layers);
+      link.download = downloadFilename(settings.layers, settings.motion === "none" ? "png" : "gif");
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
       setStatus(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`);
@@ -209,7 +210,7 @@ export function EditorPage() {
           const response = await fetch("/api/mochi", {
             method: "POST",
             headers: { "Content-Type": "image/gif" },
-            body: blob,
+            body: settings.motion === "none" ? await exportGif(ctx, settings) : blob,
             signal: AbortSignal.timeout(15000),
           });
           if (!response.ok) throw new Error("publish");
@@ -235,7 +236,7 @@ export function EditorPage() {
       }
     } catch (error) {
       setStatus(
-        error instanceof Error ? error.message : "GIF 생성에 실패했어요. 다시 시도해 주세요.",
+        error instanceof Error ? error.message : "이미지 생성에 실패했어요. 다시 시도해 주세요.",
       );
     } finally {
       setBusy(false);
@@ -642,7 +643,7 @@ export function EditorPage() {
                 onClick={() => void download()}
               >
                 {busy && <Spinner />}
-                {busy ? "만드는 중…" : "GIF 다운로드"}
+                {busy ? "만드는 중…" : "다운로드"}
               </Button>
             </footer>
           </section>

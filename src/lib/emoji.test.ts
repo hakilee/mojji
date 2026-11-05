@@ -1,11 +1,12 @@
-import { createCanvas } from "@napi-rs/canvas";
+import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { decode, decodeFrames } from "modern-gif";
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 import {
   constrainText,
   drawEmoji,
   exportGif,
-  gifFilename,
+  downloadFilename,
+  exportEmoji,
   initialSettings as defaultSettings,
   initialTextLayer,
   type ImageLayer,
@@ -25,7 +26,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     ["a/b:c?", "a b c.gif"],
     ["...", "slackmoji.gif"],
   ])("names GIF from text %s", (text, name) => {
-    expect(gifFilename([{ ...initialTextLayer, text }])).toBe(name);
+    expect(downloadFilename([{ ...initialTextLayer, text }], "gif")).toBe(name);
   });
   test("uses source image name when text is blank", () => {
     const image: ImageLayer = {
@@ -40,11 +41,59 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       rotation: 0,
       fit: "contain",
     };
-    expect(gifFilename([{ ...initialTextLayer, text: " " }, image])).toBe("하키짱.gif");
-    expect(gifFilename([])).toBe("slackmoji.gif");
-    expect(gifFilename([{ ...initialTextLayer, text: "가".repeat(100) }])).toBe(
+    expect(downloadFilename([{ ...initialTextLayer, text: " " }, image], "gif")).toBe("하키짱.gif");
+    expect(downloadFilename([], "gif")).toBe("slackmoji.gif");
+    expect(downloadFilename([{ ...initialTextLayer, text: "가".repeat(100) }], "gif")).toBe(
       "가".repeat(80) + ".gif",
     );
+  });
+  test.each([true, false])(
+    "exports static PNG with alpha and background transparent=%s",
+    async (transparent) => {
+      const source = createCanvas(128, 128);
+      source.getContext("2d").fillStyle = "rgba(255, 0, 0, 0.5)";
+      source.getContext("2d").fillRect(32, 32, 64, 64);
+      const canvas = createCanvas(128, 128);
+      const blob = await exportEmoji(
+        canvas.getContext("2d") as unknown as CanvasRenderingContext2D,
+        {
+          ...defaultSettings,
+          motion: "none",
+          transparent,
+          layers: [
+            {
+              type: "image",
+              id: "alpha",
+              name: "하키짱.png",
+              source: source as unknown as HTMLCanvasElement,
+              aspectRatio: 1,
+              x: 64,
+              y: 64,
+              size: 128,
+              rotation: 0,
+              fit: "contain",
+            },
+          ],
+        },
+      );
+      expect(blob.type).toBe("image/png");
+      const decoded = await loadImage(Buffer.from(await blob.arrayBuffer()));
+      expect([decoded.width, decoded.height]).toEqual([128, 128]);
+      canvas.getContext("2d").clearRect(0, 0, 128, 128);
+      canvas.getContext("2d").drawImage(decoded, 0, 0);
+      expect(canvas.getContext("2d").getImageData(0, 0, 1, 1).data[3]).toBe(transparent ? 0 : 255);
+      expect(canvas.getContext("2d").getImageData(64, 64, 1, 1).data[3]).toBe(
+        transparent ? source.getContext("2d").getImageData(64, 64, 1, 1).data[3] : 255,
+      );
+      expect(downloadFilename(defaultSettings.layers, "png")).toBe("최고야!.png");
+    },
+  );
+  test("exports animated effects as GIF", async () => {
+    const blob = await exportEmoji(
+      createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D,
+      defaultSettings,
+    );
+    expect(decodeFrames(await blob.arrayBuffer())).toHaveLength(20);
   });
   test("defaults GIF to opaque white", async () => {
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;

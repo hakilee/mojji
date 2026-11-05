@@ -300,7 +300,26 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
   return blob;
 }
 
-export function gifFilename(layers: Layer[]): string {
+export async function exportEmoji(
+  ctx: CanvasRenderingContext2D,
+  settings: Settings,
+): Promise<Blob> {
+  if (settings.motion !== "none") return exportGif(ctx, settings);
+  const error = validateSettings(settings);
+  if (error) throw new Error(error);
+  drawEmoji(ctx, settings, 0);
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    ctx.canvas.toBlob((result) => {
+      if (result) resolve(result);
+      else reject(new Error("PNG 생성에 실패했어요. 다시 시도해 주세요."));
+    }, "image/png");
+  });
+  if (blob.size > 128 * 1024)
+    throw new Error("파일이 128KB를 넘었어요. 텍스트·이미지를 줄여 주세요.");
+  return blob;
+}
+
+export function downloadFilename(layers: Layer[], format: "png" | "gif"): string {
   const text = layers
     .flatMap((layer) => (layer.type === "text" && layer.text.trim() ? [layer.text.trim()] : []))
     .join(" ");
@@ -313,5 +332,5 @@ export function gifFilename(layers: Layer[]): string {
     .replace(/\s+/g, " ")
     .trim()
     .replace(/^[. ]+|[. ]+$/g, "");
-  return `${Array.from(name).slice(0, 80).join("") || "slackmoji"}.gif`;
+  return `${Array.from(name).slice(0, 80).join("") || "slackmoji"}.${format}`;
 }

@@ -52,6 +52,8 @@ Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly 
 
 - E5ah (#110): Editor setting disclosures follow selected mockup 2 without dividers: compact title/current-value headers, a neutral rounded surface only for expanded sections, and consistent inset spacing. Summaries reflect current text, font, color mode, placement, background and motion; preserve multi-open state, keyboard semantics, mounted contents and responsive containment. This supersedes divider-based disclosure styling in E5s.
 
+- E5az (#149): Download motion=none as a 128×128 PNG preserving full alpha; animated effects remain GIF. Use content-derived filenames with the matching extension and the label 다운로드. Existing opt-in gallery publication remains GIF, generated separately only when requested. Verify decoded PNG pixels, animated output, filename extensions and Aside download behavior.
+
 ## Public gallery — E6 (#128)
 
 Keep the existing CSR application and add same-origin Cloudflare Worker APIs. A new private R2 bucket stores public rendered GIF assets served through the Worker; a new D1 database owns content identity, creation timestamps and atomic download counters. Never send source layers, uploaded originals or font files. The download action clearly offers public publication versus private local download; only publication adds a gallery item. Publication failure must retain a working local download and explain that the item was not published.
