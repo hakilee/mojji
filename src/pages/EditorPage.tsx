@@ -546,7 +546,7 @@ export function EditorPage() {
                     </Select>
                   </FormField.Label>
                 )}
-                <div className="mt-group rounded-control bg-bg-neutral-weak px-3">
+                <div className="mt-group rounded-control bg-bg-neutral-weak">
                   <Checkbox
                     label="투명 배경으로 만들기"
                     checked={settings.transparent}
