@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5ax (#145): Shared segmented controls use outer control radius10px and inset radius8px with2px padding. Reduce minimum height to34px (30px options), preserving content wrapping, sliding geometry, keyboard semantics and reduced motion across color mode, image fitting and emoji mode. Verify desktop/narrow computed geometry and selection via Aside.
+
 - E5aw (#143): Put a 32×32 square foreground ColorPicker trigger at the right of each text layer row, independently labelled by layer text. Selection and color triggers are sibling buttons; reserve row text space and preserve keyboard access, history and per-layer updates. Move the contextual top picker back into advanced color options. Keep image rows unchanged and verify square geometry on desktop/narrow layouts with Aside.
 
 - E5av (#141): Expose the shared foreground picker above text disclosures, labelled 글자색 (시작색 for gradients), with no duplicate picker. Keep advanced color modes under 색상 옵션. New compositions default to opaque white; explicit transparency remains supported. Local GIF filenames use nonblank layer text or first image basename, preserve Unicode, replace filesystem-unsafe characters, bound length and fall back to slackmoji. Verify decoded opaque/transparent output, filename cases and Aside discoverability/download.
