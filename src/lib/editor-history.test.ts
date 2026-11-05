@@ -20,7 +20,7 @@ describe("editor history [E2b E5v]", () => {
     ).toBe(gradient);
     let history = editorHistoryReducer(gradient, {
       type: "change",
-      patch: { backgroundGradient: { end: "#22c55e", direction: "vertical" } },
+      patch: { backgroundGradient: { end: "#22c55e", direction: "diamond" } },
     });
     const changed = history.present;
     history = editorHistoryReducer(history, { type: "change", patch: { transparent: true } });

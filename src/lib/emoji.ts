@@ -45,7 +45,10 @@ export type Layer = TextLayer | ImageLayer;
 export type Settings = {
   layers: Layer[];
   background: string;
-  backgroundGradient?: TextLayer["gradient"];
+  backgroundGradient?: {
+    end: string;
+    direction: "horizontal" | "vertical" | "radial" | "diamond";
+  };
   transparent: boolean;
   motion: keyof typeof motions;
   speed: keyof typeof motionFrameDelays;
@@ -195,20 +198,36 @@ function applyMotion(ctx: CanvasRenderingContext2D, motion: Settings["motion"], 
 export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, progress: number) {
   ctx.clearRect(0, 0, 128, 128);
   if (!settings.transparent) {
-    if (settings.backgroundGradient) {
-      const gradient = ctx.createLinearGradient(
-        0,
-        0,
-        settings.backgroundGradient.direction === "horizontal" ? 128 : 0,
-        settings.backgroundGradient.direction === "vertical" ? 128 : 0,
-      );
-      gradient.addColorStop(0, settings.background);
-      gradient.addColorStop(1, settings.backgroundGradient.end);
-      ctx.fillStyle = gradient;
+    if (settings.backgroundGradient?.direction === "diamond") {
+      // Each quadrant projects onto its diagonal: t = (abs(x - 64) + abs(y - 64)) / 64.
+      for (const x of [-1, 1]) {
+        for (const y of [-1, 1]) {
+          const gradient = ctx.createLinearGradient(64, 64, 64 + x * 32, 64 + y * 32);
+          gradient.addColorStop(0, settings.background);
+          gradient.addColorStop(1, settings.backgroundGradient.end);
+          ctx.fillStyle = gradient;
+          ctx.fillRect(x < 0 ? 0 : 64, y < 0 ? 0 : 64, 64, 64);
+        }
+      }
     } else {
-      ctx.fillStyle = settings.background;
+      if (settings.backgroundGradient) {
+        const gradient =
+          settings.backgroundGradient.direction === "radial"
+            ? ctx.createRadialGradient(64, 64, 0, 64, 64, 64)
+            : ctx.createLinearGradient(
+                0,
+                0,
+                settings.backgroundGradient.direction === "horizontal" ? 128 : 0,
+                settings.backgroundGradient.direction === "vertical" ? 128 : 0,
+              );
+        gradient.addColorStop(0, settings.background);
+        gradient.addColorStop(1, settings.backgroundGradient.end);
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = settings.background;
+      }
+      ctx.fillRect(0, 0, 128, 128);
     }
-    ctx.fillRect(0, 0, 128, 128);
   }
   for (const layer of settings.layers) {
     if (layer.type === "text" && !layer.text.trim()) continue;

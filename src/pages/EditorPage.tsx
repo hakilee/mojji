@@ -519,7 +519,7 @@ export function EditorPage() {
                 </div>
                 {settings.backgroundGradient && (
                   <FormField.Label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
-                    방향
+                    모양
                     <Select
                       value={settings.backgroundGradient.direction}
                       disabled={settings.transparent}
@@ -527,17 +527,21 @@ export function EditorPage() {
                         update({
                           backgroundGradient: {
                             ...settings.backgroundGradient!,
-                            direction: direction as "horizontal" | "vertical",
+                            direction: direction as NonNullable<
+                              Settings["backgroundGradient"]
+                            >["direction"],
                           },
                         })
                       }
                     >
-                      <Select.Trigger aria-label="배경 그라데이션 방향" className="flex-1">
+                      <Select.Trigger aria-label="배경 그라데이션 모양" className="flex-1">
                         <Select.Value />
                       </Select.Trigger>
                       <Select.Content>
                         <Select.Item value="horizontal">가로 →</Select.Item>
                         <Select.Item value="vertical">세로 ↓</Select.Item>
+                        <Select.Item value="radial">원형</Select.Item>
+                        <Select.Item value="diamond">마름모</Select.Item>
                       </Select.Content>
                     </Select>
                   </FormField.Label>
