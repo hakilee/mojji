@@ -30,6 +30,7 @@
 
   --z-index-mobile-header-backdrop: 50;
   --z-index-header: 100;
+  --z-index-layer-panel: 150;
   --z-index-modal: 200;
   --z-index-dropdown: 300;
   --z-index-popover: 300;
