@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5aw (#143): Put a 32×32 square foreground ColorPicker trigger at the right of each text layer row, independently labelled by layer text. Selection and color triggers are sibling buttons; reserve row text space and preserve keyboard access, history and per-layer updates. Move the contextual top picker back into advanced color options. Keep image rows unchanged and verify square geometry on desktop/narrow layouts with Aside.
+
 - E5av (#141): Expose the shared foreground picker above text disclosures, labelled 글자색 (시작색 for gradients), with no duplicate picker. Keep advanced color modes under 색상 옵션. New compositions default to opaque white; explicit transparency remains supported. Local GIF filenames use nonblank layer text or first image basename, preserve Unicode, replace filesystem-unsafe characters, bound length and fall back to slackmoji. Verify decoded opaque/transparent output, filename cases and Aside discoverability/download.
 
 - E5au (#138): On narrow layouts cap the layer panel to 45% of layout viewport height, bounded further by available visual viewport height. Preserve bottom docking, fixed header, internal settings scrolling and native editing/focus. This refines E5ai to keep the canvas reachable while adjusting layers. Verify desktop and narrow/short viewport multi-layer editing with Aside; distinguish emulation from real-device touch/IME.

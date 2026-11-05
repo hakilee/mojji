@@ -22,11 +22,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 46
+          "line": 39
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 457
+          "line": 461
         }
       ]
     },
@@ -104,7 +104,7 @@
         },
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 69
+          "line": 79
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -184,11 +184,11 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 33
+          "line": 42
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 36
+          "line": 45
         },
         {
           "file": "src/components/MochiGallery.tsx",
@@ -204,7 +204,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 633
+          "line": 637
         }
       ]
     },
@@ -475,7 +475,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 503
+          "line": 507
         }
       ]
     },
@@ -528,11 +528,11 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 122
+          "line": 132
         },
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 132
+          "line": 142
         },
         {
           "file": "src/components/design-system/meki/form-field/parts.tsx",
@@ -552,7 +552,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 55
+          "line": 64
         }
       ]
     },
@@ -725,7 +725,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 39
+          "line": 41
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -755,7 +755,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 57
+          "line": 67
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -774,7 +774,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 56
+          "line": 66
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -793,7 +793,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 44
+          "line": 46
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -816,7 +816,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 505
+          "line": 509
         }
       ]
     },
@@ -835,7 +835,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 515
+          "line": 519
         }
       ]
     },
@@ -862,7 +862,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 519
+          "line": 523
         }
       ]
     },
@@ -893,7 +893,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 512
+          "line": 516
         }
       ]
     },
@@ -912,7 +912,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 513
+          "line": 517
         }
       ]
     },
@@ -966,7 +966,7 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 94
+          "line": 103
         },
         {
           "file": "src/components/MochiGallery.tsx",
@@ -974,7 +974,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 640
+          "line": 644
         }
       ]
     },
@@ -1140,7 +1140,7 @@
       "usages": [
         {
           "file": "src/components/design-system/ColorPicker.tsx",
-          "line": 68
+          "line": 78
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
@@ -1162,23 +1162,23 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 47
+          "line": 40
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 128
+          "line": 121
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 143
+          "line": 136
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 465
+          "line": 469
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 484
+          "line": 488
         }
       ]
     },
@@ -1200,11 +1200,11 @@
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 111
+          "line": 121
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 487
+          "line": 491
         }
       ]
     },
@@ -1218,11 +1218,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 477
+          "line": 481
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 624
+          "line": 628
         }
       ]
     },
@@ -1231,8 +1231,12 @@
       "target": "src/components/design-system/ColorPicker.tsx",
       "usages": [
         {
+          "file": "src/components/editor/LayerEditor.tsx",
+          "line": 156
+        },
+        {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 40
+          "line": 162
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1244,7 +1248,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 470
+          "line": 474
         }
       ]
     },
@@ -1254,7 +1258,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 493
+          "line": 497
         }
       ]
     },
@@ -1272,7 +1276,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 149
+          "line": 142
         }
       ]
     },
@@ -1302,11 +1306,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 118
+          "line": 111
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 526
+          "line": 530
         }
       ]
     },
@@ -1326,7 +1330,7 @@
       "usages": [
         {
           "file": "src/components/editor/LayerEditor.tsx",
-          "line": 50
+          "line": 59
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1354,7 +1358,7 @@
       "usages": [
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 54
+          "line": 47
         }
       ]
     },
@@ -1384,7 +1388,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 577
+          "line": 581
         }
       ]
     },
@@ -1484,7 +1488,7 @@
     {
       "file": "src/components/editor/LayerEditor.tsx",
       "components": ["LayerEditor"],
-      "designSystem": ["Button", "ChoiceButton", "HelpBubble", "Input", "Spinner"],
+      "designSystem": ["Button", "ChoiceButton", "ColorPicker", "HelpBubble", "Input", "Spinner"],
       "dependencies": [
         "src/components/design-system/index.ts",
         "src/components/editor/EmojiPicker.tsx",

@@ -36,13 +36,6 @@ export function TextLayerEditor({
   useEffect(() => () => onComposingChange(false), [onComposingChange]);
   return (
     <div>
-      <div className="mb-group">
-        <ColorPicker
-          label={layer.gradient ? "시작색" : "글자색"}
-          value={layer.color}
-          onChange={(color) => onChange({ color, characterColors: undefined })}
-        />
-      </div>
       <Accordion type="multiple" defaultValue={["content"]}>
         <EditorAccordionItem
           id="layer-text-settings"
@@ -163,6 +156,13 @@ export function TextLayerEditor({
                     : { gradient: undefined },
                 )
               }
+            />
+          </div>
+          <div className="mb-group">
+            <ColorPicker
+              label={layer.gradient ? "시작색" : "글자색"}
+              value={layer.color}
+              onChange={(color) => onChange({ color, characterColors: undefined })}
             />
           </div>
           <div className="grid grid-cols-2 gap-control">
