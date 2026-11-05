@@ -25,6 +25,10 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     { direction: "vertical", motion: "none" },
     { direction: "horizontal", motion: "bounce" },
     { direction: "vertical", motion: "bounce" },
+    { direction: "radial", motion: "none" },
+    { direction: "diamond", motion: "none" },
+    { direction: "radial", motion: "bounce" },
+    { direction: "diamond", motion: "bounce" },
   ] as const)(
     "exports $direction background gradient with $motion [E5bc]",
     async ({ direction, motion }) => {
@@ -35,7 +39,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
         background: "#ff0000",
         backgroundGradient: { end: "#0000ff", direction },
         motion,
-        layers: [{ ...initialTextLayer, scale: 0.1 }],
+        layers: [{ ...initialTextLayer, scale: 0.1, x: 10, y: 110 }],
       };
       const blob = await exportEmoji(ctx as unknown as CanvasRenderingContext2D, settings);
       const frames = [];
@@ -47,6 +51,37 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
         expect(frames).toHaveLength(20);
       }
       for (const pixels of frames) {
+        if (direction === "radial" || direction === "diamond") {
+          const center = (64 * 128 + 64) * 4;
+          const diagonal = (80 * 128 + 80) * 4;
+          const axis = (64 * 128 + 96) * 4;
+          expect(pixels[center]).toBeGreaterThan(240);
+          expect(pixels[center + 2]).toBeLessThan(15);
+          expect(pixels[0]).toBeLessThan(15);
+          expect(pixels[2]).toBeGreaterThan(240);
+          // Equal Manhattan distance is a diamond contour, not a circular contour.
+          if (direction === "diamond") {
+            expect(Math.abs(pixels[diagonal] - pixels[axis])).toBeLessThan(15);
+          } else {
+            expect(pixels[diagonal] - pixels[axis]).toBeGreaterThan(20);
+          }
+          for (const [x, y] of [
+            [63, 63],
+            [64, 63],
+            [63, 64],
+            [64, 64],
+            [32, 32],
+            [95, 32],
+            [32, 95],
+            [95, 95],
+          ]) {
+            expect(pixels[(y * 128 + x) * 4 + 3]).toBe(255);
+            expect(
+              Math.abs(pixels[(y * 128 + x) * 4] - pixels[((127 - y) * 128 + 127 - x) * 4]),
+            ).toBeLessThan(15);
+          }
+          continue;
+        }
         const end = direction === "horizontal" ? (8 * 128 + 119) * 4 : (119 * 128 + 8) * 4;
         const perpendicular =
           direction === "horizontal" ? (119 * 128 + 8) * 4 : (8 * 128 + 119) * 4;
