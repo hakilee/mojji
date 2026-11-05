@@ -108,7 +108,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 117
+          "line": 120
         },
         {
           "file": "src/components/design-system/HistoryButton.tsx",
@@ -729,7 +729,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 62
+          "line": 65
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -759,7 +759,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 70
+          "line": 73
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -778,7 +778,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 69
+          "line": 72
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",
@@ -1130,7 +1130,7 @@
       "usages": [
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 68
+          "line": 71
         }
       ]
     },
@@ -1144,7 +1144,7 @@
         },
         {
           "file": "src/components/design-system/FloatingPanel.tsx",
-          "line": 116
+          "line": 119
         },
         {
           "file": "src/components/design-system/HelpBubble.tsx",

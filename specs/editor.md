@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5au (#138): On narrow layouts cap the layer panel to 45% of layout viewport height, bounded further by available visual viewport height. Preserve bottom docking, fixed header, internal settings scrolling and native editing/focus. This refines E5ai to keep the canvas reachable while adjusting layers. Verify desktop and narrow/short viewport multi-layer editing with Aside; distinguish emulation from real-device touch/IME.
+
 - E5at (#136): Remove the publication checkbox helper paragraph and undo/redo success announcements from the download footer. History restoration clears stale status without adding a message. Keep the explicit public checkbox label/default/behavior and all validation, loading, error and download-result feedback. Preserve history/focus behavior and hide empty status space. Verify with existing checks and Aside.
 
 - E5as (#134): Default each text layer (including added text/emoji/kaomoji) to 110% line height. Provide a labelled shared 줄간격 slider from 80–200% in 1% increments in text content settings. Use the same value for native text input, glyph measurement/selection, canvas preview and GIF baselines; preserve single-line output, per-character colors, font fitting and independent layers. A slider gesture is one reversible history action. Verify multiline output/geometry and history with colocated tests, and desktop/narrow keyboard/pointer editing plus actual GIF download with Aside.
