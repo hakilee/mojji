@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bh (#173): Shared Input uses a 2px inset focus-visible outline (offset -2px) overlapping its border instead of a detached outer frame. Preserve visible keyboard focus, input dimensions/radii, search behavior and disabled/invalid states; verify emoji-search focus and narrow layout with Aside. Other controls keep their existing focus styles.
+
 - E5bg (#171): Remove extra horizontal padding from the transparency-checkbox wrapper to align it with adjacent background controls; preserve its shared checkbox behavior, existing surface and vertical spacing.
 
 - E5bf (#166): Separate the editor title/history header from editing content with a 1px bottom border using the shared neutral stroke token. Preserve desktop/narrow padding and control placement; verify computed border and containment with Aside.
