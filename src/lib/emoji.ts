@@ -34,6 +34,7 @@ export type TextLayer = {
   x: number;
   y: number;
   scale: number;
+  lineHeight: number;
   font: string;
   fontLabel?: string;
   color: string;
@@ -56,6 +57,7 @@ export const initialTextLayer: TextLayer = {
   x: 64,
   y: 64,
   scale: 1,
+  lineHeight: 110,
   font: "Black Han Sans",
   color: "#7555e8",
 };
@@ -146,10 +148,12 @@ export function measureEmojiText(ctx: CanvasRenderingContext2D, settings: TextLa
     ...metrics.map((metric) => metric.actualBoundingBoxLeft + metric.actualBoundingBoxRight),
   );
   const top = Math.min(
-    ...metrics.map((metric, index) => index * 105 - metric.actualBoundingBoxAscent),
+    ...metrics.map((metric, index) => index * settings.lineHeight - metric.actualBoundingBoxAscent),
   );
   const bottom = Math.max(
-    ...metrics.map((metric, index) => index * 105 + metric.actualBoundingBoxDescent),
+    ...metrics.map(
+      (metric, index) => index * settings.lineHeight + metric.actualBoundingBoxDescent,
+    ),
   );
   const height = Math.max(1, bottom - top);
   return { lines, runs, metrics, width, height, top, bottom };
@@ -240,7 +244,7 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
       lines.forEach((line, index) => {
         const x =
           (metrics[index].actualBoundingBoxLeft - metrics[index].actualBoundingBoxRight) / 2;
-        const y = index * 105 - (top + bottom) / 2;
+        const y = index * layer.lineHeight - (top + bottom) / 2;
         if (layer.characterColors && !layer.gradient) {
           runs[index].forEach((run) => {
             ctx.fillStyle = run.color;

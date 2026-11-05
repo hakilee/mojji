@@ -7,6 +7,7 @@ import {
   Select,
   FormField,
   ContentTextArea,
+  RangeField,
 } from "~/components/design-system";
 import { constrainText, maxTextCharacters, textCharacters, validateText } from "~/lib/emoji";
 import type { TextLayer } from "~/lib/emoji";
@@ -50,7 +51,7 @@ export function TextLayerEditor({
             aria-invalid={!!invalid}
             autoComplete="off"
             spellCheck={false}
-            style={{ fontFamily: `"${layer.font}"` }}
+            style={{ fontFamily: `"${layer.font}"`, lineHeight: layer.lineHeight / 100 }}
             value={value}
             rows={Math.max(1, value.split("\n").length)}
             wrap="off"
@@ -105,6 +106,16 @@ export function TextLayerEditor({
         <p role="status" className="mt-control text-caption text-fg-neutral-muted empty:hidden">
           {notice}
         </p>
+        <div className="mt-group">
+          <RangeField
+            label="줄간격"
+            value={layer.lineHeight}
+            min={80}
+            max={200}
+            suffix="%"
+            onChange={(lineHeight) => onChange({ lineHeight })}
+          />
+        </div>
       </EditorAccordionItem>
       <EditorAccordionItem
         id="layer-font-settings"

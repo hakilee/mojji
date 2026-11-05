@@ -22,7 +22,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 37
+          "line": 38
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -471,7 +471,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 164
+          "line": 175
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -812,7 +812,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 166
+          "line": 177
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -831,7 +831,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 180
+          "line": 191
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -854,11 +854,11 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 181
+          "line": 192
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 182
+          "line": 193
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -889,7 +889,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 177
+          "line": 188
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -908,7 +908,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 178
+          "line": 189
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1162,15 +1162,15 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 38
+          "line": 39
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 109
+          "line": 120
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 124
+          "line": 135
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1232,15 +1232,15 @@
       "usages": [
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 150
+          "line": 161
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 156
+          "line": 167
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 192
+          "line": 203
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1272,7 +1272,7 @@
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 130
+          "line": 141
         }
       ]
     },
@@ -1299,6 +1299,10 @@
         {
           "file": "src/components/editor/LayerControls.tsx",
           "line": 129
+        },
+        {
+          "file": "src/components/editor/TextLayerEditor.tsx",
+          "line": 110
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1350,7 +1354,7 @@
       "usages": [
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
-          "line": 45
+          "line": 46
         }
       ]
     },
@@ -1497,6 +1501,7 @@
         "ContentTextArea",
         "EditorAccordionItem",
         "FormField.Label",
+        "RangeField",
         "SegmentedControl",
         "Select",
         "Select.Content",
