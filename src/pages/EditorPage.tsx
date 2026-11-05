@@ -573,29 +573,17 @@ export function EditorPage() {
                   className="mt-group space-y-group border-0 p-0 disabled:text-fg-disabled"
                 >
                   <legend className="sr-only">모션 타이밍</legend>
-                  <FormField.Label className="flex items-center justify-between gap-control text-label text-fg-neutral-secondary">
-                    속도
-                    <Select
+                  <div className="space-y-control">
+                    <div className="text-label text-fg-neutral-secondary">속도</div>
+                    <SegmentedControl
+                      label="속도"
                       value={String(settings.speed)}
-                      disabled={settings.motion === "none"}
-                      onValueChange={(speed) =>
-                        update({ speed: Number(speed) as Settings["speed"] })
-                      }
-                    >
-                      <Select.Trigger aria-label="속도">
-                        <Select.Value />
-                      </Select.Trigger>
-                      <Select.Content>
-                        {Object.keys(motionFrameDelays)
-                          .sort((a, b) => Number(a) - Number(b))
-                          .map((speed) => (
-                            <Select.Item key={speed} value={speed}>
-                              {speed}×
-                            </Select.Item>
-                          ))}
-                      </Select.Content>
-                    </Select>
-                  </FormField.Label>
+                      options={Object.keys(motionFrameDelays)
+                        .sort((a, b) => Number(a) - Number(b))
+                        .map((speed) => ({ value: speed, label: `${speed}×` }))}
+                      onChange={(speed) => update({ speed: Number(speed) as Settings["speed"] })}
+                    />
+                  </div>
                   <RangeField
                     id="motion-delay"
                     label="반복 딜레이"
