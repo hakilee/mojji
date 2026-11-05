@@ -4,13 +4,50 @@ import { editorHistoryReducer, initialEditorHistory } from "./editor-history";
 import { drawEmoji, initialSettings, initialTextLayer, type ImageLayer } from "./emoji";
 
 describe("editor history [E2b E5v]", () => {
+  test("restores background gradients and ignores equal gradient changes [E5bc]", () => {
+    const gradient = editorHistoryReducer(initialEditorHistory, {
+      type: "change",
+      patch: {
+        background: "#ff0000",
+        backgroundGradient: { end: "#0000ff", direction: "horizontal" },
+      },
+    });
+    expect(
+      editorHistoryReducer(gradient, {
+        type: "change",
+        patch: { backgroundGradient: { end: "#0000ff", direction: "horizontal" } },
+      }),
+    ).toBe(gradient);
+    let history = editorHistoryReducer(gradient, {
+      type: "change",
+      patch: { backgroundGradient: { end: "#22c55e", direction: "diamond" } },
+    });
+    const changed = history.present;
+    history = editorHistoryReducer(history, { type: "change", patch: { transparent: true } });
+    expect(history.present.settings.backgroundGradient).toEqual(
+      changed.settings.backgroundGradient,
+    );
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(changed);
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(gradient.present);
+    history = editorHistoryReducer(history, { type: "redo" });
+    expect(history.present).toEqual(changed);
+    history = editorHistoryReducer(history, {
+      type: "change",
+      patch: { backgroundGradient: undefined },
+    });
+    expect(history.present.settings.backgroundGradient).toBeUndefined();
+    history = editorHistoryReducer(history, { type: "undo" });
+    expect(history.present).toEqual(changed);
+  });
   test("groups line spacing changes and restores independent layers [E5as]", () => {
     let history = editorHistoryReducer(initialEditorHistory, {
       type: "add-text",
       layer: { ...initialTextLayer, id: "second", text: "두\n줄" },
     });
     const before = history;
-    expect(before.present.settings.layers[1]).toMatchObject({ lineHeight: 110 });
+    expect(before.present.settings.layers[1]).toMatchObject({ lineHeight: 90 });
     history = editorHistoryReducer(history, { type: "begin-group", group: "pointer" });
     for (const lineHeight of [120, 150, 200]) {
       history = editorHistoryReducer(history, {

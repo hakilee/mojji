@@ -1,6 +1,7 @@
 import { Popover } from "./meki/popover";
 import { useId, useState } from "react";
 import { Button } from "./meki/button";
+import { CheckIcon } from "./icons/components/check-icon";
 import { Input } from "./meki/input";
 
 const colors = [
@@ -76,14 +77,19 @@ export function ColorPicker({
               {label}
             </h2>
             <Popover.Close aria-label="색상 선택 닫기" asChild>
-              <Button variant="neutral" svgOnly className="shrink-0">
+              <Button
+                variant="neutral"
+                size="small"
+                svgOnly
+                className="shrink-0 bg-transparent hover:bg-bg-neutral-weak"
+              >
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
-                  className="size-4"
+                  className="size-3.5"
                   aria-hidden="true"
                 >
                   <path d="m6 6 12 12M18 6 6 18" />
@@ -99,7 +105,7 @@ export function ColorPicker({
             {colors.map((color) => (
               <label
                 key={color.value}
-                className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset border border-transparent p-0.5 transition-colors duration-150 hover:border-stroke-neutral-strong has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stroke-focus has-checked:border-stroke-brand motion-reduce:transition-none"
+                className="flex min-h-control-size cursor-pointer items-center justify-center rounded-control-inset p-0.5 transition-colors duration-150 hover:bg-bg-neutral-weak has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stroke-focus motion-reduce:transition-none"
               >
                 <input
                   type="radio"
@@ -114,11 +120,11 @@ export function ColorPicker({
                   }}
                 />
                 <span
-                  className="flex size-8 items-center justify-center rounded-control-inset border border-stroke-neutral-strong"
+                  className={`flex size-8 items-center justify-center rounded-control-inset ${color.value === "#ffffff" ? "border border-stroke-neutral text-fg-neutral" : "text-white"}`}
                   style={{ backgroundColor: color.value }}
                 >
                   {value.toLowerCase() === color.value && (
-                    <span className="size-3 rounded-full border-2 border-white bg-bg-brand-solid shadow-sm" />
+                    <CheckIcon className="size-4" aria-hidden="true" />
                   )}
                 </span>
               </label>
@@ -128,7 +134,7 @@ export function ColorPicker({
             <label htmlFor={id} className="block text-caption text-fg-neutral-muted">
               HEX
             </label>
-            <div className="flex gap-control">
+            <div className="flex items-center gap-control rounded-control bg-bg-neutral-weak p-1">
               <Input
                 type="color"
                 aria-label={`${label} 직접 선택`}
@@ -137,7 +143,7 @@ export function ColorPicker({
                   setDraft(null);
                   onChange(event.target.value);
                 }}
-                className="size-control-size shrink-0 cursor-pointer rounded-control border border-stroke-neutral bg-bg-layer-default p-1 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stroke-focus"
+                className="size-8 shrink-0 cursor-pointer rounded-control-inset border-0 bg-transparent p-0.5 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-control-inset [&::-webkit-color-swatch]:border-stroke-neutral [&::-moz-color-swatch]:rounded-control-inset [&::-moz-color-swatch]:border-stroke-neutral"
               />
               <Input
                 id={id}
@@ -155,7 +161,7 @@ export function ColorPicker({
                     onChange(`#${text.replace(/^#/, "").toLowerCase()}`);
                 }}
                 onBlur={() => setDraft(null)}
-                className="flex-1 tabular-nums"
+                className="flex-1 border-0 bg-transparent tabular-nums"
               />
             </div>
             {invalid && (

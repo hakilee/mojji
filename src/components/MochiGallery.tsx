@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Tabs, Spinner } from "~/components/design-system";
+import { Button, Tabs, Spinner, toast } from "~/components/design-system";
 
 interface Item {
   id: string;
@@ -14,7 +14,7 @@ export function MochiGallery() {
   const [retry, setRetry] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [downloadStatus, setDownloadStatus] = useState("");
+  const [downloadError, setDownloadError] = useState("");
   const [downloading, setDownloading] = useState<string | null>(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -47,7 +47,7 @@ export function MochiGallery() {
   }, [sort, offset, retry]);
   async function download(id: string) {
     setDownloading(id);
-    setDownloadStatus("");
+    setDownloadError("");
     try {
       const response = await fetch(`/api/mochi/${id}/download`, {
         method: "POST",
@@ -70,13 +70,13 @@ export function MochiGallery() {
           item.id === id ? { ...item, downloads: item.downloads + 1 } : item,
         ),
       );
-      setDownloadStatus("모찌를 다운로드했어요.");
+      toast("모찌를 다운로드했어요.", { id: "mochi-download" });
       setOffset(0);
       setRetry((value) => value + 1);
       setLoading(true);
       setError("");
     } catch (cause) {
-      setDownloadStatus(cause instanceof Error ? cause.message : "다운로드하지 못했어요.");
+      setDownloadError(cause instanceof Error ? cause.message : "다운로드하지 못했어요.");
     } finally {
       setDownloading(null);
     }
@@ -174,7 +174,7 @@ export function MochiGallery() {
         </Tabs.Content>
       </Tabs>
       <p role="status" className="text-caption text-fg-neutral-muted empty:hidden">
-        {downloadStatus}
+        {downloadError}
       </p>
     </section>
   );

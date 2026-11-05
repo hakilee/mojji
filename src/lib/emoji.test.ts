@@ -21,6 +21,85 @@ const initialSettings = { ...defaultSettings, transparent: true };
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
   test.each([
+    { direction: "horizontal", motion: "none" },
+    { direction: "vertical", motion: "none" },
+    { direction: "horizontal", motion: "bounce" },
+    { direction: "vertical", motion: "bounce" },
+    { direction: "radial", motion: "none" },
+    { direction: "diamond", motion: "none" },
+    { direction: "radial", motion: "bounce" },
+    { direction: "diamond", motion: "bounce" },
+  ] as const)(
+    "exports $direction background gradient with $motion [E5bc]",
+    async ({ direction, motion }) => {
+      const canvas = createCanvas(128, 128);
+      const ctx = canvas.getContext("2d");
+      const settings: Settings = {
+        ...defaultSettings,
+        background: "#ff0000",
+        backgroundGradient: { end: "#0000ff", direction },
+        motion,
+        layers: [{ ...initialTextLayer, scale: 0.1, x: 10, y: 110 }],
+      };
+      const blob = await exportEmoji(ctx as unknown as CanvasRenderingContext2D, settings);
+      const frames = [];
+      if (motion === "none") {
+        ctx.drawImage(await loadImage(Buffer.from(await blob.arrayBuffer())), 0, 0);
+        frames.push(ctx.getImageData(0, 0, 128, 128).data);
+      } else {
+        frames.push(...decodeFrames(await blob.arrayBuffer()).map((frame) => frame.data));
+        expect(frames).toHaveLength(20);
+      }
+      for (const pixels of frames) {
+        if (direction === "radial" || direction === "diamond") {
+          const center = (64 * 128 + 64) * 4;
+          const diagonal = (80 * 128 + 80) * 4;
+          const axis = (64 * 128 + 96) * 4;
+          expect(pixels[center]).toBeGreaterThan(240);
+          expect(pixels[center + 2]).toBeLessThan(15);
+          expect(pixels[0]).toBeLessThan(15);
+          expect(pixels[2]).toBeGreaterThan(240);
+          // Equal Manhattan distance is a diamond contour, not a circular contour.
+          if (direction === "diamond") {
+            expect(Math.abs(pixels[diagonal] - pixels[axis])).toBeLessThan(15);
+          } else {
+            expect(pixels[diagonal] - pixels[axis]).toBeGreaterThan(20);
+          }
+          for (const [x, y] of [
+            [63, 63],
+            [64, 63],
+            [63, 64],
+            [64, 64],
+            [32, 32],
+            [95, 32],
+            [32, 95],
+            [95, 95],
+          ]) {
+            expect(pixels[(y * 128 + x) * 4 + 3]).toBe(255);
+            expect(
+              Math.abs(pixels[(y * 128 + x) * 4] - pixels[((127 - y) * 128 + 127 - x) * 4]),
+            ).toBeLessThan(15);
+          }
+          continue;
+        }
+        const end = direction === "horizontal" ? (8 * 128 + 119) * 4 : (119 * 128 + 8) * 4;
+        const perpendicular =
+          direction === "horizontal" ? (119 * 128 + 8) * 4 : (8 * 128 + 119) * 4;
+        const start = (8 * 128 + 8) * 4;
+        expect(pixels[start]).toBeGreaterThan(220);
+        expect(pixels[start + 2]).toBeLessThan(35);
+        expect(pixels[end]).toBeLessThan(35);
+        expect(pixels[end + 2]).toBeGreaterThan(220);
+        expect(pixels[perpendicular]).toBeGreaterThan(220);
+        expect(pixels[start + 3]).toBe(255);
+      }
+      drawEmoji(ctx as unknown as CanvasRenderingContext2D, { ...settings, transparent: true }, 0);
+      expect(ctx.getImageData(8, 8, 1, 1).data[3]).toBe(0);
+      drawEmoji(ctx as unknown as CanvasRenderingContext2D, settings, 0);
+      expect(ctx.getImageData(8, 8, 1, 1).data[3]).toBe(255);
+    },
+  );
+  test.each([
     ["하키짱", "하키짱.gif"],
     ["하키\n짱", "하키 짱.gif"],
     ["a/b:c?", "a b c.gif"],
@@ -60,6 +139,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
           ...defaultSettings,
           motion: "none",
           transparent,
+          backgroundGradient: { end: "#7555e8", direction: "horizontal" },
           layers: [
             {
               type: "image",
@@ -85,7 +165,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       expect(canvas.getContext("2d").getImageData(64, 64, 1, 1).data[3]).toBe(
         transparent ? source.getContext("2d").getImageData(64, 64, 1, 1).data[3] : 255,
       );
-      expect(downloadFilename(defaultSettings.layers, "png")).toBe("최고야!.png");
+      expect(downloadFilename(defaultSettings.layers, "png")).toBe("슬랙 모찌.png");
     },
   );
   test("exports animated effects as GIF", async () => {
@@ -108,7 +188,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
       const gaps: number[] = [];
       const heights: number[] = [];
-      for (const lineHeight of [110, 200]) {
+      for (const lineHeight of [90, 200]) {
         const layer = {
           ...initialTextLayer,
           text: "MMMMMMMM\nMMMMMMMM",
@@ -134,16 +214,20 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
         expect(rows[0]).toBeGreaterThan(0);
         expect(rows.at(-1)).toBeLessThan(127);
       }
-      expect(heights[1]! - heights[0]!).toBe(90);
+      expect(heights[1]! - heights[0]!).toBe(110);
       expect(gaps[1]).toBeGreaterThan(gaps[0]!);
     },
   );
 
   test("line spacing does not change single-line pixels [E5as]", () => {
     const ctx = createCanvas(128, 128).getContext("2d") as unknown as CanvasRenderingContext2D;
-    drawEmoji(ctx, initialSettings, 0);
+    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, text: "슬랙" }] }, 0);
     const pixels = ctx.getImageData(0, 0, 128, 128).data;
-    drawEmoji(ctx, { ...initialSettings, layers: [{ ...initialTextLayer, lineHeight: 200 }] }, 0);
+    drawEmoji(
+      ctx,
+      { ...initialSettings, layers: [{ ...initialTextLayer, text: "슬랙", lineHeight: 200 }] },
+      0,
+    );
     expect(ctx.getImageData(0, 0, 128, 128).data).toEqual(pixels);
   });
 

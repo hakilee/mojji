@@ -10,6 +10,7 @@ import {
   HistoryButton,
   MotionIcon,
   Select,
+  SegmentedControl,
   RangeField,
   FormField,
   Link,
@@ -320,7 +321,7 @@ export function EditorPage() {
           }
         }}
       >
-        <header className="flex items-center gap-control p-panel max-[760px]:p-group">
+        <header className="flex items-center gap-control border-b border-stroke-neutral p-panel max-[760px]:p-group">
           <Link
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"
@@ -470,15 +471,82 @@ export function EditorPage() {
               <EditorAccordionItem
                 value="background"
                 title="배경"
-                summary={settings.transparent ? "투명" : settings.background}
+                summary={
+                  settings.transparent
+                    ? "투명"
+                    : settings.backgroundGradient
+                      ? "그라데이션"
+                      : settings.background
+                }
               >
-                <ColorPicker
-                  label="배경색"
-                  value={settings.background}
-                  disabled={settings.transparent}
-                  onChange={(background) => update({ background })}
-                />
-                <div className="mt-group rounded-control bg-bg-neutral-weak px-3">
+                <div className="mb-group">
+                  <SegmentedControl
+                    label="배경 색상 방식"
+                    value={settings.backgroundGradient ? "gradient" : "solid"}
+                    options={[
+                      { value: "solid", label: "단색" },
+                      { value: "gradient", label: "그라데이션" },
+                    ]}
+                    onChange={(mode) =>
+                      update({
+                        backgroundGradient:
+                          mode === "gradient"
+                            ? { end: "#7555e8", direction: "horizontal" }
+                            : undefined,
+                      })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-control">
+                  <ColorPicker
+                    label={settings.backgroundGradient ? "배경 시작색" : "배경색"}
+                    displayLabel={settings.backgroundGradient ? "시작색" : "배경색"}
+                    value={settings.background}
+                    disabled={settings.transparent}
+                    onChange={(background) => update({ background })}
+                  />
+                  {settings.backgroundGradient && (
+                    <ColorPicker
+                      label="배경 끝색"
+                      displayLabel="끝색"
+                      value={settings.backgroundGradient.end}
+                      disabled={settings.transparent}
+                      onChange={(end) =>
+                        update({ backgroundGradient: { ...settings.backgroundGradient!, end } })
+                      }
+                    />
+                  )}
+                </div>
+                {settings.backgroundGradient && (
+                  <FormField.Label className="mt-group flex items-center gap-inset text-label text-fg-neutral-secondary">
+                    모양
+                    <Select
+                      value={settings.backgroundGradient.direction}
+                      disabled={settings.transparent}
+                      onValueChange={(direction) =>
+                        update({
+                          backgroundGradient: {
+                            ...settings.backgroundGradient!,
+                            direction: direction as NonNullable<
+                              Settings["backgroundGradient"]
+                            >["direction"],
+                          },
+                        })
+                      }
+                    >
+                      <Select.Trigger aria-label="배경 그라데이션 모양" className="flex-1">
+                        <Select.Value />
+                      </Select.Trigger>
+                      <Select.Content>
+                        <Select.Item value="horizontal">가로 →</Select.Item>
+                        <Select.Item value="vertical">세로 ↓</Select.Item>
+                        <Select.Item value="radial">원형</Select.Item>
+                        <Select.Item value="diamond">마름모</Select.Item>
+                      </Select.Content>
+                    </Select>
+                  </FormField.Label>
+                )}
+                <div className="mt-group rounded-control bg-bg-neutral-weak">
                   <Checkbox
                     label="투명 배경으로 만들기"
                     checked={settings.transparent}
