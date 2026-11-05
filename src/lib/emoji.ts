@@ -64,7 +64,7 @@ export const initialTextLayer: TextLayer = {
 export const initialSettings: Settings = {
   layers: [initialTextLayer],
   background: "#ffffff",
-  transparent: true,
+  transparent: false,
   motion: "bounce",
   speed: 1,
   delay: 0,
@@ -298,4 +298,20 @@ export async function exportGif(ctx: CanvasRenderingContext2D, settings: Setting
   if (blob.size > 128 * 1024)
     throw new Error("파일이 128KB를 넘었어요. 텍스트·이미지를 줄이거나 모션을 바꿔 주세요.");
   return blob;
+}
+
+export function gifFilename(layers: Layer[]): string {
+  const text = layers
+    .flatMap((layer) => (layer.type === "text" && layer.text.trim() ? [layer.text.trim()] : []))
+    .join(" ");
+  const image = layers.find((layer) => layer.type === "image");
+  const name = (text || (image?.type === "image" ? image.name.replace(/\.[^.]+$/, "") : ""))
+    .split("")
+    .map((character) => (character.charCodeAt(0) < 32 ? " " : character))
+    .join("")
+    .replace(/[<>:"/\\|?*]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^[. ]+|[. ]+$/g, "");
+  return `${Array.from(name).slice(0, 80).join("") || "slackmoji"}.gif`;
 }

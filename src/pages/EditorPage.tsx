@@ -20,6 +20,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   drawEmoji,
   exportGif,
+  gifFilename,
   motions,
   motionFrameDelays,
   initialTextLayer,
@@ -199,7 +200,7 @@ export function EditorPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "slackmoji.gif";
+      link.download = gifFilename(settings.layers);
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
       setStatus(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`);
