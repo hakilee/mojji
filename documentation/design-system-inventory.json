@@ -116,11 +116,11 @@
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 427
+          "line": 434
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 438
+          "line": 445
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -962,7 +962,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 434
+          "line": 441
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -1401,7 +1401,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 377
+          "line": 384
         }
       ]
     },
@@ -1411,7 +1411,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 412
+          "line": 419
         }
       ]
     },
