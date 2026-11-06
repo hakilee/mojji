@@ -85,7 +85,12 @@
       "component": "ArrowUpIcon",
       "source": "packages/icon/src/components/arrow-up-icon.tsx",
       "target": "src/components/design-system/icons/components/arrow-up-icon.tsx",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 156
+        }
+      ]
     },
     {
       "component": "BackButton",
@@ -148,15 +153,19 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 225
+          "line": 154
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 242
+          "line": 212
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 319
+          "line": 230
+        },
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 307
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
@@ -495,11 +504,11 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 150
+          "line": 155
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 250
+          "line": 238
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -576,11 +585,11 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 153
+          "line": 160
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 253
+          "line": 241
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -617,7 +626,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 208
+          "line": 195
         }
       ]
     },
@@ -632,7 +641,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 241
+          "line": 229
         }
       ]
     },
@@ -647,7 +656,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 229
+          "line": 217
         }
       ]
     },
@@ -662,7 +671,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 247
+          "line": 235
         }
       ]
     },
@@ -677,7 +686,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 240
+          "line": 228
         }
       ]
     },
@@ -692,7 +701,7 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 224
+          "line": 211
         }
       ]
     },
@@ -998,15 +1007,15 @@
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 191
+          "line": 277
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 289
+          "line": 290
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 302
+          "line": 322
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -1169,7 +1178,12 @@
       "component": "WorldIcon",
       "source": "packages/icon/src/components/world-icon.tsx",
       "target": "src/components/design-system/icons/components/world-icon.tsx",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/FontPicker.tsx",
+          "line": 213
+        }
+      ]
     }
   ],
   "extensions": [
@@ -1241,15 +1255,15 @@
       "usages": [
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 129
+          "line": 132
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 195
+          "line": 267
         },
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 279
+          "line": 326
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -1267,7 +1281,7 @@
       "usages": [
         {
           "file": "src/components/editor/FontPicker.tsx",
-          "line": 266
+          "line": 254
         },
         {
           "file": "src/pages/EditorPage.tsx",
@@ -1514,6 +1528,7 @@
       "file": "src/components/editor/FontPicker.tsx",
       "components": ["FontPicker"],
       "designSystem": [
+        "ArrowUpIcon",
         "Button",
         "Checkbox",
         "ChoiceButton",
@@ -1525,7 +1540,8 @@
         "Modal.Description",
         "Modal.Title",
         "Modal.Trigger",
-        "Spinner"
+        "Spinner",
+        "WorldIcon"
       ],
       "dependencies": [
         "src/components/design-system/index.ts",

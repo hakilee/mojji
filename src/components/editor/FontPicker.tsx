@@ -1,5 +1,7 @@
 import {
   Modal,
+  ArrowUpIcon,
+  WorldIcon,
   FormField,
   Button,
   Checkbox,
@@ -36,6 +38,7 @@ export function FontPicker({
   const [open, setOpen] = useState(false);
   const [remoteError, setRemoteError] = useState("");
   const triggerId = useId();
+  const uploadId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
   const pendingFont = useRef<AbortController | null>(null);
   const mounted = useRef(true);
@@ -146,43 +149,171 @@ export function FontPicker({
           </ChoiceButton>
         ))}
       </div>
-      <div className="mt-inset space-y-control">
-        <FormField.Label htmlFor="font-upload" className="block text-label font-semibold">
-          폰트 파일 업로드
-        </FormField.Label>
-        <Input
-          id="font-upload"
-          type="file"
-          accept=".otf,.ttf,.woff,.woff2"
-          disabled={!!loading}
-          onChange={async (event) => {
-            const file = event.target.files?.[0];
-            event.target.value = "";
-            if (!file) return;
-            setLoading("upload");
-            setError("");
-            onLoading(true);
-            try {
-              if (!/\.(?:otf|ttf|woff2?)$/i.test(file.name)) throw new Error("format");
-              const family = `slackmojji-upload-${crypto.randomUUID()}`;
-              const label = `${file.name} (업로드)`;
-              const face = await new FontFace(family, await file.arrayBuffer()).load();
-              if (!mounted.current) return;
-              onUpload({ family, label, face });
-              onChange(family, label);
-            } catch {
-              if (mounted.current)
-                setError(
-                  "폰트를 불러오지 못했어요. 올바른 OTF, TTF, WOFF 또는 WOFF2 파일을 선택해 주세요.",
-                );
-            } finally {
-              if (mounted.current) {
-                setLoading("");
-                onLoading(false);
+      <div className="mt-inset grid grid-cols-2 gap-control">
+        <div className="min-w-0 rounded-xl focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
+          <Button asChild variant="neutral" disabled={!!loading} className="h-full w-full px-2">
+            <FormField.Label htmlFor={uploadId}>
+              <ArrowUpIcon aria-hidden="true" className="size-4 shrink-0" />
+              폰트 업로드
+            </FormField.Label>
+          </Button>
+          <Input
+            id={uploadId}
+            className="sr-only"
+            type="file"
+            accept=".otf,.ttf,.woff,.woff2"
+            disabled={!!loading}
+            onChange={async (event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (!file) return;
+              setLoading("upload");
+              setError("");
+              onLoading(true);
+              try {
+                if (!/\.(?:otf|ttf|woff2?)$/i.test(file.name)) throw new Error("format");
+                const family = `slackmojji-upload-${crypto.randomUUID()}`;
+                const label = `${file.name} (업로드)`;
+                const face = await new FontFace(family, await file.arrayBuffer()).load();
+                if (!mounted.current) return;
+                onUpload({ family, label, face });
+                onChange(family, label);
+              } catch {
+                if (mounted.current)
+                  setError(
+                    "폰트를 불러오지 못했어요. 올바른 OTF, TTF, WOFF 또는 WOFF2 파일을 선택해 주세요.",
+                  );
+              } finally {
+                if (mounted.current) {
+                  setLoading("");
+                  onLoading(false);
+                }
               }
+            }}
+          />
+        </div>
+        <Modal
+          open={open}
+          onOpenChange={(nextOpen) => {
+            setOpen(nextOpen);
+            if (nextOpen) {
+              setError("");
+              setRemoteError("");
+              void loadCatalog();
+            } else if (pendingFont.current) {
+              pendingFont.current.abort();
+              pendingFont.current = null;
+              setLoading("");
+              onLoading(false);
             }
           }}
-        />
+        >
+          <Modal.Trigger id={triggerId} disabled={!!loading} asChild>
+            <Button variant="neutral" className="w-full min-w-0 px-2">
+              <WorldIcon aria-hidden="true" className="size-4 shrink-0" />
+              Google Fonts
+            </Button>
+          </Modal.Trigger>
+          <Modal.Content
+            aria-modal="true"
+            onOpenAutoFocus={(event) => {
+              if (!window.matchMedia("(pointer: coarse)").matches) {
+                event.preventDefault();
+                searchInput.current?.focus();
+              }
+            }}
+            className="flex h-160 max-h-[calc(100dvh-32px)] w-[calc(100vw-32px)] max-w-xl min-w-0 flex-col gap-inset overflow-y-auto overscroll-contain rounded-workspace border border-stroke-neutral bg-bg-layer-default p-panel text-fg-neutral shadow-floating outline-none max-[480px]:p-group"
+          >
+            <div className="flex shrink-0 items-center justify-between gap-control">
+              <Modal.Title className="min-w-0 text-body font-semibold">Google Fonts</Modal.Title>
+              <Modal.Close aria-label="Google Fonts 닫기" asChild>
+                <Button variant="neutral" size="small">
+                  닫기
+                </Button>
+              </Modal.Close>
+            </div>
+            <Modal.Description className="shrink-0 text-caption text-fg-neutral-muted wrap-anywhere">
+              현재 글꼴 · {fontLabel ?? font}
+            </Modal.Description>
+            <FormField.Label className="sr-only" htmlFor="font-search">
+              Google Fonts 검색
+            </FormField.Label>
+            <Input
+              id="font-search"
+              ref={searchInput}
+              className="shrink-0"
+              type="search"
+              name="font-search"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="예: Gaegu…"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <div className="shrink-0">
+              <Checkbox
+                label="한글 지원"
+                checked={koreanOnly}
+                onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
+              />
+            </div>
+            <div
+              className="min-h-24 flex-1 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-1"
+              role="group"
+              aria-label="검색 결과"
+              aria-busy={catalogLoading}
+            >
+              {results.slice(0, 40).map(({ family }) => (
+                <ChoiceButton
+                  className="flex w-full items-center justify-between gap-control text-left wrap-anywhere"
+                  key={family}
+                  disabled={!!loading}
+                  aria-busy={loading === family}
+                  selected={font === family}
+                  onClick={() => void selectFont(family)}
+                >
+                  <span className="text-label">{family}</span>
+                  <span className="inline-flex shrink-0 items-center gap-control text-caption">
+                    {loading === family && <Spinner />}
+                    {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
+                  </span>
+                </ChoiceButton>
+              ))}
+              {catalog && !results.length && (
+                <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
+              )}
+            </div>
+            <p
+              className="flex shrink-0 items-center gap-control text-caption text-fg-neutral-muted"
+              role="status"
+            >
+              {(catalogLoading || loading) && <Spinner />}
+              {loading
+                ? `${loading} 불러오는 중…`
+                : catalogLoading
+                  ? "글꼴 목록 불러오는 중…"
+                  : !catalog
+                    ? ""
+                    : results.length > 40
+                      ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
+                      : `${results.length}개 글꼴`}
+            </p>
+            {remoteError && (
+              <div className="shrink-0 space-y-control">
+                <p role="alert" className="text-caption text-fg-critical">
+                  {remoteError}
+                </p>
+                {!catalog && (
+                  <Button variant="white" size="small" onClick={() => void loadCatalog()}>
+                    목록 다시 불러오기
+                  </Button>
+                )}
+              </div>
+            )}
+          </Modal.Content>
+        </Modal>
+      </div>
+      <div className="mt-control space-y-control">
         {loading === "upload" && (
           <p
             role="status"
@@ -205,125 +336,6 @@ export function FontPicker({
           </ChoiceButton>
         )}
       </div>
-      <Modal
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen);
-          if (nextOpen) {
-            setError("");
-            setRemoteError("");
-            void loadCatalog();
-          } else if (pendingFont.current) {
-            pendingFont.current.abort();
-            pendingFont.current = null;
-            setLoading("");
-            onLoading(false);
-          }
-        }}
-      >
-        <Modal.Trigger id={triggerId} disabled={!!loading} asChild>
-          <Button variant="neutral" className="mt-inset w-full">
-            Google Fonts
-          </Button>
-        </Modal.Trigger>
-        <Modal.Content
-          aria-modal="true"
-          onOpenAutoFocus={(event) => {
-            if (!window.matchMedia("(pointer: coarse)").matches) {
-              event.preventDefault();
-              searchInput.current?.focus();
-            }
-          }}
-          className="flex h-160 max-h-[calc(100dvh-32px)] w-[calc(100vw-32px)] max-w-xl min-w-0 flex-col gap-inset overflow-y-auto overscroll-contain rounded-workspace border border-stroke-neutral bg-bg-layer-default p-panel text-fg-neutral shadow-floating outline-none max-[480px]:p-group"
-        >
-          <div className="flex shrink-0 items-center justify-between gap-control">
-            <Modal.Title className="min-w-0 text-body font-semibold">Google Fonts</Modal.Title>
-            <Modal.Close aria-label="Google Fonts 닫기" asChild>
-              <Button variant="neutral" size="small">
-                닫기
-              </Button>
-            </Modal.Close>
-          </div>
-          <Modal.Description className="shrink-0 text-caption text-fg-neutral-muted wrap-anywhere">
-            현재 글꼴 · {fontLabel ?? font}
-          </Modal.Description>
-          <FormField.Label className="sr-only" htmlFor="font-search">
-            Google Fonts 검색
-          </FormField.Label>
-          <Input
-            id="font-search"
-            ref={searchInput}
-            className="shrink-0"
-            type="search"
-            name="font-search"
-            autoComplete="off"
-            spellCheck={false}
-            placeholder="예: Gaegu…"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <div className="shrink-0">
-            <Checkbox
-              label="한글 지원"
-              checked={koreanOnly}
-              onCheckedChange={(checked) => startTransition(() => setKoreanOnly(checked))}
-            />
-          </div>
-          <div
-            className="min-h-24 flex-1 space-y-control overflow-y-auto overscroll-contain rounded-panel border border-stroke-neutral bg-bg-neutral-weak p-1"
-            role="group"
-            aria-label="검색 결과"
-            aria-busy={catalogLoading}
-          >
-            {results.slice(0, 40).map(({ family }) => (
-              <ChoiceButton
-                className="flex w-full items-center justify-between gap-control text-left wrap-anywhere"
-                key={family}
-                disabled={!!loading}
-                aria-busy={loading === family}
-                selected={font === family}
-                onClick={() => void selectFont(family)}
-              >
-                <span className="text-label">{family}</span>
-                <span className="inline-flex shrink-0 items-center gap-control text-caption">
-                  {loading === family && <Spinner />}
-                  {loading === family ? "불러오는 중…" : font === family ? "선택됨" : "+"}
-                </span>
-              </ChoiceButton>
-            ))}
-            {catalog && !results.length && (
-              <p className="mt-2 text-xs text-fg-neutral-muted">일치하는 글꼴이 없어요.</p>
-            )}
-          </div>
-          <p
-            className="flex shrink-0 items-center gap-control text-caption text-fg-neutral-muted"
-            role="status"
-          >
-            {(catalogLoading || loading) && <Spinner />}
-            {loading
-              ? `${loading} 불러오는 중…`
-              : catalogLoading
-                ? "글꼴 목록 불러오는 중…"
-                : !catalog
-                  ? ""
-                  : results.length > 40
-                    ? `${results.length}개 중 40개 표시 · 검색어를 더 입력해 주세요.`
-                    : `${results.length}개 글꼴`}
-          </p>
-          {remoteError && (
-            <div className="shrink-0 space-y-control">
-              <p role="alert" className="text-caption text-fg-critical">
-                {remoteError}
-              </p>
-              {!catalog && (
-                <Button variant="white" size="small" onClick={() => void loadCatalog()}>
-                  목록 다시 불러오기
-                </Button>
-              )}
-            </div>
-          )}
-        </Modal.Content>
-      </Modal>
       {!fonts.includes(font) && (
         <p className="mt-2 text-xs text-fg-neutral-muted">선택한 글꼴 · {fontLabel ?? font}</p>
       )}
