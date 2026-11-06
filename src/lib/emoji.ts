@@ -17,6 +17,8 @@ export const motions = {
   jelly: "말랑말랑",
 };
 export type ImageLayer = {
+  flipX?: boolean;
+  flipY?: boolean;
   type: "image";
   id: string;
   name: string;
@@ -29,6 +31,9 @@ export type ImageLayer = {
   fit: "contain" | "cover";
 };
 export type TextLayer = {
+  rotation?: number;
+  flipX?: boolean;
+  flipY?: boolean;
   type: "text";
   id: string;
   text: string;
@@ -237,8 +242,9 @@ export function drawEmoji(ctx: CanvasRenderingContext2D, settings: Settings, pro
       ctx.translate(layer.x, layer.y);
       if (layer.type === "text") ctx.scale(layer.scale, layer.scale);
       applyMotion(ctx, settings.motion, progress);
+      ctx.rotate(((layer.rotation ?? 0) * Math.PI) / 180);
+      ctx.scale(layer.flipX ? -1 : 1, layer.flipY ? -1 : 1);
       if (layer.type === "image") {
-        ctx.rotate((layer.rotation * Math.PI) / 180);
         if (layer.fit === "cover") {
           const width = Number(layer.source.width);
           const height = Number(layer.source.height);

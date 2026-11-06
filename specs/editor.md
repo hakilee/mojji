@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bl (#192): All text/image layers support center-based rotation (-180–180 degrees) and independent local horizontal/vertical flips. Preview/export share transforms; selection geometry, resizing, snapping and history preserve them. Defaults remain untransformed.
+
 - E5bk (#190): Touching an unselected canvas layer must not start movement or select on pointerdown; allow native pan/pinch and select only on tap/click. A subsequent selected-layer touch drag starts beyond10 CSS pixels. Mouse/pen keep3px threshold and pointerdown selection; resize handles keep existing behavior. Preserve cancellation, focus, keyboard and history. Verify with Aside and distinguish synthetic touch-handler checks from real-device scrolling.
 
 - E5bj (#188): The work canvas has square corners matching exported pixels and a non-layout inset outline instead of a border. Render surface, hit targets and resize guides share identical bounds; do not clip image corners to a rounded panel. Preserve keyboard focus outline and resize-handle overflow. Verify mobile/desktop geometry and keyboard movement with Aside.
