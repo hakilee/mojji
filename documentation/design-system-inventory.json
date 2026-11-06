@@ -26,7 +26,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 471
+          "line": 481
         }
       ]
     },
@@ -116,11 +116,11 @@
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 427
+          "line": 456
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 438
+          "line": 467
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -212,7 +212,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 702
+          "line": 712
         }
       ]
     },
@@ -487,7 +487,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 529
+          "line": 539
         }
       ]
     },
@@ -828,7 +828,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 531
+          "line": 541
         }
       ]
     },
@@ -847,7 +847,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 548
+          "line": 558
         }
       ]
     },
@@ -874,19 +874,19 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 549
+          "line": 559
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 550
+          "line": 560
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 551
+          "line": 561
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 552
+          "line": 562
         }
       ]
     },
@@ -917,7 +917,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 545
+          "line": 555
         }
       ]
     },
@@ -936,7 +936,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 546
+          "line": 556
         }
       ]
     },
@@ -970,7 +970,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 434
+          "line": 463
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -998,7 +998,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 709
+          "line": 719
         }
       ]
     },
@@ -1203,11 +1203,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 479
+          "line": 489
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 565
+          "line": 575
         }
       ]
     },
@@ -1233,7 +1233,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 568
+          "line": 578
         }
       ]
     },
@@ -1247,11 +1247,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 558
+          "line": 568
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 693
+          "line": 703
         }
       ]
     },
@@ -1277,11 +1277,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 509
+          "line": 519
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 517
+          "line": 527
         }
       ]
     },
@@ -1291,7 +1291,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 574
+          "line": 584
         }
       ]
     },
@@ -1313,11 +1313,11 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 491
+          "line": 501
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 586
+          "line": 596
         }
       ]
     },
@@ -1351,7 +1351,7 @@
         },
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 595
+          "line": 605
         }
       ]
     },
@@ -1409,7 +1409,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 377
+          "line": 406
         }
       ]
     },
@@ -1419,7 +1419,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 412
+          "line": 441
         }
       ]
     },
@@ -1429,7 +1429,7 @@
       "usages": [
         {
           "file": "src/pages/EditorPage.tsx",
-          "line": 646
+          "line": 656
         }
       ]
     },

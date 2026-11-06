@@ -13,6 +13,7 @@ export function CanvasEditor({
   onSelect,
   onMove,
   onResize,
+  onRotate,
   onEditText,
   onChooseFont,
   renderAttempt,
@@ -23,6 +24,7 @@ export function CanvasEditor({
   selectedAnchor: RefObject<HTMLButtonElement | null>;
   onSelect: (id: string | null) => void;
   onMove: (id: string, x: number, y: number) => void;
+  onRotate: (id: string, rotation: number) => void;
   onResize: (
     id: string,
     patch: { x: number; y: number } & ({ scale: number } | { size: number }),
@@ -42,6 +44,7 @@ export function CanvasEditor({
     clientY: number;
     x: number;
     y: number;
+    rotate?: { angle: number; rotation: number; centerX: number; centerY: number };
     resize?: { type: Layer["type"]; size: number; diagonalX: number; diagonalY: number };
   } | null>(null);
   const [geometry, setGeometry] = useState<Record<string, { width: number; height: number }>>({});
@@ -152,7 +155,7 @@ export function CanvasEditor({
         tabIndex={0}
         aria-label="작업 캔버스"
         aria-busy={rendering}
-        className="relative aspect-square outline-1 -outline-offset-1 outline-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [clip-path:inset(-12px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
+        className="relative aspect-square outline-1 -outline-offset-1 outline-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [clip-path:inset(-30px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
         onPointerDown={(event) => {
           if (event.button !== 0 || !event.isPrimary || dragging.current) return;
           const button = (event.target as HTMLElement).closest<HTMLElement>("[data-layer]");
@@ -163,8 +166,16 @@ export function CanvasEditor({
           }
           const layer = layers.find((item) => item.id === id);
           if (!layer) return;
-          const handle = (event.target as HTMLElement).closest<HTMLElement>("[data-resize-corner]");
+          const handle = (event.target as HTMLElement).closest<HTMLElement>(
+            "[data-resize-corner], [data-rotate-corner]",
+          );
           const corner = handle?.dataset.resizeCorner;
+          const rotating = handle?.dataset.rotateCorner !== undefined;
+          if (rotating && event.pointerType !== "mouse") return;
+          const rect = canvas.current?.getBoundingClientRect();
+          if (!rect) return;
+          const centerX = rect.left + (layer.x / 128) * rect.width;
+          const centerY = rect.top + (layer.y / 128) * rect.height;
           if (event.pointerType === "touch" && selectedId !== id && !handle) return;
           const { width, height } = layerSize(layer);
           const angle = ((layer.rotation ?? 0) * Math.PI) / 180;
@@ -180,6 +191,14 @@ export function CanvasEditor({
             clientY: event.clientY,
             x: layer.x,
             y: layer.y,
+            rotate: rotating
+              ? {
+                  angle: Math.atan2(event.clientY - centerY, event.clientX - centerX),
+                  rotation: layer.rotation ?? 0,
+                  centerX,
+                  centerY,
+                }
+              : undefined,
             resize: corner
               ? {
                   type: layer.type,
@@ -214,6 +233,16 @@ export function CanvasEditor({
             )
               return;
             drag.active = true;
+          }
+          if (drag.rotate) {
+            const { angle, rotation, centerX, centerY } = drag.rotate;
+            const next =
+              rotation +
+              ((Math.atan2(event.clientY - centerY, event.clientX - centerX) - angle) * 180) /
+                Math.PI;
+            const snapped = event.shiftKey ? Math.round(next / 15) * 15 : Math.round(next);
+            onRotate(drag.id, ((((snapped + 180) % 360) + 360) % 360) - 180);
+            return;
           }
           if (drag.resize) {
             const { size, type, diagonalX, diagonalY } = drag.resize;
