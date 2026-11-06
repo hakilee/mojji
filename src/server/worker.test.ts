@@ -86,7 +86,7 @@ describe("public gallery API [E6]", () => {
         (response) =>
           response.status === 200 &&
           response.headers.get("Content-Disposition") ===
-            "attachment; filename=\"slackmoji.gif\"; filename*=UTF-8''%EC%8A%AC%EB%9E%99%20%EB%AA%A8%EC%B0%8C%20%28%E2%99%A1%29.gif",
+            "attachment; filename=\"mojji.gif\"; filename*=UTF-8''%EC%8A%AC%EB%9E%99%20%EB%AA%A8%EC%B0%8C%20%28%E2%99%A1%29.gif",
       ),
     ).toBe(true);
     expect(

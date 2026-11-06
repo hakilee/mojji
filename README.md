@@ -1,8 +1,8 @@
-# 슬랙모찌
+# mojji
 
 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
-[슬랙모찌 편집기 열기](https://slackmoji.haklee.me)
+[mojji 편집기 열기](https://slackmoji.haklee.me)
 
 ## 시작하기
 

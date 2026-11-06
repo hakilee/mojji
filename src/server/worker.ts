@@ -78,7 +78,7 @@ export default {
           headers: {
             ...headers,
             "Content-Type": "image/gif",
-            "Content-Disposition": `attachment; filename="slackmoji.gif"; filename*=UTF-8''${encodeURIComponent(row.filename).replace(/['()*]/g, (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}`,
+            "Content-Disposition": `attachment; filename="mojji.gif"; filename*=UTF-8''${encodeURIComponent(row.filename).replace(/['()*]/g, (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}`,
           },
         });
       }
