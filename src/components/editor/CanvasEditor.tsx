@@ -151,7 +151,7 @@ export function CanvasEditor({
         tabIndex={0}
         aria-label="작업 캔버스"
         aria-busy={rendering}
-        className="relative aspect-square rounded-panel border border-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [clip-path:inset(-12px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
+        className="relative aspect-square outline-1 -outline-offset-1 outline-stroke-neutral-strong bg-bg-checker-base bg-[conic-gradient(var(--color-bg-checker-tile)_25%,transparent_0_50%,var(--color-bg-checker-tile)_0_75%,transparent_0)] bg-size-[16px_16px] [clip-path:inset(-12px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-guide"
         onPointerDown={(event) => {
           if (event.button !== 0 || !event.isPrimary || dragging.current) return;
           const button = (event.target as HTMLElement).closest<HTMLElement>("[data-layer]");
@@ -349,7 +349,7 @@ export function CanvasEditor({
           );
         }}
       >
-        <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+        <div className="absolute inset-0 overflow-hidden">
           <canvas
             ref={canvas}
             width={768}

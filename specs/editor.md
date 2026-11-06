@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bj (#188): The work canvas has square corners matching exported pixels and a non-layout inset outline instead of a border. Render surface, hit targets and resize guides share identical bounds; do not clip image corners to a rounded panel. Preserve keyboard focus outline and resize-handle overflow. Verify mobile/desktop geometry and keyboard movement with Aside.
+
 - E6d (#185): Editor download/publication and layer-deletion success use the existing bottom-center 3-second snackbar, reusing stable IDs for repeated feedback. Keep generation/publication progress, validation and actionable failures inline. No persistent success text or success-induced layout shift; preserve export, publication, counts, history and focus.
 
 - E7c (#183): User correction supersedes E7a/E7b naming: repository/package/Worker slackmojji; D1/R2 slackmojji-gallery; canonical slackmojji.haklee.me. Redirect slackmoji.haklee.me and mistaken interim mojji.haklee.me to canonical preserving path/query/method. Korean visible brand/title is 슬랙모찌; initial sample restored to 슬랙\n모찌. Preserve all gallery data and verified automatic deployment.
