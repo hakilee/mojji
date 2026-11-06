@@ -202,7 +202,7 @@ export function LayerControls({
                         : onImageChange({ rotation: 0, flipX: false, flipY: false })
                     }
                   >
-                    회전·반전 초기화
+                    초기화
                   </Dropdown.Item>
                 </Dropdown.Content>
               </Dropdown>
