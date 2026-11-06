@@ -389,6 +389,16 @@ export function EditorPage() {
                 dispatch({ type: "move", id, x, y });
                 setStatus("");
               }}
+              onRotate={(id, rotation) => {
+                const layer = settings.layers.find((item) => item.id === id);
+                if (!layer) return;
+                dispatch({
+                  type: layer.type === "text" ? "change-text" : "change-image",
+                  id,
+                  patch: { rotation },
+                });
+                setStatus("");
+              }}
               onResize={(id, patch) => {
                 dispatch(
                   "scale" in patch
