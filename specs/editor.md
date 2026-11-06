@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E5bn (#196): Separate layer position/size and rotation/flips into collapsed sections. Place transform reset inside keyboard-accessible square overflow beside flip buttons. Preserve all controls/history; use a single-surface dropdown consistent with control radii.
+
 - E5bm (#194): Mouse users can drag outer corner rotation targets around the selected layer center; Shift snaps to15 degrees. Keep inner resize targets and mobile rotation sliders. Preserve pointer cancellation/history grouping and normalize angles to -180–180.
 
 - E5bl (#192): All text/image layers support center-based rotation (-180–180 degrees) and independent local horizontal/vertical flips. Preview/export share transforms; selection geometry, resizing, snapping and history preserve them. Defaults remain untransformed.

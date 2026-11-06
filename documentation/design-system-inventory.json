@@ -18,7 +18,7 @@
       "usages": [
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 57
+          "line": 58
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -160,11 +160,7 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 76
-        },
-        {
-          "file": "src/components/editor/LayerControls.tsx",
-          "line": 92
+          "line": 71
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
@@ -172,23 +168,27 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 151
+          "line": 139
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 179
+          "line": 171
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 195
+          "line": 188
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 203
+          "line": 214
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 212
+          "line": 222
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 231
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -364,19 +364,34 @@
       "component": "Dropdown",
       "source": "packages/ui/src/dropdown/index.tsx",
       "target": "src/components/design-system/meki/dropdown/index.ts",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 186
+        }
+      ]
     },
     {
       "component": "Dropdown.Content",
       "source": "packages/ui/src/dropdown/index.tsx",
       "target": "src/components/design-system/meki/dropdown/index.ts",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 197
+        }
+      ]
     },
     {
       "component": "Dropdown.Item",
       "source": "packages/ui/src/dropdown/index.tsx",
       "target": "src/components/design-system/meki/dropdown/index.ts",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 198
+        }
+      ]
     },
     {
       "component": "Dropdown.Label",
@@ -400,7 +415,12 @@
       "component": "Dropdown.Trigger",
       "source": "packages/ui/src/dropdown/index.tsx",
       "target": "src/components/design-system/meki/dropdown/index.ts",
-      "usages": []
+      "usages": [
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 187
+        }
+      ]
     },
     {
       "component": "FaceSadIcon",
@@ -1187,7 +1207,11 @@
       "usages": [
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 58
+          "line": 59
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 153
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1305,7 +1329,7 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 170
+          "line": 130
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1327,23 +1351,23 @@
       "usages": [
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 64
+          "line": 85
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 125
+          "line": 93
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 133
+          "line": 103
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 143
+          "line": 122
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 162
+          "line": 159
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1361,7 +1385,7 @@
       "usages": [
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 41
+          "line": 42
         }
       ]
     },
@@ -1515,6 +1539,10 @@
       "designSystem": [
         "Accordion",
         "Button",
+        "Dropdown",
+        "Dropdown.Content",
+        "Dropdown.Item",
+        "Dropdown.Trigger",
         "EditorAccordionItem",
         "FloatingPanel",
         "RangeField",

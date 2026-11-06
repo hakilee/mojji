@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import {
   Accordion,
+  Dropdown,
   EditorAccordionItem,
   Button,
   FloatingPanel,
@@ -57,51 +58,10 @@ export function LayerControls({
       <Accordion type="multiple" defaultValue={layer.type === "image" ? ["layout"] : []}>
         <EditorAccordionItem
           value="layout"
-          title="배치"
+          title="위치·크기"
           summary={`${Math.round(layer.x)}, ${Math.round(layer.y)} · ${layer.type === "text" ? `${Math.round(layer.scale * 100)}%` : `${layer.size}px`}`}
         >
           <div className="space-y-group">
-            <RangeField
-              label="회전"
-              min={-180}
-              max={180}
-              value={layer.rotation ?? 0}
-              suffix="°"
-              onChange={(rotation) =>
-                layer.type === "text" ? onTextChange({ rotation }) : onImageChange({ rotation })
-              }
-            />
-            <div className="grid grid-cols-2 gap-control">
-              {(["flipX", "flipY"] as const).map((axis) => (
-                <Button
-                  key={axis}
-                  variant="white"
-                  size="small"
-                  aria-pressed={!!layer[axis]}
-                  onClick={() =>
-                    layer.type === "text"
-                      ? onTextChange({ [axis]: !layer[axis] })
-                      : onImageChange({ [axis]: !layer[axis] })
-                  }
-                >
-                  {axis === "flipX" ? "좌우 반전" : "상하 반전"}
-                  {layer[axis] ? " ✓" : ""}
-                </Button>
-              ))}
-            </div>
-            <Button
-              variant="white"
-              size="small"
-              className="w-full"
-              onClick={() =>
-                layer.type === "text"
-                  ? onTextChange({ rotation: 0, flipX: false, flipY: false })
-                  : onImageChange({ rotation: 0, flipX: false, flipY: false })
-              }
-            >
-              회전·반전 초기화
-            </Button>
-
             <div className="grid grid-cols-3 gap-control">
               {[
                 { label: "상단", y: 24 },
@@ -188,6 +148,65 @@ export function LayerControls({
                 </Button>
               </>
             )}
+          </div>
+        </EditorAccordionItem>
+        <EditorAccordionItem
+          value="transform"
+          title="회전·반전"
+          summary={`${layer.rotation ?? 0}°${layer.flipX ? " · 좌우" : ""}${layer.flipY ? " · 상하" : ""}`}
+        >
+          <div className="space-y-group">
+            <RangeField
+              label="회전"
+              min={-180}
+              max={180}
+              value={layer.rotation ?? 0}
+              suffix="°"
+              onChange={(rotation) =>
+                layer.type === "text" ? onTextChange({ rotation }) : onImageChange({ rotation })
+              }
+            />
+            <div className="grid grid-cols-[1fr_1fr_auto] gap-control">
+              {(["flipX", "flipY"] as const).map((axis) => (
+                <Button
+                  key={axis}
+                  variant="white"
+                  size="small"
+                  aria-pressed={!!layer[axis]}
+                  onClick={() =>
+                    layer.type === "text"
+                      ? onTextChange({ [axis]: !layer[axis] })
+                      : onImageChange({ [axis]: !layer[axis] })
+                  }
+                >
+                  {axis === "flipX" ? "좌우 반전" : "상하 반전"}
+                  {layer[axis] ? " ✓" : ""}
+                </Button>
+              ))}
+              <Dropdown modal={false}>
+                <Dropdown.Trigger asChild>
+                  <Button
+                    variant="white"
+                    size="small"
+                    className="aspect-square h-full px-0"
+                    aria-label="회전·반전 더보기"
+                  >
+                    ⋯
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content align="end">
+                  <Dropdown.Item
+                    onSelect={() =>
+                      layer.type === "text"
+                        ? onTextChange({ rotation: 0, flipX: false, flipY: false })
+                        : onImageChange({ rotation: 0, flipX: false, flipY: false })
+                    }
+                  >
+                    회전·반전 초기화
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+            </div>
           </div>
         </EditorAccordionItem>
       </Accordion>

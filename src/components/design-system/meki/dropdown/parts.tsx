@@ -14,14 +14,14 @@ const renderDropdownMenuContent = (
     <Content
       className={cn(
         styles.content,
-        "min-w-24 rounded-xl border border-neutral-100 bg-neutral-50 p-1",
+        "min-w-24 rounded-control border border-stroke-neutral bg-white p-0.5",
         className,
       )}
       ref={ref}
       sideOffset={sideOffset}
       {...props}
     >
-      <div className="w-full rounded-lg border border-neutral-100 bg-white p-1">{children}</div>
+      {children}
     </Content>
   </Portal>
 );
@@ -38,8 +38,8 @@ const renderDropdownMenuItem = (
 ) => (
   <Item
     className={cn(
-      "flex cursor-pointer select-none items-center justify-center rounded-lg p-1 text-sm text-text-primary leading-none outline-none transition duration-150",
-      "hover:bg-[rgba(0,0,0,0.05)]",
+      "flex min-h-9 cursor-pointer select-none items-center rounded-control-inset px-3 py-2 text-sm text-fg-neutral-primary leading-none outline-none transition duration-150",
+      "data-highlighted:bg-bg-neutral-weak",
       className,
     )}
     ref={ref}
