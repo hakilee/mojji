@@ -16,6 +16,7 @@ import {
   Link,
   ReactionButton,
   Spinner,
+  toast,
 } from "~/components/design-system";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
@@ -92,10 +93,12 @@ export function EditorPage() {
 
   function deleteLayer(id: string) {
     dispatch({ type: "delete", id });
-    setStatus(
+    setStatus("");
+    toast(
       settings.layers.find((layer) => layer.id === id)?.type === "text"
         ? "텍스트를 삭제했어요. 실행 취소로 복구할 수 있어요."
         : "이미지를 삭제했어요. 실행 취소로 복구할 수 있어요.",
+      { id: "editor-layer-delete" },
     );
     requestAnimationFrame(() => document.getElementById("work-canvas")?.focus());
   }
@@ -205,7 +208,8 @@ export function EditorPage() {
       link.download = downloadFilename(settings.layers, settings.motion === "none" ? "png" : "gif");
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      setStatus(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`);
+      toast(`다운로드 완료 · ${(blob.size / 1024).toFixed(1)} KB`, { id: "editor-download" });
+      setStatus(publish ? "모두의 모찌에 공개하고 있어요…" : "");
       if (publish) {
         try {
           const response = await fetch("/api/mochi", {
@@ -220,7 +224,8 @@ export function EditorPage() {
           if (!response.ok) throw new Error("publish");
           const { id } = (await response.json()) as { id: string };
           setGalleryRevision((value) => value + 1);
-          setStatus("다운로드 완료 · 모두의 모찌에 공개했어요.");
+          setStatus("");
+          toast("다운로드 완료 · 모두의 모찌에 공개했어요.", { id: "editor-download" });
           try {
             const counted = await fetch(`/api/mochi/${id}/download`, {
               method: "POST",

@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E6d (#185): Editor download/publication and layer-deletion success use the existing bottom-center 3-second snackbar, reusing stable IDs for repeated feedback. Keep generation/publication progress, validation and actionable failures inline. No persistent success text or success-induced layout shift; preserve export, publication, counts, history and focus.
+
 - E7c (#183): User correction supersedes E7a/E7b naming: repository/package/Worker slackmojji; D1/R2 slackmojji-gallery; canonical slackmojji.haklee.me. Redirect slackmoji.haklee.me and mistaken interim mojji.haklee.me to canonical preserving path/query/method. Korean visible brand/title is 슬랙모찌; initial sample restored to 슬랙\n모찌. Preserve all gallery data and verified automatic deployment.
 
 - E7b (#181): Canonical repository/Worker/package are mojji, D1/R2 mojji-gallery. Preserve gallery records, counters, filenames and bytes during migration. Redirect slackmoji.haklee.me and slackmojji.haklee.me to https://mojji.haklee.me with path/query and HTTP method preserved (308). Retain verified main automatic deployment. Supersedes E7a infrastructure retention.
