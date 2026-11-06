@@ -328,11 +328,11 @@ export function EditorPage() {
           <Link
             className="inline-flex shrink-0 rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-focus"
             href="/"
-            aria-label="mojji 홈"
+            aria-label="슬랙모찌 홈"
           >
             <img src="/logo.svg" width="32" height="28" alt="" />
           </Link>
-          <h1 className="text-base font-semibold">mojji</h1>
+          <h1 className="text-base font-semibold">슬랙모찌</h1>
           <div
             id="editor-history"
             className="ml-auto flex gap-control"

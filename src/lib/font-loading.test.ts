@@ -75,7 +75,7 @@ describe("text font loading [E2d]", () => {
     ]);
 
     expect(load.mock.calls).toEqual([
-      ['100px "Black Han Sans"', "mojji"],
+      ['100px "Black Han Sans"', "슬랙\n모찌"],
       ['100px "Jua"', "두번째"],
     ]);
   });

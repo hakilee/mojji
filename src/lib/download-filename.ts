@@ -9,5 +9,5 @@ export function formatDownloadFilename(value: string, format: "png" | "gif"): st
     .replace(/\s+/g, " ")
     .trim()
     .replace(/^[. ]+|[. ]+$/g, "");
-  return `${Array.from(name).slice(0, 80).join("") || "mojji"}.${format}`;
+  return `${Array.from(name).slice(0, 80).join("") || "slackmojji"}.${format}`;
 }

@@ -1,6 +1,6 @@
 {
-  "name": "mojji",
-  "short_name": "mojji",
+  "name": "슬랙모찌",
+  "short_name": "슬랙모찌",
   "description": "텍스트에 움직임을 더해 나만의 Slack GIF 이모지를 만드세요.",
   "lang": "ko",
   "id": "/",

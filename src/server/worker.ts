@@ -13,9 +13,9 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    if (["slackmoji.haklee.me", "slackmojji.haklee.me"].includes(url.hostname)) {
+    if (["slackmoji.haklee.me", "mojji.haklee.me"].includes(url.hostname)) {
       url.protocol = "https:";
-      url.host = "mojji.haklee.me";
+      url.host = "slackmojji.haklee.me";
       return Response.redirect(url.toString(), 308);
     }
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
@@ -85,7 +85,7 @@ export default {
           headers: {
             ...headers,
             "Content-Type": "image/gif",
-            "Content-Disposition": `attachment; filename="mojji.gif"; filename*=UTF-8''${encodeURIComponent(row.filename).replace(/['()*]/g, (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}`,
+            "Content-Disposition": `attachment; filename="slackmojji.gif"; filename*=UTF-8''${encodeURIComponent(row.filename).replace(/['()*]/g, (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}`,
           },
         });
       }

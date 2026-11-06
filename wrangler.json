@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mojji",
+  "name": "slackmojji",
   "account_id": "93300edc910b267d9a3f0efd51bf600d",
   "compatibility_date": "2026-11-03",
   "workers_dev": true,
@@ -28,15 +28,15 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "mojji-gallery",
-      "database_id": "c20a5c95-7c7b-4973-9fb4-f021ca5851a7",
+      "database_name": "slackmojji-gallery",
+      "database_id": "64629ec2-ed63-4b67-9adb-e46eb468db2d",
       "migrations_dir": "migrations"
     }
   ],
   "r2_buckets": [
     {
       "binding": "MOCHI",
-      "bucket_name": "mojji-gallery"
+      "bucket_name": "slackmojji-gallery"
     }
   ],
   "main": "src/server/worker.ts",
