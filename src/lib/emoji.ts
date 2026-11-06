@@ -58,7 +58,7 @@ export type Settings = {
 export const initialTextLayer: TextLayer = {
   type: "text",
   id: "text-1",
-  text: "mojji",
+  text: "슬랙\n모찌",
   x: 64,
   y: 64,
   scale: 1,

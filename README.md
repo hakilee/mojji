@@ -1,8 +1,8 @@
-# mojji
+# 슬랙모찌
 
 텍스트를 Slack용 GIF 이모지로 만드는 브라우저 전용 사이트입니다.
 
-[mojji 편집기 열기](https://mojji.haklee.me)
+[슬랙모찌 편집기 열기](https://slackmojji.haklee.me)
 
 ## 시작하기
 
@@ -64,7 +64,7 @@ Husky pre-commit은 형식·린트·타입을, pre-push는 전체 검증을 실�
 - `src/styles/tailwind.css`: Tailwind 진입점과 테마 설정 (화면 스타일은 유틸리티 클래스)
 - `public/licenses/`: 번들 글꼴의 OFL 라이선스와 이모지 데이터·아이콘의 MIT 고지
 
-[GitHub 이슈](https://github.com/hakilee/mojji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.
+[GitHub 이슈](https://github.com/hakilee/slackmojji/issues)가 작업 범위를 관리합니다. PR 기반 변경, squash-only 머지, 기본 브랜치 삭제·강제 푸시 금지와 선형 이력을 GitHub ruleset으로 강제합니다. 머지한 브랜치는 GitHub가 자동 삭제합니다.
 
 ## 배포
 

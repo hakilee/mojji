@@ -5,7 +5,7 @@ import { getPlatformProxy } from "wrangler";
 import worker from "./worker";
 
 describe("public gallery API [E6]", () => {
-  test.each(["slackmoji.haklee.me", "slackmojji.haklee.me"])(
+  test.each(["slackmoji.haklee.me", "mojji.haklee.me"])(
     "redirects %s with path and query intact",
     async (host) => {
       const platform = await getPlatformProxy<Parameters<typeof worker.fetch>[1]>({
@@ -17,8 +17,9 @@ describe("public gallery API [E6]", () => {
         platform.env,
       );
       expect(response.status).toBe(308);
+      expect(response.headers.get("Cache-Control")).toBe("no-store");
       expect(response.headers.get("Location")).toBe(
-        "https://mojji.haklee.me/api/mochi?sort=popular",
+        "https://slackmojji.haklee.me/api/mochi?sort=popular",
       );
       expect(await response.text()).toBe("");
     },
@@ -104,7 +105,7 @@ describe("public gallery API [E6]", () => {
         (response) =>
           response.status === 200 &&
           response.headers.get("Content-Disposition") ===
-            "attachment; filename=\"mojji.gif\"; filename*=UTF-8''%EC%8A%AC%EB%9E%99%20%EB%AA%A8%EC%B0%8C%20%28%E2%99%A1%29.gif",
+            "attachment; filename=\"slackmojji.gif\"; filename*=UTF-8''%EC%8A%AC%EB%9E%99%20%EB%AA%A8%EC%B0%8C%20%28%E2%99%A1%29.gif",
       ),
     ).toBe(true);
     expect(

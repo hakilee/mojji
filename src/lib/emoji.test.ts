@@ -103,7 +103,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
     ["하키짱", "하키짱.gif"],
     ["하키\n짱", "하키 짱.gif"],
     ["a/b:c?", "a b c.gif"],
-    ["...", "mojji.gif"],
+    ["...", "slackmojji.gif"],
   ])("names GIF from text %s", (text, name) => {
     expect(downloadFilename([{ ...initialTextLayer, text }], "gif")).toBe(name);
   });
@@ -121,7 +121,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       fit: "contain",
     };
     expect(downloadFilename([{ ...initialTextLayer, text: " " }, image], "gif")).toBe("하키짱.gif");
-    expect(downloadFilename([], "gif")).toBe("mojji.gif");
+    expect(downloadFilename([], "gif")).toBe("slackmojji.gif");
     expect(downloadFilename([{ ...initialTextLayer, text: "가".repeat(100) }], "gif")).toBe(
       "가".repeat(80) + ".gif",
     );
@@ -165,7 +165,7 @@ describe("emoji editor [E1 E2 E3 E4]", () => {
       expect(canvas.getContext("2d").getImageData(64, 64, 1, 1).data[3]).toBe(
         transparent ? source.getContext("2d").getImageData(64, 64, 1, 1).data[3] : 255,
       );
-      expect(downloadFilename(defaultSettings.layers, "png")).toBe("mojji.png");
+      expect(downloadFilename(defaultSettings.layers, "png")).toBe("슬랙 모찌.png");
     },
   );
   test("exports animated effects as GIF", async () => {
