@@ -37,6 +37,7 @@ export function CanvasEditor({
     id: string;
     pointerId: number;
     active: boolean;
+    threshold: number;
     clientX: number;
     clientY: number;
     x: number;
@@ -164,6 +165,7 @@ export function CanvasEditor({
           if (!layer) return;
           const handle = (event.target as HTMLElement).closest<HTMLElement>("[data-resize-corner]");
           const corner = handle?.dataset.resizeCorner;
+          if (event.pointerType === "touch" && selectedId !== id && !handle) return;
           const { width, height } = layerSize(layer);
           const angle = layer.type === "image" ? (layer.rotation * Math.PI) / 180 : 0;
           const horizontal = corner?.includes("e") ? 1 : -1;
@@ -173,6 +175,7 @@ export function CanvasEditor({
             id,
             pointerId: event.pointerId,
             active: false,
+            threshold: event.pointerType === "touch" && !handle ? 10 : 3,
             clientX: event.clientX,
             clientY: event.clientY,
             x: layer.x,
@@ -205,7 +208,11 @@ export function CanvasEditor({
           if (!rect) return;
           const drag = dragging.current;
           if (!drag.active) {
-            if (Math.hypot(event.clientX - drag.clientX, event.clientY - drag.clientY) <= 3) return;
+            if (
+              Math.hypot(event.clientX - drag.clientX, event.clientY - drag.clientY) <=
+              drag.threshold
+            )
+              return;
             drag.active = true;
           }
           if (drag.resize) {
@@ -391,8 +398,8 @@ export function CanvasEditor({
                 aria-expanded={selectedId === id}
                 aria-controls={selectedId === id ? "layer-controls" : undefined}
                 onClick={(event) => {
+                  if (selectedId !== id || event.detail === 0) onSelect(id);
                   if (event.detail === 0) {
-                    onSelect(id);
                     requestAnimationFrame(() => {
                       document
                         .querySelector('#work-canvas [data-layer][aria-pressed="true"]')
