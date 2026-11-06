@@ -1,6 +1,6 @@
 # meki.gg 기반 디자인 시스템
 
-GitHub [#94](https://github.com/hakilee/slackmoji/issues/94)의 계약. 소유자의 승인으로 `mekigg/meki.gg@5df8d3ee3dfc970a1057a93ccfd68c13e7ac61be`의 UI/icon 공개 진입점과 재귀 의존성을 이식했습니다. 일부 버튼을 흉내 낸 테마가 아니라 원본 컴포넌트 API·하위 파트·스타일·아이콘을 포함하는 로컬 라이브러리입니다.
+GitHub [#94](https://github.com/hakilee/mojji/issues/94)의 계약. 소유자의 승인으로 `mekigg/meki.gg@5df8d3ee3dfc970a1057a93ccfd68c13e7ac61be`의 UI/icon 공개 진입점과 재귀 의존성을 이식했습니다. 일부 버튼을 흉내 낸 테마가 아니라 원본 컴포넌트 API·하위 파트·스타일·아이콘을 포함하는 로컬 라이브러리입니다.
 
 ## 전체 목록과 누락 검사
 

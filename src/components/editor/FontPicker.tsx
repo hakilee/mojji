@@ -164,7 +164,7 @@ export function FontPicker({
             onLoading(true);
             try {
               if (!/\.(?:otf|ttf|woff2?)$/i.test(file.name)) throw new Error("format");
-              const family = `slackmoji-upload-${crypto.randomUUID()}`;
+              const family = `mojji-upload-${crypto.randomUUID()}`;
               const label = `${file.name} (업로드)`;
               const face = await new FontFace(family, await file.arrayBuffer()).load();
               if (!mounted.current) return;
