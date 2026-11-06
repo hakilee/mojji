@@ -140,7 +140,7 @@ export function CanvasEditor({
       top: `${(layer.y / 128) * 100}%`,
       width: `${(width / 128) * 100}%`,
       height: `${(height / 128) * 100}%`,
-      transform: `translate(-50%, -50%) rotate(${layer.type === "text" ? 0 : layer.rotation}deg)`,
+      transform: `translate(-50%, -50%) rotate(${layer.rotation ?? 0}deg)`,
     };
   }
   const layers = settings.layers;
@@ -167,7 +167,7 @@ export function CanvasEditor({
           const corner = handle?.dataset.resizeCorner;
           if (event.pointerType === "touch" && selectedId !== id && !handle) return;
           const { width, height } = layerSize(layer);
-          const angle = layer.type === "image" ? (layer.rotation * Math.PI) / 180 : 0;
+          const angle = ((layer.rotation ?? 0) * Math.PI) / 180;
           const horizontal = corner?.includes("e") ? 1 : -1;
           const vertical = corner?.includes("s") ? 1 : -1;
           onSelect(id);
@@ -257,14 +257,7 @@ export function CanvasEditor({
             const image = layers.find((item) => item.id === id);
             if (!image) return { x: 64, y: 64, width: 0, height: 0 };
             const { width, height } = layerSize(image);
-            if (image.type === "text")
-              return {
-                x: image.x,
-                y: image.y,
-                width,
-                height,
-              };
-            const angle = (image.rotation * Math.PI) / 180;
+            const angle = ((image.rotation ?? 0) * Math.PI) / 180;
             return {
               x: image.x,
               y: image.y,
@@ -419,7 +412,7 @@ export function CanvasEditor({
               <CanvasResizeHandles
                 key={layer.id}
                 layerId={layer.id}
-                rotation={layer.type === "image" ? layer.rotation : 0}
+                rotation={layer.rotation ?? 0}
                 style={layerStyle(layer)}
               />
             ),

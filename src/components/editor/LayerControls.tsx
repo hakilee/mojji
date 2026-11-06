@@ -61,6 +61,47 @@ export function LayerControls({
           summary={`${Math.round(layer.x)}, ${Math.round(layer.y)} · ${layer.type === "text" ? `${Math.round(layer.scale * 100)}%` : `${layer.size}px`}`}
         >
           <div className="space-y-group">
+            <RangeField
+              label="회전"
+              min={-180}
+              max={180}
+              value={layer.rotation ?? 0}
+              suffix="°"
+              onChange={(rotation) =>
+                layer.type === "text" ? onTextChange({ rotation }) : onImageChange({ rotation })
+              }
+            />
+            <div className="grid grid-cols-2 gap-control">
+              {(["flipX", "flipY"] as const).map((axis) => (
+                <Button
+                  key={axis}
+                  variant="white"
+                  size="small"
+                  aria-pressed={!!layer[axis]}
+                  onClick={() =>
+                    layer.type === "text"
+                      ? onTextChange({ [axis]: !layer[axis] })
+                      : onImageChange({ [axis]: !layer[axis] })
+                  }
+                >
+                  {axis === "flipX" ? "좌우 반전" : "상하 반전"}
+                  {layer[axis] ? " ✓" : ""}
+                </Button>
+              ))}
+            </div>
+            <Button
+              variant="white"
+              size="small"
+              className="w-full"
+              onClick={() =>
+                layer.type === "text"
+                  ? onTextChange({ rotation: 0, flipX: false, flipY: false })
+                  : onImageChange({ rotation: 0, flipX: false, flipY: false })
+              }
+            >
+              회전·반전 초기화
+            </Button>
+
             <div className="grid grid-cols-3 gap-control">
               {[
                 { label: "상단", y: 24 },
@@ -125,14 +166,6 @@ export function LayerControls({
                   value={layer.size}
                   suffix="px"
                   onChange={(size) => onImageChange({ size })}
-                />
-                <RangeField
-                  label="회전"
-                  min={-180}
-                  max={180}
-                  value={layer.rotation}
-                  suffix="°"
-                  onChange={(rotation) => onImageChange({ rotation })}
                 />
                 <SegmentedControl
                   label="이미지 맞춤"

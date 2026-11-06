@@ -21,6 +21,47 @@ const initialSettings = { ...defaultSettings, transparent: true };
 
 describe("emoji editor [E1 E2 E3 E4]", () => {
   test.each([
+    { rotation: 0, flipX: true, flipY: false, x: 96, y: 32 },
+    { rotation: 0, flipX: false, flipY: true, x: 32, y: 96 },
+    { rotation: 90, flipX: false, flipY: false, x: 96, y: 32 },
+    { rotation: 90, flipX: true, flipY: false, x: 96, y: 96 },
+  ])(
+    "transforms image pixels $rotation/$flipX/$flipY [E5bl]",
+    ({ rotation, flipX, flipY, x, y }) => {
+      const source = createCanvas(128, 128);
+      source.getContext("2d").fillRect(0, 0, 64, 64);
+      const canvas = createCanvas(128, 128);
+      const ctx = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
+      drawEmoji(
+        ctx,
+        {
+          ...initialSettings,
+          motion: "none",
+          layers: [
+            {
+              type: "image",
+              id: "transform",
+              name: "test",
+              source: source as unknown as HTMLCanvasElement,
+              aspectRatio: 1,
+              x: 64,
+              y: 64,
+              size: 128,
+              fit: "contain",
+              rotation,
+              flipX,
+              flipY,
+            },
+          ],
+        },
+        0,
+      );
+      expect(ctx.getImageData(x, y, 1, 1).data[3]).toBe(255);
+      expect(ctx.getImageData(128 - x, 128 - y, 1, 1).data[3]).toBe(0);
+    },
+  );
+
+  test.each([
     { direction: "horizontal", motion: "none" },
     { direction: "vertical", motion: "none" },
     { direction: "horizontal", motion: "bounce" },

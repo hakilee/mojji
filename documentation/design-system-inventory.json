@@ -116,11 +116,11 @@
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 434
+          "line": 427
         },
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 445
+          "line": 438
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -160,27 +160,35 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 70
+          "line": 76
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 110
+          "line": 92
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 146
+          "line": 111
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 162
-        },
-        {
-          "file": "src/components/editor/LayerControls.tsx",
-          "line": 170
+          "line": 151
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
           "line": 179
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 195
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 203
+        },
+        {
+          "file": "src/components/editor/LayerControls.tsx",
+          "line": 212
         },
         {
           "file": "src/components/editor/LayerEditor.tsx",
@@ -962,7 +970,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 441
+          "line": 434
         },
         {
           "file": "src/components/editor/EmojiPicker.tsx",
@@ -1297,7 +1305,7 @@
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 137
+          "line": 170
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1319,23 +1327,23 @@
       "usages": [
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 84
+          "line": 64
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 92
+          "line": 125
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 102
+          "line": 133
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 121
+          "line": 143
         },
         {
           "file": "src/components/editor/LayerControls.tsx",
-          "line": 129
+          "line": 162
         },
         {
           "file": "src/components/editor/TextLayerEditor.tsx",
@@ -1401,7 +1409,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 384
+          "line": 377
         }
       ]
     },
@@ -1411,7 +1419,7 @@
       "usages": [
         {
           "file": "src/components/editor/CanvasEditor.tsx",
-          "line": 419
+          "line": 412
         }
       ]
     },
