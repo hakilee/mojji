@@ -5,6 +5,24 @@ import { getPlatformProxy } from "wrangler";
 import worker from "./worker";
 
 describe("public gallery API [E6]", () => {
+  test.each(["slackmoji.haklee.me", "slackmojji.haklee.me"])(
+    "redirects %s with path and query intact",
+    async (host) => {
+      const platform = await getPlatformProxy<Parameters<typeof worker.fetch>[1]>({
+        persist: false,
+      });
+      onTestFinished(() => platform.dispose());
+      const response = await worker.fetch(
+        new Request(`https://${host}/api/mochi?sort=popular`, { method: "POST" }),
+        platform.env,
+      );
+      expect(response.status).toBe(308);
+      expect(response.headers.get("Location")).toBe(
+        "https://mojji.haklee.me/api/mochi?sort=popular",
+      );
+      expect(await response.text()).toBe("");
+    },
+  );
   test("publishes idempotently, paginates, sorts and counts only successful downloads with real D1/R2", async () => {
     const platform = await getPlatformProxy<Parameters<typeof worker.fetch>[1]>({ persist: false });
     onTestFinished(() => platform.dispose());

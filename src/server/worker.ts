@@ -3,6 +3,7 @@ import { formatDownloadFilename } from "../lib/download-filename";
 import { validateGif } from "./validate-gif";
 
 interface Env {
+  ASSETS: { fetch: typeof fetch };
   DB: D1Database;
   MOCHI: R2Bucket;
   PUBLISH_LIMIT: RateLimit;
@@ -12,6 +13,12 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (["slackmoji.haklee.me", "slackmojji.haklee.me"].includes(url.hostname)) {
+      url.protocol = "https:";
+      url.host = "mojji.haklee.me";
+      return Response.redirect(url.toString(), 308);
+    }
+    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
     const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
     const error = (message: string, status: number) =>
       Response.json({ error: message }, { status, headers });

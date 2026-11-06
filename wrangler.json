@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "slackmoji",
+  "name": "mojji",
   "account_id": "93300edc910b267d9a3f0efd51bf600d",
   "compatibility_date": "2026-11-03",
   "workers_dev": true,
@@ -8,26 +8,35 @@
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": true,
+    "binding": "ASSETS"
   },
   "routes": [
     {
+      "pattern": "mojji.haklee.me",
+      "custom_domain": true
+    },
+    {
       "pattern": "slackmoji.haklee.me",
+      "custom_domain": true
+    },
+    {
+      "pattern": "slackmojji.haklee.me",
       "custom_domain": true
     }
   ],
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "slackmoji-gallery",
-      "database_id": "fc865855-8f91-4986-bfcc-a7d44ae191b6",
+      "database_name": "mojji-gallery",
+      "database_id": "c20a5c95-7c7b-4973-9fb4-f021ca5851a7",
       "migrations_dir": "migrations"
     }
   ],
   "r2_buckets": [
     {
       "binding": "MOCHI",
-      "bucket_name": "slackmoji-gallery"
+      "bucket_name": "mojji-gallery"
     }
   ],
   "main": "src/server/worker.ts",

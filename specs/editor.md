@@ -2,6 +2,8 @@
 
 Owner: GitHub issue #1. Editing/rendering stays in the browser. Only explicitly published rendered GIFs leave the device; source images, fonts and editable documents remain local.
 
+- E7b (#181): Canonical repository/Worker/package are mojji, D1/R2 mojji-gallery. Preserve gallery records, counters, filenames and bytes during migration. Redirect slackmoji.haklee.me and slackmojji.haklee.me to https://mojji.haklee.me with path/query and HTTP method preserved (308). Retain verified main automatic deployment. Supersedes E7a infrastructure retention.
+
 - E7a (#179): User-facing product brand is lowercase mojji: header/home accessible name, document title/description, installable app name, initial sample text and new fallback download filenames. Retain logo artwork, existing published filenames and infrastructure identifiers/domain. Default line spacing remains85%. Verify metadata, editor initial state and downloads with Aside and existing tests.
 
 - E6c (#177): Publication stores the sanitized content-derived GIF filename in D1. List responses and gallery downloads retain that name; download responses include UTF-8 Content-Disposition. Keep first publication name for identical content, and slackmoji.gif for older unnamed records. Only the rendered filename is sent, not layer/source data. Extend real D1/R2 tests for migration, Unicode, sanitization, malformed metadata and deduplication.
