@@ -17,6 +17,7 @@ describe("public gallery API [E6]", () => {
         platform.env,
       );
       expect(response.status).toBe(308);
+      expect(response.headers.get("Cache-Control")).toBe("no-store");
       expect(response.headers.get("Location")).toBe(
         "https://slackmojji.haklee.me/api/mochi?sort=popular",
       );

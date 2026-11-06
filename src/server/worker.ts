@@ -16,7 +16,10 @@ export default {
     if (["slackmoji.haklee.me", "mojji.haklee.me"].includes(url.hostname)) {
       url.protocol = "https:";
       url.host = "slackmojji.haklee.me";
-      return Response.redirect(url.toString(), 308);
+      return new Response(null, {
+        status: 308,
+        headers: { Location: url.toString(), "Cache-Control": "no-store" },
+      });
     }
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
     const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
